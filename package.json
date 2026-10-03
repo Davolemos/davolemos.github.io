@@ -1,0 +1,32 @@
+{
+  "name": "davolemos-github-io",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "tsx index.ts",
+    "typecheck": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Davolemos/davolemos.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Davolemos/davolemos.github.io/issues"
+  },
+  "homepage": "https://github.com/Davolemos/davolemos.github.io#readme",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "@higgsfield/client": "^0.2.6",
+    "dotenv": "^18.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
