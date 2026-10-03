@@ -17,8 +17,13 @@ const MODEL = 'bytedance/seedance-2.5/text-to-video';
 
 async function main(): Promise<number> {
   const credentials = process.env.HF_CREDENTIALS?.trim();
-  if (!credentials || !credentials.includes(':')) {
-    console.error('HF_CREDENTIALS is missing or not in key-id:key-secret format. Set it in .env.local.');
+  // The SDK requires exactly one ':' separating the key ID and the key secret.
+  const parts = credentials?.split(':') ?? [];
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
+    console.error(
+      `HF_CREDENTIALS must be key-id:key-secret with exactly one ':' (found ${Math.max(parts.length, 1)} part(s)). ` +
+        'Remove any label or prefix before the key ID.',
+    );
     return 1;
   }
 
