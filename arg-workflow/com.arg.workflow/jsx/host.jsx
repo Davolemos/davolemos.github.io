@@ -1,10 +1,11 @@
 // ARG Workflow — lado ExtendScript (corre dentro de Illustrator).
 // El panel (index.html / panel.js) llama a estas funciones con evalScript.
 //
-//   argList(extPath)        -> JSON con todos los scripts encontrados
+//   argList(extPath)        -> sincroniza los scripts de fábrica a Documentos y
+//                              devuelve JSON con todos los scripts encontrados
 //   argRun(uri)             -> ejecuta un script; devuelve "OK" o "ERR|mensaje"
-//   argUserConfig()         -> contenido de <Scripts de Illustrator>/botones.js (o "")
-//   argOpenUserFolder()     -> abre la carpeta de scripts de Illustrator
+//   argUserConfig()         -> contenido de Documentos/ARG Workflow/botones.js (o "")
+//   argOpenUserFolder()     -> crea (si hace falta) y abre Documentos/ARG Workflow/scripts
 
 // ── JSON para ExtendScript (ES3 no lo trae; algunos scripts lo usan) ──
 if (typeof JSON === "undefined") { JSON = {}; }
@@ -37,20 +38,14 @@ if (typeof JSON.parse !== "function") {
 }
 
 // ── Rutas ──
-// Carpeta de scripts de Illustrator: la misma que alimenta Archivo > Scripts.
-//   Mac:     /Applications/Adobe Illustrator 2026/Presets.localized/es_ES/Scripts
-//   Windows: C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\es_ES\Scripts
+// Todos los scripts viven en Documentos/ARG Workflow/scripts. Es una carpeta
+// del usuario, así que no depende de la versión de Illustrator ni del plugin.
+// Al abrirse, el panel copia ahí los scripts "de fábrica" que falten.
+function argUserFolder() {
+    return new Folder(Folder.myDocuments.fsName + "/ARG Workflow");
+}
 function argUserScriptsFolder() {
-    var base = new Folder(app.path.fsName + "/Presets.localized");
-    if (!base.exists) { base = new Folder(app.path.fsName + "/Presets"); }
-    var loc = new Folder(base.fsName + "/" + app.locale);
-    if (!loc.exists) {
-        var subs = base.getFiles(function (f) { return f instanceof Folder; }), i;
-        for (i = 0; i < subs.length; i++) {
-            if (new Folder(subs[i].fsName + "/Scripts").exists) { loc = subs[i]; break; }
-        }
-    }
-    return new Folder(loc.fsName + "/Scripts");
+    return new Folder(argUserFolder().fsName + "/scripts");
 }
 function argBundledScriptsFolder(extPath) {
     return new Folder(extPath + "/scripts");
@@ -61,9 +56,65 @@ function argIsScript(f) {
         && decodeURI(f.name).toLowerCase() !== "botones.js";
 }
 
-// Recorre una carpeta: los scripts de la raíz van al grupo "" (el panel los
+// Copia un script de fábrica a la carpeta del usuario si no existe allí, o si
+// la versión de fábrica es más reciente (actualización del plugin).
+function argCopyIfNeeded(src, dstFolder) {
+    if (!dstFolder.exists) { dstFolder.create(); }
+    var dst = new File(dstFolder.fsName + "/" + decodeURI(src.name));
+    if (dst.exists && dst.modified >= src.modified) { return false; }
+    return src.copy(dst.fsName) ? true : false;
+}
+
+// Sincroniza plugin/scripts -> Documentos/ARG Workflow/scripts. Devuelve cuántos copió.
+function argSync(extPath) {
+    var src = argBundledScriptsFolder(extPath), dst = argUserScriptsFolder(), n = 0, i, j;
+    if (!argUserFolder().exists) { argUserFolder().create(); }
+    if (!dst.exists) { dst.create(); }
+    if (!src.exists || !dst.exists) { return n; }
+    var entries = src.getFiles();
+    for (i = 0; i < entries.length; i++) {
+        var e = entries[i];
+        if (e.name.charAt(0) === ".") { continue; }
+        if (e instanceof Folder) {
+            var sub = e.getFiles();
+            for (j = 0; j < sub.length; j++) {
+                if (argIsScript(sub[j]) && argCopyIfNeeded(sub[j], new Folder(dst.fsName + "/" + decodeURI(e.name)))) { n++; }
+            }
+        } else if (argIsScript(e) && argCopyIfNeeded(e, dst)) {
+            n++;
+        }
+    }
+    // botones.js de usuario: se crea una plantilla comentada si no existe.
+    var cfg = new File(argUserFolder().fsName + "/botones.js");
+    if (!cfg.exists) {
+        cfg.encoding = "UTF-8";
+        if (cfg.open("w")) {
+            cfg.write(
+                "// ARG Workflow - ajustes personales (opcional).\n" +
+                "// Se combina con el botones.js del plugin: lo que pongas aqui manda.\n" +
+                "// Nombres e iconos: la clave es el nombre exacto del archivo o carpeta.\n" +
+                "// Iconos disponibles: plantilla, cuaderno, texto, color, pantone, negro,\n" +
+                "// imagen, revisar, paquete, pdf, exportar, cadena, script.\n" +
+                "var ARG_CONFIG = {\n" +
+                "  nombres: {\n" +
+                "    // \"Mi_script.jsx\": \"Mi script\"\n" +
+                "  },\n" +
+                "  iconos: {\n" +
+                "    // \"Mi_script.jsx\": \"texto\"\n" +
+                "  },\n" +
+                "  cadenas: [\n" +
+                "    // { nombre: \"Artefinalizar + empaquetar\", scripts: [\"Artefinalizador-v3.jsx\", \"EMPAQUETADO-EXPRESS.js\"] }\n" +
+                "  ]\n" +
+                "};\n");
+            cfg.close();
+        }
+    }
+    return n;
+}
+
+// Recorre la carpeta de scripts: los de la raíz van al grupo "" (el panel los
 // muestra como "Otros"); los de cada subcarpeta van al grupo con ese nombre.
-function argScan(folder, source, out) {
+function argScan(folder, out) {
     if (!folder.exists) { return; }
     var entries = folder.getFiles(), i, e;
     for (i = 0; i < entries.length; i++) {
@@ -73,28 +124,29 @@ function argScan(folder, source, out) {
             var sub = e.getFiles(), j;
             for (j = 0; j < sub.length; j++) {
                 if (argIsScript(sub[j])) {
-                    out.push({ n: decodeURI(sub[j].name), g: decodeURI(e.name), s: source, u: sub[j].absoluteURI });
+                    out.push({ n: decodeURI(sub[j].name), g: decodeURI(e.name), u: sub[j].absoluteURI });
                 }
             }
         } else if (argIsScript(e)) {
-            out.push({ n: decodeURI(e.name), g: "", s: source, u: e.absoluteURI });
+            out.push({ n: decodeURI(e.name), g: "", u: e.absoluteURI });
         }
     }
 }
 
 function argList(extPath) {
+    var copiados = 0;
+    try { copiados = argSync(extPath); } catch (e) { copiados = -1; }
     var items = [];
-    argScan(argBundledScriptsFolder(extPath), "plugin", items);
-    argScan(argUserScriptsFolder(), "usuario", items);
+    argScan(argUserScriptsFolder(), items);
     return JSON.stringify({
         userFolder: argUserScriptsFolder().fsName,
-        bundledFolder: argBundledScriptsFolder(extPath).fsName,
+        copiados: copiados,
         items: items
     });
 }
 
 function argUserConfig() {
-    var f = new File(argUserScriptsFolder().fsName + "/botones.js");
+    var f = new File(argUserFolder().fsName + "/botones.js");
     if (!f.exists) { return ""; }
     f.encoding = "UTF-8";
     if (!f.open("r")) { return ""; }
@@ -105,8 +157,8 @@ function argUserConfig() {
 
 function argOpenUserFolder() {
     var folder = argUserScriptsFolder();
-    if (!folder.exists) { folder.create(); }
-    if (!folder.exists) { return "ERR|No existe la carpeta de scripts de Illustrator: " + folder.fsName; }
+    if (!folder.exists) { argUserFolder().create(); folder.create(); }
+    if (!folder.exists) { return "ERR|No se pudo crear " + folder.fsName; }
     folder.execute();
     return "OK";
 }

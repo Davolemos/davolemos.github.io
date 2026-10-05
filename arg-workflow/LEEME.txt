@@ -33,7 +33,7 @@ comando), acepta, abre Illustrator y ve a
    Ventana > Extensiones > ARG Workflow
 
 Para actualizar: instala el nuevo .zxp encima; el instalador reemplaza la
-versión anterior. Los scripts que hayas añadido (ver abajo) no se tocan.
+versión anterior. Tus scripts en Documentos no se tocan.
 
 Para desinstalar: desde el mismo instalador (botón de desinstalar) o
    UPIA --remove com.arg.workflow   (Mac)   /   UPIA /remove com.arg.workflow   (Windows)
@@ -41,34 +41,27 @@ Para desinstalar: desde el mismo instalador (botón de desinstalar) o
 
 AÑADIR SCRIPTS
 --------------
-Hay dos sitios, según el momento:
+Todos los scripts viven en UNA carpeta tuya:
+     Documentos/ARG Workflow/scripts/
+El botón de carpeta del panel la abre. Es una carpeta de usuario, así que no
+depende de la versión de Illustrator (2026, 2027...) ni de reinstalar o
+actualizar el plugin.
 
-1. SCRIPTS "DE FÁBRICA" (viajan dentro del .zxp):
-     com.arg.workflow/scripts/
-   Cada subcarpeta es un grupo del panel ("01 Plantillas", "02 Edicion",
-   "03 Salida"...). El número solo ordena, no se muestra. Crea las carpetas
-   que quieras. Lo que dejes suelto en la raíz va al grupo "Otros".
-   Después ejecuta  bash crear-zxp.sh  para regenerar el .zxp e instálalo.
+La primera vez que abres el panel, copia ahí solos los scripts que vienen
+"de fábrica" dentro del plugin. Cuando instales una versión nueva del plugin
+con scripts nuevos o actualizados, también los copia solo.
 
-2. SCRIPTS NUEVOS (sin regenerar ni reinstalar nada):
-   La carpeta de scripts de Illustrator, la misma del menú Archivo > Scripts:
-     Mac:     /Applications/Adobe Illustrator 2026/Presets.localized/es_ES/Scripts
-     Windows: C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\es_ES\Scripts
-   El botón de carpeta del panel la abre directamente. Copia ahí el .js o
-   .jsx (en Mac, el Finder pide la contraseña de administrador), pulsa ↻ y
-   aparece. De paso, Illustrator también lo lista en Archivo > Scripts la
-   próxima vez que lo abras.
-   Puedes crear subcarpetas: si usan el mismo nombre que las del plugin
-   ("02 Edicion") se mezclan en ese grupo; si no, forman uno nuevo.
-   Esta carpeta sobrevive a actualizaciones y desinstalaciones del plugin
-   (ojo: al instalar una versión nueva de Illustrator, la carpeta es otra;
-   copia los scripts a la nueva).
-
-   Los scripts de esta carpeta llevan un punto verde en la tarjeta.
-   Si un archivo tiene el mismo nombre en los dos sitios, manda el de la
-   carpeta de Illustrator.
+Para añadir un script: cópialo a esa carpeta (o a una subcarpeta), pulsa ↻ y
+aparece. Cada subcarpeta es un grupo del panel ("01 Plantillas",
+"02 Edicion", "03 Salida"...). El número solo ordena, no se muestra. Crea las
+carpetas que quieras. Lo que dejes suelto en la raíz va al grupo "Otros".
 
 Editar un script en disco se aplica en el siguiente clic, sin reiniciar.
+Ojo: si editas uno de los scripts de fábrica, ponle otro nombre; si no, una
+actualización del plugin con una versión más nueva de ese archivo lo pisará.
+
+Si quieres que un script viaje dentro del .zxp (para instalarlo en otro
+ordenador), ponlo también en com.arg.workflow/scripts/ y regenera el .zxp.
 
 
 NOMBRES DE BOTÓN Y CADENAS (opcional)
@@ -79,7 +72,7 @@ guiones convertidos en espacios ("Mi_script-nuevo.jsx" -> "Mi script nuevo").
 Para poner otro nombre, o para crear un botón que ejecute varios scripts
 seguidos (una "cadena"), edita botones.js:
    - com.arg.workflow/botones.js            (el del plugin; va dentro del .zxp)
-   - <carpeta de scripts de Illustrator>/botones.js   (opcional, se combina)
+   - Documentos/ARG Workflow/botones.js     (el tuyo; el panel lo crea vacío y se combina)
 El archivo está comentado con ejemplos. Las cadenas se detienen si un paso
 falla y el panel muestra en qué paso fue.
 
@@ -88,7 +81,7 @@ PANEL
 -----
    Buscar    filtra las tarjetas por nombre o archivo.
    Píldoras  filtran por grupo (Todos, Plantillas, Edición, Salida...).
-   Carpeta   abre la carpeta de scripts de Illustrator.
+   Carpeta   abre Documentos/ARG Workflow/scripts.
    ↻         vuelve a leer las carpetas y botones.js.
    Pie       estado de la última ejecución; en rojo si hubo error.
 

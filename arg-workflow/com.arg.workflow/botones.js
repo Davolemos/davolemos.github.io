@@ -1,18 +1,17 @@
 // ── ARG Workflow · configuración del panel ──────────────────────────────
 //
-// NO hace falta tocar este archivo para añadir scripts: basta con copiar el
-// .js / .jsx a una carpeta de scripts y pulsar "Recargar" en el panel.
+// NO hace falta tocar este archivo para añadir scripts.
 //
-//   · Cada SUBCARPETA de scripts/ es un grupo del panel. El prefijo numérico
-//     ("01 ", "02 ") solo sirve para ordenarlas y no se muestra.
-//   · Los scripts sueltos en la raíz de scripts/ van al grupo "Otros".
-//   · Los scripts que añadas DESPUÉS de instalar van en la carpeta de scripts
-//     de Illustrator (la misma de Archivo > Scripts; el botón de carpeta del
-//     panel la abre):
-//       Mac:     /Applications/Adobe Illustrator 2026/Presets.localized/es_ES/Scripts
-//       Windows: C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\es_ES\Scripts
-//     Sobreviven a cualquier reinstalación del plugin. Puedes crear ahí
-//     subcarpetas con el mismo nombre que las del plugin para mezclarlos.
+//   · Todos los scripts viven en  Documentos/ARG Workflow/scripts/
+//     (el botón de carpeta del panel la abre). Es una carpeta tuya: no
+//     depende de la versión de Illustrator ni de reinstalar el plugin.
+//   · Al abrirse, el panel copia ahí los scripts "de fábrica" de
+//     com.arg.workflow/scripts/ que falten (o que tengan versión más nueva).
+//   · Cada SUBCARPETA es un grupo del panel. El prefijo numérico ("01 ",
+//     "02 ") solo sirve para ordenarlas y no se muestra. Los scripts sueltos
+//     en la raíz van al grupo "Otros".
+//   · Para añadir un script: cópialo a esa carpeta (o a una subcarpeta) y
+//     pulsa recargar en el panel.
 //
 // Este archivo solo sirve para tres cosas opcionales:
 //   1. "nombres": el texto del botón (o del grupo) cuando el nombre del
@@ -23,8 +22,8 @@
 //      paquete, pdf, exportar, cadena, script (el de por defecto).
 //   3. "cadenas": botones que ejecutan varios scripts seguidos, en orden.
 //
-// Si en esa carpeta de scripts de Illustrator existe un botones.js con esta
-// misma forma, se combina con este: sus nombres mandan y sus cadenas se suman.
+// El panel crea Documentos/ARG Workflow/botones.js con esta misma forma para
+// tus ajustes; se combina con este: sus nombres mandan y sus cadenas se suman.
 
 var ARG_CONFIG = {
 

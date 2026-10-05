@@ -26,7 +26,7 @@ for %%v in (7 8 9 10 11 12 13 14 15) do (
 echo.
 echo ARG Workflow instalado en:
 echo   %DESTINO%
-echo Para anadir scripts: carpeta de scripts de Illustrator (boton de carpeta del panel).
+echo Para anadir scripts: Documentos\ARG Workflow\scripts (boton de carpeta del panel).
 echo.
 echo Abre Illustrator y ve a  Ventana ^> Extensiones ^> ARG Workflow
 echo.

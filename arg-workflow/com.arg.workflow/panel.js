@@ -40,7 +40,7 @@
       for (k in (u.iconos || {})) { if (u.iconos.hasOwnProperty(k)) { cfg.iconos[nfc(k)] = u.iconos[k]; } }
       (u.cadenas || []).forEach(function (c) { cfg.cadenas.push(c); });
     } catch (e) {
-      setEstado("Error en botones.js de la carpeta de scripts: " + e.message, true);
+      setEstado("Error en Documentos/ARG Workflow/botones.js: " + e.message, true);
     }
     return cfg;
   }
@@ -63,14 +63,13 @@
   }
 
   // ── Construcción de grupos a partir del listado del host ──
-  // items: [{ n: archivo, g: carpeta ("" = raíz), s: "plugin"|"usuario", u: uri }]
+  // items: [{ n: archivo, g: carpeta ("" = raíz), u: uri }]
   function construirGrupos(items, cfg) {
     var porArchivo = {}, grupos = {}, orden = [];
 
     items.forEach(function (it) {
       var n = nfc(it.n), g = nfc(it.g);
-      // Si el mismo archivo está en el plugin y en la carpeta personal, manda el personal.
-      if (porArchivo[n] && porArchivo[n].s === "usuario" && it.s !== "usuario") { return; }
+      if (porArchivo[n]) { return; }
       porArchivo[n] = it;
       if (!grupos[g]) { grupos[g] = { carpeta: g, titulo: g === "" ? "Otros" : nombreBonito(g, cfg), botones: [] }; orden.push(g); }
     });
@@ -78,9 +77,9 @@
     Object.keys(porArchivo).forEach(function (n) {
       var it = porArchivo[n];
       grupos[nfc(it.g)].botones.push({
-        nombre: nombreBonito(n, cfg), archivo: n, uri: it.u, usuario: it.s === "usuario",
+        nombre: nombreBonito(n, cfg), archivo: n, uri: it.u,
         icono: cfg.iconos[n] || cfg.iconos[nfc(it.g)] || "script",
-        detalle: n + (it.s === "usuario" ? "  (carpeta de scripts de Illustrator)" : "")
+        detalle: n
       });
     });
 
@@ -213,9 +212,8 @@
       grid.className = "grid";
       visibles.forEach(function (item) {
         var b = document.createElement("button");
-        b.className = "card" + (item.cadena ? " cadena" : "") + (item.usuario ? " usuario" : "");
+        b.className = "card" + (item.cadena ? " cadena" : "");
         b.innerHTML = '<span class="ico">' + svgIcono(item.icono) + '</span><span class="lbl"></span>'
-          + (item.usuario ? '<span class="punto" title="Carpeta de scripts de Illustrator"></span>' : '')
           + '<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>';
         b.querySelector(".lbl").textContent = item.nombre;
         b.title = item.nombre + "\n" + item.detalle;
@@ -229,7 +227,7 @@
       var v = document.createElement("div");
       v.id = "vacio";
       v.textContent = filtro ? "Ningún script coincide con «" + buscar.value.trim() + "»."
-        : "No hay scripts. Copia tus .js / .jsx a la carpeta de scripts de Illustrator y pulsa recargar.";
+        : "No hay scripts. Copia tus .js / .jsx a Documentos/ARG Workflow/scripts y pulsa recargar.";
       lista.appendChild(v);
     }
   }
@@ -252,10 +250,11 @@
         pintar();
         if (estado.className !== "error") {
           var total = (datos.items || []).length;
-          setEstado(total + (total === 1 ? " script listo" : " scripts listos"));
-          estado.title = "Carpeta de scripts de Illustrator: " + datos.userFolder;
+          var extra = datos.copiados > 0 ? " · " + datos.copiados + " copiados a Documentos" : (datos.copiados < 0 ? " · no se pudo copiar a Documentos" : "");
+          setEstado(total + (total === 1 ? " script listo" : " scripts listos") + extra, datos.copiados < 0);
+          estado.title = "Carpeta de scripts: " + datos.userFolder;
         }
-        document.getElementById("btnCarpeta").title = "Abrir la carpeta de scripts de Illustrator\n" + datos.userFolder;
+        document.getElementById("btnCarpeta").title = "Abrir la carpeta de scripts\n" + datos.userFolder;
       });
     });
   }

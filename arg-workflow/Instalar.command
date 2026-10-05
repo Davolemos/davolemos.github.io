@@ -32,7 +32,7 @@ killall cfprefsd 2>/dev/null || true
 echo ""
 echo "ARG Workflow instalado en:"
 echo "  $DESTINO"
-echo "Para añadir scripts: carpeta de scripts de Illustrator (botón de carpeta del panel)."
+echo "Para añadir scripts: Documentos/ARG Workflow/scripts (botón de carpeta del panel)."
 echo ""
 echo "Abre Illustrator y ve a  Ventana > Extensiones > ARG Workflow"
 echo ""
