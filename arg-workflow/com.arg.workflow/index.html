@@ -4,68 +4,139 @@
 <meta charset="utf-8">
 <title>ARG Workflow</title>
 <style>
+  :root {
+    --bg: #0a0a0b;
+    --panel: #151517;
+    --panel-hover: #1c1c1f;
+    --line: #26262a;
+    --text: #f5f5f7;
+    --muted: #8e8e93;
+    --accent: #2eac66;
+    --accent-soft: rgba(46,172,102,.14);
+    --accent-line: rgba(46,172,102,.55);
+    --error: #ff6b6b;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; height: 100%; }
   body {
-    background: #323232; color: #e6e6e6;
-    font: 12px/1.3 -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    font: 12.5px/1.35 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
     display: flex; flex-direction: column; overflow: hidden;
     -webkit-user-select: none; user-select: none; cursor: default;
   }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #2c2c30; border-radius: 8px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  /* ── Cabecera ── */
+  header { flex: 0 0 auto; padding: 14px 14px 0; }
+  .marca { display: flex; align-items: center; gap: 9px; }
+  .marca svg { width: 30px; height: 30px; flex: 0 0 auto; }
+  .marca h1 { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -.02em; line-height: 1; }
+  .marca h1 span { color: var(--accent); font-weight: 700; }
+  .tagline { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+
+  /* ── Buscador ── */
+  .busqueda { position: relative; margin: 12px 14px 0; }
+  .busqueda svg { position: absolute; left: 10px; top: 50%; width: 14px; height: 14px; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
   #buscar {
-    flex: 0 0 auto; margin: 8px 8px 0; padding: 5px 8px; box-sizing: border-box; width: calc(100% - 16px);
-    font: inherit; color: inherit; background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.12); border-radius: 4px; outline: none;
+    width: 100%; padding: 7px 10px 7px 30px; font: inherit; color: var(--text);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 9px; outline: none;
     -webkit-user-select: text; user-select: text;
   }
-  #buscar:focus { border-color: #2680eb; }
-  #lista { flex: 1 1 auto; overflow-y: auto; padding: 6px 8px 4px; }
+  #buscar::placeholder { color: var(--muted); }
+  #buscar:focus { border-color: var(--accent-line); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* ── Filtro de grupos (píldoras) ── */
+  #chips {
+    flex: 0 0 auto; display: flex; gap: 4px; margin: 10px 14px 0; padding: 3px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  #chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: 1 0 auto; padding: 6px 12px; font: inherit; font-weight: 600; font-size: 12px; color: var(--muted);
+    background: transparent; border: 0; border-radius: 8px; cursor: pointer; white-space: nowrap;
+  }
+  .chip:hover { color: var(--text); }
+  .chip.activo { background: var(--accent); color: #04140b; }
+  .chip:focus { outline: none; }
+
+  /* ── Lista de tarjetas ── */
+  #lista { flex: 1 1 auto; overflow-y: auto; padding: 12px 14px 10px; }
   h2 {
-    font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-    opacity: .55; margin: 10px 2px 5px;
+    margin: 10px 2px 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted);
   }
-  h2:first-child { margin-top: 2px; }
-  button.item {
-    display: block; width: 100%; box-sizing: border-box; margin: 0 0 4px;
-    padding: 7px 10px; text-align: left; font: inherit; color: inherit;
-    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.10);
-    border-radius: 4px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  h2:first-child { margin-top: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .card {
+    position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+    padding: 12px 12px 11px; min-height: 84px; width: 100%; text-align: left;
+    font: inherit; color: var(--text); background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer;
+    transition: background .12s, border-color .12s, transform .08s;
   }
-  button.item:hover { background: rgba(255,255,255,.16); }
-  button.item:active, button.item.activo { background: #2680eb; border-color: #2680eb; color: #fff; }
-  button:focus { outline: none; }
-  button.item.cadena::before { content: "▸▸ "; opacity: .7; }
-  button.item.usuario::after { content: " •"; opacity: .45; }
-  #vacio { opacity: .6; padding: 12px 4px; line-height: 1.5; }
+  .card:hover { background: var(--panel-hover); border-color: #3a3a40; }
+  .card:active { transform: scale(.98); }
+  .card.activo { background: var(--accent-soft); border-color: var(--accent); }
+  .card:focus { outline: none; }
+  .card .ico { width: 26px; height: 26px; color: var(--accent); }
+  .card .ico svg { width: 26px; height: 26px; display: block; }
+  .card .lbl { font-size: 12.5px; font-weight: 500; line-height: 1.25; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .card.cadena .lbl::before { content: "Cadena"; display: block; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .card.usuario::after { content: ""; position: absolute; top: 10px; right: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .card.activo .ico { animation: pulso 1s ease-in-out infinite; }
+  @keyframes pulso { 50% { opacity: .35; } }
+  #vacio { color: var(--muted); padding: 18px 4px; line-height: 1.5; text-align: center; }
+
+  /* ── Pie ── */
   #pie {
-    flex: 0 0 auto; display: flex; align-items: center; gap: 4px;
-    padding: 4px 6px 4px 10px; border-top: 1px solid rgba(128,128,128,.3);
+    flex: 0 0 auto; display: flex; align-items: center; gap: 2px;
+    padding: 6px 8px 6px 14px; border-top: 1px solid var(--line); background: var(--bg);
   }
-  #estado {
-    flex: 1 1 auto; min-width: 0; font-size: 11px; opacity: .7;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  #estado { flex: 1 1 auto; min-width: 0; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #estado::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin: 0 6px 1px 0; vertical-align: middle; }
+  #estado.ocupado::before { animation: pulso .8s ease-in-out infinite; }
+  #estado.error { color: var(--error); white-space: normal; -webkit-user-select: text; user-select: text; }
+  #estado.error::before { background: var(--error); }
+  .icono {
+    flex: 0 0 auto; width: 28px; height: 26px; padding: 0; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); background: transparent; border: 0; border-radius: 7px; cursor: pointer;
   }
-  #estado.error { color: #ff7b72; opacity: 1; white-space: normal; -webkit-user-select: text; user-select: text; }
-  #pie button.icono {
-    flex: 0 0 auto; width: 26px; height: 24px; padding: 0; font-size: 14px; line-height: 24px;
-    color: inherit; background: transparent; border: 1px solid transparent; border-radius: 4px; cursor: pointer;
-  }
-  #pie button.icono:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.1); }
-  body.claro { color: #2c2c2c; }
-  body.claro #buscar { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.14); }
-  body.claro button.item { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.14); }
-  body.claro button.item:hover { background: rgba(0,0,0,.11); }
-  body.claro button.item:active, body.claro button.item.activo { background: #2680eb; color: #fff; }
-  body.claro #pie button.icono:hover { background: rgba(0,0,0,.08); }
-  body.claro #estado.error { color: #c0392b; }
+  .icono svg { width: 16px; height: 16px; }
+  .icono:hover { color: var(--text); background: var(--panel-hover); }
+  .icono:focus { outline: none; }
 </style>
 </head>
 <body>
-<input id="buscar" type="search" placeholder="Buscar…" spellcheck="false">
+<header>
+  <div class="marca">
+    <svg viewBox="0 0 30 30" fill="none" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="27" height="27" rx="8" stroke="#2eac66" stroke-width="2"/>
+      <path d="M9 10.5h7M9 15h12M9 19.5h5" stroke="#f5f5f7" stroke-width="2" stroke-linecap="round"/>
+      <path d="M18 17.5l4 2.5-4 2.5z" fill="#2eac66"/>
+    </svg>
+    <h1>ARG <span>Workflow</span></h1>
+  </div>
+  <p class="tagline">Scripts de producción, a un clic.</p>
+</header>
+<div class="busqueda">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+  <input id="buscar" type="search" placeholder="Buscar script" spellcheck="false">
+</div>
+<div id="chips"></div>
 <div id="lista"></div>
 <div id="pie">
   <div id="estado">Cargando…</div>
-  <button class="icono" id="btnCarpeta" title="Abrir la carpeta de scripts personales">📂</button>
-  <button class="icono" id="btnRecargar" title="Recargar la lista de scripts">↻</button>
+  <button class="icono" id="btnCarpeta" title="Abrir la carpeta de scripts personales">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  </button>
+  <button class="icono" id="btnRecargar" title="Recargar la lista de scripts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>
+  </button>
 </div>
 <script src="botones.js"></script>
 <script src="panel.js"></script>

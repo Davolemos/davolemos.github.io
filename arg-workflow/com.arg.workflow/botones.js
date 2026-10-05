@@ -11,10 +11,14 @@
 //     y sobreviven a cualquier reinstalación. Puedes crear ahí subcarpetas
 //     con el mismo nombre que las del plugin para mezclarlos en un grupo.
 //
-// Este archivo solo sirve para dos cosas opcionales:
+// Este archivo solo sirve para tres cosas opcionales:
 //   1. "nombres": el texto del botón (o del grupo) cuando el nombre del
 //      archivo no queda bonito. Clave = nombre exacto del archivo o carpeta.
-//   2. "cadenas": botones que ejecutan varios scripts seguidos, en orden.
+//   2. "iconos": el icono de la tarjeta. Clave = archivo o carpeta (el de la
+//      carpeta se aplica a todos sus scripts sin icono propio). Valores:
+//      plantilla, cuaderno, texto, color, pantone, negro, imagen, revisar,
+//      paquete, pdf, exportar, cadena, script (el de por defecto).
+//   3. "cadenas": botones que ejecutan varios scripts seguidos, en orden.
 //
 // Si existe Documentos/ARG Workflow/botones.js con esta misma forma, se
 // combina con este: sus nombres mandan y sus cadenas se suman.
@@ -40,9 +44,26 @@ var ARG_CONFIG = {
     "Exportar_AI_a_JPG.jsx":    "Exportar AI a JPG"
   },
 
+  iconos: {
+    "01 Plantillas": "plantilla",
+    "02 Edicion":    "script",
+    "03 Salida":     "exportar",
+
+    "Plantilla-de-diseno.js":   "plantilla",
+    "Plantillas-cuadernos.js":  "cuaderno",
+    "Replace_Text.jsx":         "texto",
+    "Pantone_Generator.js":     "pantone",
+    "NEGROS 100%.js":           "negro",
+    "Rasterize.js":             "imagen",
+    "Artefinalizador-v3.jsx":   "revisar",
+    "EMPAQUETADO-EXPRESS.js":   "paquete",
+    "PDF OPTIMIZADO.js":        "pdf",
+    "Exportar_AI_a_JPG.jsx":    "exportar"
+  },
+
   // Ejemplo (quita las barras // para activarlo):
   // cadenas: [
-  //   { nombre: "Artefinalizar + empaquetar",
+  //   { nombre: "Artefinalizar + empaquetar", icono: "cadena",
   //     scripts: ["Artefinalizador-v3.jsx", "EMPAQUETADO-EXPRESS.js"] }
   // ]
   cadenas: []

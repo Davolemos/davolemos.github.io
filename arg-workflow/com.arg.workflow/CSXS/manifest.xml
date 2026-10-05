@@ -2,10 +2,10 @@
 <ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   ExtensionBundleId="com.arg.workflow"
   ExtensionBundleName="ARG Workflow"
-  ExtensionBundleVersion="2.0.0"
+  ExtensionBundleVersion="2.1.0"
   Version="7.0">
   <ExtensionList>
-    <Extension Id="com.arg.workflow.panel" Version="2.0.0"/>
+    <Extension Id="com.arg.workflow.panel" Version="2.1.0"/>
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>
