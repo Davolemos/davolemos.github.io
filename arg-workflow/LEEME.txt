@@ -1,0 +1,95 @@
+ARG WORKFLOW — panel de scripts para Adobe Illustrator
+======================================================
+
+Un panel acoplable (Ventana > Extensiones > ARG Workflow) con un botón por
+cada script. Queda instalado de forma permanente: aparece cada vez que
+abres Illustrator y recuerda dónde lo acoplaste.
+
+
+INSTALAR
+--------
+Mac:     clic derecho sobre "Instalar.command" > Abrir. (La primera vez
+         macOS pregunta porque el archivo viene de internet; acepta.)
+         Si prefieres Terminal:  bash Instalar.command
+Windows: doble clic en "Instalar.bat".
+
+Cierra Illustrator antes de instalar. Al abrirlo, ve a
+   Ventana > Extensiones > ARG Workflow
+y acóplalo donde quieras.
+
+Para reinstalar o actualizar, ejecuta el mismo instalador. Tus scripts
+personales (ver abajo) no se tocan.
+
+
+AÑADIR SCRIPTS
+--------------
+Hay dos sitios, según el momento:
+
+1. ANTES de instalar (scripts que quieres que viajen con el plugin):
+     com.arg.workflow/scripts/
+   Cada subcarpeta es un grupo del panel ("01 Plantillas", "02 Edicion",
+   "03 Salida"...). El número solo ordena, no se muestra. Crea las
+   carpetas que quieras. Lo que dejes suelto en la raíz va al grupo "Otros".
+
+2. DESPUÉS de instalar (sin reinstalar nada):
+     Documentos/ARG Workflow/scripts/
+   El botón 📂 del panel abre esta carpeta. Copia ahí el .js o .jsx, pulsa ↻
+   y aparece. Puedes crear subcarpetas: si usan el mismo nombre que las del
+   plugin ("02 Edicion") se mezclan en ese grupo; si no, forman uno nuevo.
+   Esta carpeta sobrevive a reinstalaciones y desinstalaciones.
+
+   Los scripts de esta carpeta llevan un punto (•) al final del botón.
+   Si un archivo tiene el mismo nombre en los dos sitios, manda el personal.
+
+Editar un script en disco se aplica en el siguiente clic, sin reiniciar.
+
+
+NOMBRES DE BOTÓN Y CADENAS (opcional)
+-------------------------------------
+Por defecto el botón se llama como el archivo, sin extensión y con los
+guiones convertidos en espacios ("Mi_script-nuevo.jsx" -> "Mi script nuevo").
+
+Para poner otro nombre, o para crear un botón que ejecute varios scripts
+seguidos (una "cadena"), edita botones.js:
+   - com.arg.workflow/botones.js            (el del plugin)
+   - Documentos/ARG Workflow/botones.js     (el tuyo; opcional, se combina)
+El archivo está comentado con ejemplos. Las cadenas se detienen si un paso
+falla y el panel muestra en qué paso fue.
+
+
+PANEL
+-----
+   Buscar…   filtra los botones por nombre o archivo.
+   📂        abre la carpeta de scripts personales (la crea si no existe).
+   ↻         vuelve a leer las carpetas y botones.js.
+   Pie       estado de la última ejecución; en rojo si hubo error.
+
+
+DESINSTALAR
+-----------
+Mac: "Desinstalar.command".  Windows: "Desinstalar.bat".
+Documentos/ARG Workflow se conserva; bórrala a mano si ya no la quieres.
+
+
+REPARTIRLO A OTROS ORDENADORES
+------------------------------
+Opción A: pasa esta carpeta completa y que ejecuten el instalador.
+Opción B: crea un .zxp firmado con "crear-zxp.sh" (necesita ZXPSignCmd de
+          Adobe, ver el encabezado del script). Un .zxp se instala con
+          cualquier "ZXP installer" y no requiere activar nada.
+
+Nota: la app de Creative Cloud solo instala extensiones publicadas en
+Adobe Exchange (requiere cuenta de desarrollador y revisión de Adobe). Para
+uso propio o de un equipo, los dos caminos de arriba dan el mismo resultado:
+el panel queda integrado y persistente en Illustrator.
+
+
+SI EL PANEL NO APARECE
+----------------------
+- ¿Cerraste Illustrator del todo antes de instalar? Ciérralo y ábrelo.
+- Mac: comprueba que existe
+    ~/Library/Application Support/Adobe/CEP/extensions/com.arg.workflow
+- Windows: %APPDATA%\Adobe\CEP\extensions\com.arg.workflow
+- El panel usa la tecnología CEP, que Illustrator sigue cargando en las
+  versiones 2024/2025/2026. Si alguna versión futura la retira, los scripts
+  seguirán funcionando desde Archivo > Scripts.

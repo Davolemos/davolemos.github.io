@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  ExtensionBundleId="com.arg.workflow"
+  ExtensionBundleName="ARG Workflow"
+  ExtensionBundleVersion="2.0.0"
+  Version="7.0">
+  <ExtensionList>
+    <Extension Id="com.arg.workflow.panel" Version="2.0.0"/>
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      <!-- ILST = Illustrator. 17.0 es CC (2013); 99.9 cubre todas las versiones futuras. -->
+      <Host Name="ILST" Version="[17.0,99.9]"/>
+    </HostList>
+    <LocaleList>
+      <Locale Code="All"/>
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="7.0"/>
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="com.arg.workflow.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./index.html</MainPath>
+          <ScriptPath>./jsx/host.jsx</ScriptPath>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>ARG Workflow</Menu>
+          <Geometry>
+            <Size><Height>560</Height><Width>250</Width></Size>
+            <MinSize><Height>200</Height><Width>170</Width></MinSize>
+            <MaxSize><Height>2000</Height><Width>800</Width></MaxSize>
+          </Geometry>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>
