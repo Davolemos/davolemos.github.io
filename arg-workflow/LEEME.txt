@@ -1,42 +1,61 @@
-ARG WORKFLOW — panel de scripts para Adobe Illustrator
-======================================================
+ARG WORKFLOW — extensión CEP (.zxp) para Adobe Illustrator
+==========================================================
 
 Un panel acoplable (Ventana > Extensiones > ARG Workflow) con un botón por
-cada script. Queda instalado de forma permanente: aparece cada vez que
-abres Illustrator y recuerda dónde lo acoplaste.
+cada script. Queda integrado de forma permanente: aparece cada vez que abres
+Illustrator y recuerda dónde lo acoplaste.
+
+Contenido de esta carpeta
+  ARG-Workflow.zxp      el instalable (firmado, válido hasta 2036)
+  com.arg.workflow/     el código fuente del panel y los scripts
+  crear-zxp.sh          regenera el .zxp cuando cambies el código fuente
+  Instalar.command/.bat instalación alternativa sin .zxp (ver al final)
 
 
-INSTALAR
---------
-Mac:     clic derecho sobre "Instalar.command" > Abrir. (La primera vez
-         macOS pregunta porque el archivo viene de internet; acepta.)
-         Si prefieres Terminal:  bash Instalar.command
-Windows: doble clic en "Instalar.bat".
+INSTALAR EL .ZXP
+----------------
+Illustrator no abre .zxp por sí solo; se instalan con un "ZXP installer".
+Cualquiera de estos vale (todos gratuitos):
 
-Cierra Illustrator antes de instalar. Al abrirlo, ve a
+  · ZXP Installer (aescripts)         https://aescripts.com/learn/zxp-installer/
+  · Anastasiy's Extension Manager     https://install.anastasiy.com/
+  · UPIA, la herramienta de línea de comandos de Adobe que ya tienes si
+    tienes Creative Cloud instalado:
+
+    Mac (Terminal):
+      "/Library/Application Support/Adobe/Adobe Desktop Common/RemoteComponents/UPI/UnifiedPluginInstallerAgent/UnifiedPluginInstallerAgent.app/Contents/MacOS/UnifiedPluginInstallerAgent" --install ARG-Workflow.zxp
+
+    Windows (CMD como administrador):
+      "C:\Program Files\Common Files\Adobe\Adobe Desktop Common\RemoteComponents\UPI\UnifiedPluginInstallerAgent\UnifiedPluginInstallerAgent.exe" /install ARG-Workflow.zxp
+
+Pasos: cierra Illustrator, arrastra ARG-Workflow.zxp al instalador (o usa el
+comando), acepta, abre Illustrator y ve a
    Ventana > Extensiones > ARG Workflow
-y acóplalo donde quieras.
 
-Para reinstalar o actualizar, ejecuta el mismo instalador. Tus scripts
-personales (ver abajo) no se tocan.
+Para actualizar: instala el nuevo .zxp encima; el instalador reemplaza la
+versión anterior. Tus scripts personales (ver abajo) no se tocan.
+
+Para desinstalar: desde el mismo instalador (botón de desinstalar) o
+   UPIA --remove com.arg.workflow   (Mac)   /   UPIA /remove com.arg.workflow   (Windows)
 
 
 AÑADIR SCRIPTS
 --------------
 Hay dos sitios, según el momento:
 
-1. ANTES de instalar (scripts que quieres que viajen con el plugin):
+1. SCRIPTS "DE FÁBRICA" (viajan dentro del .zxp):
      com.arg.workflow/scripts/
    Cada subcarpeta es un grupo del panel ("01 Plantillas", "02 Edicion",
-   "03 Salida"...). El número solo ordena, no se muestra. Crea las
-   carpetas que quieras. Lo que dejes suelto en la raíz va al grupo "Otros".
+   "03 Salida"...). El número solo ordena, no se muestra. Crea las carpetas
+   que quieras. Lo que dejes suelto en la raíz va al grupo "Otros".
+   Después ejecuta  bash crear-zxp.sh  para regenerar el .zxp e instálalo.
 
-2. DESPUÉS de instalar (sin reinstalar nada):
+2. SCRIPTS PERSONALES (sin regenerar ni reinstalar nada):
      Documentos/ARG Workflow/scripts/
    El botón 📂 del panel abre esta carpeta. Copia ahí el .js o .jsx, pulsa ↻
    y aparece. Puedes crear subcarpetas: si usan el mismo nombre que las del
    plugin ("02 Edicion") se mezclan en ese grupo; si no, forman uno nuevo.
-   Esta carpeta sobrevive a reinstalaciones y desinstalaciones.
+   Esta carpeta sobrevive a actualizaciones y desinstalaciones.
 
    Los scripts de esta carpeta llevan un punto (•) al final del botón.
    Si un archivo tiene el mismo nombre en los dos sitios, manda el personal.
@@ -51,7 +70,7 @@ guiones convertidos en espacios ("Mi_script-nuevo.jsx" -> "Mi script nuevo").
 
 Para poner otro nombre, o para crear un botón que ejecute varios scripts
 seguidos (una "cadena"), edita botones.js:
-   - com.arg.workflow/botones.js            (el del plugin)
+   - com.arg.workflow/botones.js            (el del plugin; va dentro del .zxp)
    - Documentos/ARG Workflow/botones.js     (el tuyo; opcional, se combina)
 El archivo está comentado con ejemplos. Las cadenas se detienen si un paso
 falla y el panel muestra en qué paso fue.
@@ -65,31 +84,25 @@ PANEL
    Pie       estado de la última ejecución; en rojo si hubo error.
 
 
-DESINSTALAR
------------
-Mac: "Desinstalar.command".  Windows: "Desinstalar.bat".
-Documentos/ARG Workflow se conserva; bórrala a mano si ya no la quieres.
+REGENERAR EL .ZXP
+-----------------
+   bash crear-zxp.sh
+Necesita ZXPSignCmd (gratuito, de Adobe); el encabezado del script dice de
+dónde bajarlo. El certificado arg-workflow.p12 se crea la primera vez y se
+reutiliza después. Si lo pierdes se genera otro y todo sigue funcionando.
 
 
-REPARTIRLO A OTROS ORDENADORES
-------------------------------
-Opción A: pasa esta carpeta completa y que ejecuten el instalador.
-Opción B: crea un .zxp firmado con "crear-zxp.sh" (necesita ZXPSignCmd de
-          Adobe, ver el encabezado del script). Un .zxp se instala con
-          cualquier "ZXP installer" y no requiere activar nada.
-
-Nota: la app de Creative Cloud solo instala extensiones publicadas en
-Adobe Exchange (requiere cuenta de desarrollador y revisión de Adobe). Para
-uso propio o de un equipo, los dos caminos de arriba dan el mismo resultado:
-el panel queda integrado y persistente en Illustrator.
-
-
-SI EL PANEL NO APARECE
-----------------------
+SI EL PANEL NO APARECE O SALE EN BLANCO
+---------------------------------------
 - ¿Cerraste Illustrator del todo antes de instalar? Ciérralo y ábrelo.
-- Mac: comprueba que existe
-    ~/Library/Application Support/Adobe/CEP/extensions/com.arg.workflow
-- Windows: %APPDATA%\Adobe\CEP\extensions\com.arg.workflow
-- El panel usa la tecnología CEP, que Illustrator sigue cargando en las
-  versiones 2024/2025/2026. Si alguna versión futura la retira, los scripts
-  seguirán funcionando desde Archivo > Scripts.
+- Comprueba que el instalador lo dejó en
+    Mac:     /Library/Application Support/Adobe/CEP/extensions/com.arg.workflow
+    Windows: C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\com.arg.workflow
+- Adobe reconoce un fallo (desde finales de 2024) por el que algunos .zxp
+  instalados con UPIA cargan en blanco. La solución oficial es activar el
+  modo de depuración de CEP, que es justo lo que hacen Instalar.command e
+  Instalar.bat. Esos instaladores copian el panel a la carpeta de
+  extensiones del usuario sin necesitar .zxp; dan el mismo resultado.
+- El panel usa CEP, que Illustrator sigue cargando en 2024/2025/2026.
+  Los scripts son ExtendScript (.jsx), que la tecnología UXP de Adobe no
+  puede ejecutar; por eso el plugin es CEP y no UXP.
