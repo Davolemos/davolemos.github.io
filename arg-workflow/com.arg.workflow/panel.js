@@ -40,7 +40,7 @@
       for (k in (u.iconos || {})) { if (u.iconos.hasOwnProperty(k)) { cfg.iconos[nfc(k)] = u.iconos[k]; } }
       (u.cadenas || []).forEach(function (c) { cfg.cadenas.push(c); });
     } catch (e) {
-      setEstado("Error en Documentos/ARG Workflow/botones.js: " + e.message, true);
+      setEstado("Error en botones.js de la carpeta de scripts: " + e.message, true);
     }
     return cfg;
   }
@@ -80,7 +80,7 @@
       grupos[nfc(it.g)].botones.push({
         nombre: nombreBonito(n, cfg), archivo: n, uri: it.u, usuario: it.s === "usuario",
         icono: cfg.iconos[n] || cfg.iconos[nfc(it.g)] || "script",
-        detalle: n + (it.s === "usuario" ? "  (carpeta personal)" : "")
+        detalle: n + (it.s === "usuario" ? "  (carpeta de scripts de Illustrator)" : "")
       });
     });
 
@@ -214,7 +214,9 @@
       visibles.forEach(function (item) {
         var b = document.createElement("button");
         b.className = "card" + (item.cadena ? " cadena" : "") + (item.usuario ? " usuario" : "");
-        b.innerHTML = '<span class="ico">' + svgIcono(item.icono) + '</span><span class="lbl"></span>';
+        b.innerHTML = '<span class="ico">' + svgIcono(item.icono) + '</span><span class="lbl"></span>'
+          + (item.usuario ? '<span class="punto" title="Carpeta de scripts de Illustrator"></span>' : '')
+          + '<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>';
         b.querySelector(".lbl").textContent = item.nombre;
         b.title = item.nombre + "\n" + item.detalle;
         b.onclick = function () { ejecutar(b, item); };
@@ -227,7 +229,7 @@
       var v = document.createElement("div");
       v.id = "vacio";
       v.textContent = filtro ? "Ningún script coincide con «" + buscar.value.trim() + "»."
-        : "No hay scripts. Copia tus .js / .jsx a la carpeta personal y pulsa recargar.";
+        : "No hay scripts. Copia tus .js / .jsx a la carpeta de scripts de Illustrator y pulsa recargar.";
       lista.appendChild(v);
     }
   }
@@ -251,9 +253,9 @@
         if (estado.className !== "error") {
           var total = (datos.items || []).length;
           setEstado(total + (total === 1 ? " script listo" : " scripts listos"));
-          estado.title = "Scripts personales: " + datos.userFolder;
+          estado.title = "Carpeta de scripts de Illustrator: " + datos.userFolder;
         }
-        document.getElementById("btnCarpeta").title = "Abrir la carpeta de scripts personales\n" + datos.userFolder;
+        document.getElementById("btnCarpeta").title = "Abrir la carpeta de scripts de Illustrator\n" + datos.userFolder;
       });
     });
   }

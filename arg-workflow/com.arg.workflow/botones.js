@@ -6,10 +6,13 @@
 //   · Cada SUBCARPETA de scripts/ es un grupo del panel. El prefijo numérico
 //     ("01 ", "02 ") solo sirve para ordenarlas y no se muestra.
 //   · Los scripts sueltos en la raíz de scripts/ van al grupo "Otros".
-//   · Los scripts que añadas DESPUÉS de instalar van en
-//       Documentos/ARG Workflow/scripts/   (botón 📂 del panel)
-//     y sobreviven a cualquier reinstalación. Puedes crear ahí subcarpetas
-//     con el mismo nombre que las del plugin para mezclarlos en un grupo.
+//   · Los scripts que añadas DESPUÉS de instalar van en la carpeta de scripts
+//     de Illustrator (la misma de Archivo > Scripts; el botón de carpeta del
+//     panel la abre):
+//       Mac:     /Applications/Adobe Illustrator 2026/Presets.localized/es_ES/Scripts
+//       Windows: C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\es_ES\Scripts
+//     Sobreviven a cualquier reinstalación del plugin. Puedes crear ahí
+//     subcarpetas con el mismo nombre que las del plugin para mezclarlos.
 //
 // Este archivo solo sirve para tres cosas opcionales:
 //   1. "nombres": el texto del botón (o del grupo) cuando el nombre del
@@ -20,8 +23,8 @@
 //      paquete, pdf, exportar, cadena, script (el de por defecto).
 //   3. "cadenas": botones que ejecutan varios scripts seguidos, en orden.
 //
-// Si existe Documentos/ARG Workflow/botones.js con esta misma forma, se
-// combina con este: sus nombres mandan y sus cadenas se suman.
+// Si en esa carpeta de scripts de Illustrator existe un botones.js con esta
+// misma forma, se combina con este: sus nombres mandan y sus cadenas se suman.
 
 var ARG_CONFIG = {
 

@@ -3,8 +3,8 @@
 //
 //   argList(extPath)        -> JSON con todos los scripts encontrados
 //   argRun(uri)             -> ejecuta un script; devuelve "OK" o "ERR|mensaje"
-//   argUserConfig()         -> contenido de ~/Documents/ARG Workflow/botones.js (o "")
-//   argOpenUserFolder()     -> crea (si hace falta) y abre la carpeta personal de scripts
+//   argUserConfig()         -> contenido de <Scripts de Illustrator>/botones.js (o "")
+//   argOpenUserFolder()     -> abre la carpeta de scripts de Illustrator
 
 // ── JSON para ExtendScript (ES3 no lo trae; algunos scripts lo usan) ──
 if (typeof JSON === "undefined") { JSON = {}; }
@@ -37,20 +37,28 @@ if (typeof JSON.parse !== "function") {
 }
 
 // ── Rutas ──
-var ARG_USER_DIR_NAME = "ARG Workflow";
-
-function argUserFolder() {
-    return new Folder(Folder.myDocuments + "/" + ARG_USER_DIR_NAME);
-}
+// Carpeta de scripts de Illustrator: la misma que alimenta Archivo > Scripts.
+//   Mac:     /Applications/Adobe Illustrator 2026/Presets.localized/es_ES/Scripts
+//   Windows: C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\es_ES\Scripts
 function argUserScriptsFolder() {
-    return new Folder(argUserFolder().fsName + "/scripts");
+    var base = new Folder(app.path.fsName + "/Presets.localized");
+    if (!base.exists) { base = new Folder(app.path.fsName + "/Presets"); }
+    var loc = new Folder(base.fsName + "/" + app.locale);
+    if (!loc.exists) {
+        var subs = base.getFiles(function (f) { return f instanceof Folder; }), i;
+        for (i = 0; i < subs.length; i++) {
+            if (new Folder(subs[i].fsName + "/Scripts").exists) { loc = subs[i]; break; }
+        }
+    }
+    return new Folder(loc.fsName + "/Scripts");
 }
 function argBundledScriptsFolder(extPath) {
     return new Folder(extPath + "/scripts");
 }
 
 function argIsScript(f) {
-    return (f instanceof File) && /\.(jsx|js)$/i.test(f.name) && f.name.charAt(0) !== ".";
+    return (f instanceof File) && /\.(jsx|js)$/i.test(f.name) && f.name.charAt(0) !== "."
+        && decodeURI(f.name).toLowerCase() !== "botones.js";
 }
 
 // Recorre una carpeta: los scripts de la raíz van al grupo "" (el panel los
@@ -86,7 +94,7 @@ function argList(extPath) {
 }
 
 function argUserConfig() {
-    var f = new File(argUserFolder().fsName + "/botones.js");
+    var f = new File(argUserScriptsFolder().fsName + "/botones.js");
     if (!f.exists) { return ""; }
     f.encoding = "UTF-8";
     if (!f.open("r")) { return ""; }
@@ -98,7 +106,7 @@ function argUserConfig() {
 function argOpenUserFolder() {
     var folder = argUserScriptsFolder();
     if (!folder.exists) { folder.create(); }
-    if (!folder.exists) { return "ERR|No se pudo crear " + folder.fsName; }
+    if (!folder.exists) { return "ERR|No existe la carpeta de scripts de Illustrator: " + folder.fsName; }
     folder.execute();
     return "OK";
 }

@@ -1,9 +1,9 @@
 #!/bin/bash
-# ARG Workflow — desinstalador (macOS). No toca Documentos/ARG Workflow.
+# ARG Workflow — desinstalador (macOS). No toca la carpeta de scripts de Illustrator.
 DESTINO="$HOME/Library/Application Support/Adobe/CEP/extensions/com.arg.workflow"
 if [ -d "$DESTINO" ]; then
   rm -rf "$DESTINO"
-  echo "ARG Workflow desinstalado. Tus scripts personales siguen en ~/Documents/ARG Workflow."
+  echo "ARG Workflow desinstalado. Los scripts de la carpeta de Illustrator no se han tocado."
 else
   echo "ARG Workflow no estaba instalado."
 fi

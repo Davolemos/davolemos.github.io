@@ -3,7 +3,6 @@ rem ARG Workflow - instalador para Illustrator (Windows)
 setlocal
 set "ORIGEN=%~dp0com.arg.workflow"
 set "DESTINO=%APPDATA%\Adobe\CEP\extensions\com.arg.workflow"
-set "PERSONAL=%USERPROFILE%\Documents\ARG Workflow\scripts"
 
 if not exist "%ORIGEN%\CSXS\manifest.xml" (
   echo No encuentro la carpeta com.arg.workflow junto a este instalador.
@@ -16,7 +15,6 @@ if not errorlevel 1 (
   pause & exit /b 1
 )
 
-if not exist "%PERSONAL%" mkdir "%PERSONAL%"
 if exist "%DESTINO%" rmdir /S /Q "%DESTINO%"
 xcopy /E /I /Q /Y "%ORIGEN%" "%DESTINO%" >NUL
 
@@ -28,8 +26,7 @@ for %%v in (7 8 9 10 11 12 13 14 15) do (
 echo.
 echo ARG Workflow instalado en:
 echo   %DESTINO%
-echo Carpeta para tus scripts personales:
-echo   %PERSONAL%
+echo Para anadir scripts: carpeta de scripts de Illustrator (boton de carpeta del panel).
 echo.
 echo Abre Illustrator y ve a  Ventana ^> Extensiones ^> ARG Workflow
 echo.
