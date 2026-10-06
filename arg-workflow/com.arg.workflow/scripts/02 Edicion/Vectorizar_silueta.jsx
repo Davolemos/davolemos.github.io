@@ -92,7 +92,7 @@
     // ── 2. Procesar cada imagen ──
     var resultados = [], errores = [];
     for (i = 0; i < imagenes.length; i++) {
-        var img = imagenes[i], temporales = [];
+        var img = imagenes[i], temporales = [], partes = [];
         try {
             if (img.typename === "PlacedItem") {
                 doc.selection = null; img.selected = true;
@@ -101,7 +101,6 @@
                 if (s0.length && s0[0].typename === "RasterItem") { img = s0[0]; }
             }
             var capa = img.layer;
-            var partes = [];
 
             // A) Zonas oscuras (lo que no es blanco). Sobre una copia, fuera de grupos/máscaras.
             var copiaA = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
@@ -118,7 +117,9 @@
                 ro.backgroundBlack = true;          // transparente -> negro
                 ro.resolution = RESOLUCION;
                 ro.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                var plano = doc.rasterize(copiaB, ro); // copiaB se reemplaza por el nuevo raster
+                // rasterize(objeto, rectánguloDeRecorte, opciones): el rectángulo es obligatorio.
+                var gb = copiaB.geometricBounds;
+                var plano = doc.rasterize(copiaB, [gb[0] - 1, gb[1] + 1, gb[2] + 1, gb[3] - 1], ro);
                 temporales.push(plano);
                 doc.selection = null; plano.selected = true;
                 app.executeMenuCommand("Colors6");  // Invertir colores: fondo blanco, forma oscura
@@ -133,6 +134,8 @@
             resultados.push(forma);
         } catch (e) {
             errores.push("Imagen " + (i + 1) + ": " + e.message);
+            // Retirar calcos a medias para no dejar restos sobre la imagen.
+            for (var q = 0; q < partes.length; q++) { try { partes[q].remove(); } catch (e7) {} }
         }
         // Limpiar copias de trabajo que sigan existiendo (los calcos ya consumieron las suyas).
         for (var t = 0; t < temporales.length; t++) { try { temporales[t].remove(); } catch (e5) {} }
