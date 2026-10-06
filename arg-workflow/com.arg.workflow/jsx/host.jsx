@@ -96,7 +96,7 @@ function argSync(extPath) {
                 "// Se combina con el botones.js del plugin: lo que pongas aqui manda.\n" +
                 "// Nombres e iconos: la clave es el nombre exacto del archivo o carpeta.\n" +
                 "// Iconos disponibles: plantilla, cuaderno, texto, color, pantone, negro,\n" +
-                "// imagen, revisar, paquete, pdf, exportar, cadena, script.\n" +
+                "// imagen, revisar, paquete, pdf, exportar, vector, cadena, script.\n" +
                 "var ARG_CONFIG = {\n" +
                 "  nombres: {\n" +
                 "    // \"Mi_script.jsx\": \"Mi script\"\n" +

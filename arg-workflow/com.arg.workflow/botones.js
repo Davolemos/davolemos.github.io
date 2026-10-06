@@ -19,7 +19,7 @@
 //   2. "iconos": el icono de la tarjeta. Clave = archivo o carpeta (el de la
 //      carpeta se aplica a todos sus scripts sin icono propio). Valores:
 //      plantilla, cuaderno, texto, color, pantone, negro, imagen, revisar,
-//      paquete, pdf, exportar, cadena, script (el de por defecto).
+//      paquete, pdf, exportar, vector, cadena, script (el de por defecto).
 //   3. "cadenas": botones que ejecutan varios scripts seguidos, en orden.
 //
 // El panel crea Documentos/ARG Workflow/botones.js con esta misma forma para
@@ -40,6 +40,7 @@ var ARG_CONFIG = {
     "Pantone_Generator.js":     "Generar Pantone",
     "NEGROS 100%.js":           "Negros 100%",
     "Rasterize.js":             "Rasterizar",
+    "Vectorizar_silueta.jsx":   "Vectorizar silueta",
     "Artefinalizador-v3.jsx":   "Artefinalizador",
     "EMPAQUETADO-EXPRESS.js":   "Empaquetado express",
     "PDF OPTIMIZADO.js":        "PDF optimizado",
@@ -57,6 +58,7 @@ var ARG_CONFIG = {
     "Pantone_Generator.js":     "pantone",
     "NEGROS 100%.js":           "negro",
     "Rasterize.js":             "imagen",
+    "Vectorizar_silueta.jsx":   "vector",
     "Artefinalizador-v3.jsx":   "revisar",
     "EMPAQUETADO-EXPRESS.js":   "paquete",
     "PDF OPTIMIZADO.js":        "pdf",

@@ -168,6 +168,7 @@
     pdf:       '<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M8 13h8M8 17h5"/>',
     exportar:  '<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
     cadena:    '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2"/>',
+    vector:    '<path d="M5 19C5 11 9 7 17 5"/><circle cx="5" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 9l3 3M14 8l3 3" opacity=".6"/>',
     script:    '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>'
   };
   function svgIcono(nombre) {
