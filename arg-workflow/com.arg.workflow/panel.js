@@ -259,12 +259,40 @@
     });
   }
 
-  document.getElementById("btnRecargar").onclick = recargar;
-  document.getElementById("btnCarpeta").onclick = function () {
+  function abrirCarpeta() {
     evalHost("argOpenUserFolder()", function (res) {
       if (res.indexOf("ERR|") === 0) { setEstado(res.substring(4), true); }
     });
-  };
+  }
+  // Reinicia el motor de dibujo de este panel (bug de panel gris en Illustrator 2026).
+  // Se cierra el panel; 1 s después muere su CEPHtmlEngine; al reabrirlo desde
+  // Ventana > Extensiones, Illustrator crea uno nuevo.
+  function repararPanel() {
+    evalHost("argRepararMotor()", function (res) {
+      if (res.indexOf("ERR|") === 0) { setEstado(res.substring(4), true); return; }
+      try { cep.closeExtension(); } catch (e) {}
+    });
+  }
+  document.getElementById("btnRecargar").onclick = recargar;
+  document.getElementById("btnCarpeta").onclick = abrirCarpeta;
+
+  // ── Menú desplegable nativo del panel (≡). Lo dibuja Illustrator, no el
+  // panel, así que funciona aunque el contenido se vea gris. ──
+  try {
+    cep.invokeSync("setPanelFlyoutMenu",
+      '<Menu>' +
+      '<MenuItem Id="recargar" Label="Recargar scripts"/>' +
+      '<MenuItem Id="carpeta" Label="Abrir carpeta de scripts"/>' +
+      '<MenuItem Label="---"/>' +
+      '<MenuItem Id="reparar" Label="Reparar panel (si se ve vacío)"/>' +
+      '</Menu>');
+    cep.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", function (e) {
+      var id = e && e.data ? e.data.menuId : "";
+      if (id === "recargar") { recargar(); }
+      else if (id === "carpeta") { abrirCarpeta(); }
+      else if (id === "reparar") { repararPanel(); }
+    });
+  } catch (e) {}
 
   recargar();
 })();

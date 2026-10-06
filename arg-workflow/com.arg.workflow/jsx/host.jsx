@@ -6,6 +6,8 @@
 //   argRun(uri)             -> ejecuta un script; devuelve "OK" o "ERR|mensaje"
 //   argUserConfig()         -> contenido de Documentos/ARG Workflow/botones.js (o "")
 //   argOpenUserFolder()     -> crea (si hace falta) y abre Documentos/ARG Workflow/scripts
+//   argRepararMotor()       -> mata (en 1 s) el proceso CEPHtmlEngine de este panel para
+//                              que Illustrator lo cree de nuevo al reabrir el panel
 
 // ── JSON para ExtendScript (ES3 no lo trae; algunos scripts lo usan) ──
 if (typeof JSON === "undefined") { JSON = {}; }
@@ -161,6 +163,25 @@ function argOpenUserFolder() {
     if (!folder.exists) { return "ERR|No se pudo crear " + folder.fsName; }
     folder.execute();
     return "OK";
+}
+
+// Bug conocido de Adobe (Illustrator 2026 / CEP 12.1 / Apple Silicon): a veces el
+// panel se queda gris porque su proceso de dibujo (CEPHtmlEngine) nunca llega a
+// presentar el contenido, y ese proceso sobrevive a cerrar y abrir el panel.
+// Cada extensión tiene su propio CEPHtmlEngine, así que matar solo el nuestro
+// obliga a Illustrator a crear uno nuevo al reabrir el panel, sin reiniciar.
+// El patrón [C]EPHtmlEngine evita que el comando se mate a sí mismo.
+function argRepararMotor() {
+    try {
+        if ($.os.indexOf("Windows") === 0) {
+            system.callSystem('cmd.exe /c start "" /b powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep 1; Get-CimInstance Win32_Process | Where-Object { $_.Name -eq \'CEPHtmlEngine.exe\' -and $_.CommandLine -like \'*com.arg.workflow*\' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"');
+        } else {
+            system.callSystem("/bin/sh -c \"(sleep 1; pkill -f '[C]EPHtmlEngine.*com[.]arg[.]workflow') >/dev/null 2>&1 &\"");
+        }
+        return "OK";
+    } catch (e) {
+        return "ERR|" + e.message;
+    }
 }
 
 // Ejecuta un script en su propio ámbito, para que las variables de un script

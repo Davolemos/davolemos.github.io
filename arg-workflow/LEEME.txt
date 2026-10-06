@@ -79,6 +79,7 @@ falla y el panel muestra en qué paso fue.
 
 PANEL
 -----
+   Menú ≡    (en la pestaña del panel) Recargar, Abrir carpeta y Reparar panel.
    Buscar    filtra las tarjetas por nombre o archivo.
    Píldoras  filtran por grupo (Todos, Plantillas, Edición, Salida...).
    Carpeta   abre Documentos/ARG Workflow/scripts.
@@ -94,8 +95,25 @@ dónde bajarlo. El certificado arg-workflow.p12 se crea la primera vez y se
 reutiliza después. Si lo pierdes se genera otro y todo sigue funcionando.
 
 
-SI EL PANEL NO APARECE O SALE EN BLANCO
----------------------------------------
+SI EL PANEL SE VE GRIS / VACÍO AL ABRIR ILLUSTRATOR
+---------------------------------------------------
+Es un bug reconocido de Adobe (Illustrator 2026 + CEP 12.1 en Mac con chip
+Apple): a veces el proceso que dibuja el panel arranca mal al iniciar
+Illustrator y el panel queda gris. Cerrar y abrir el panel no basta porque
+ese proceso sigue vivo. Dos remedios sin reiniciar Illustrator:
+
+  1. Menú ≡ de la pestaña del panel > "Reparar panel (si se ve vacío)".
+     El panel se cierra, su proceso se reinicia y lo vuelves a abrir desde
+     Ventana > Extensiones > ARG Workflow.
+  2. Doble clic en "Reparar panel.command" (hace lo mismo desde Terminal) y
+     después cierra la pestaña del panel y vuelve a abrirla.
+
+Si se repite mucho, deja el panel cerrado al salir de Illustrator y ábrelo
+desde Ventana > Extensiones una vez cargado: el fallo ocurre sobre todo al
+arrancar la aplicación.
+
+SI EL PANEL NO APARECE EN EL MENÚ
+---------------------------------
 - ¿Cerraste Illustrator del todo antes de instalar? Ciérralo y ábrelo.
 - Comprueba que el instalador lo dejó en
     Mac:     /Library/Application Support/Adobe/CEP/extensions/com.arg.workflow
