@@ -1,18 +1,22 @@
 // Vectorizar silueta — ARG Workflow
-// Convierte la forma de una imagen (PNG con transparencia, o JPG sobre fondo
-// blanco) en un vector relleno de negro, en un clic. Equivale a: Editar colores
-// > negro al 100%  →  Calco de imagen (Siluetas)  →  Expandir.
+// Reproduce en un clic el proceso manual:
+//   1. Edición > Editar colores > Ajustar equilibrio de colores:
+//      Escala de grises, Convertir, Negro 100 %  (toda la figura pasa a negro,
+//      la transparencia se conserva)
+//   2. Objeto > Calco de imagen > ajuste "Siluetas"
+//   3. Expandir
+// y deja el vector relleno de negro K100, sin trazo, en un grupo "Silueta",
+// seleccionado. La imagen original no se toca; el vector queda encima.
 //
-// Cómo decide qué es "forma":
-//   · PNG con transparencia: TODO lo que no sea transparente es forma, sea del
-//     color que sea (también el blanco). Se compone la imagen sobre negro, se
-//     invierte, y encima se pone la original al 50 %: el fondo queda blanco y
-//     la figura en gris medio en cualquier tono. Un solo calco, sin uniones.
-//   · Imagen sin transparencia: todo lo que no sea blanco puro es forma.
-// La imagen original no se toca; el vector queda encima, en un grupo "Silueta",
-// relleno K100 (o RGB 0,0,0 si el documento es RGB), sin trazo y seleccionado.
-// Acepta varias imágenes, aunque estén dentro de grupos o máscaras (p. ej.
-// pegadas desde Photoshop).
+// El paso 1 no se puede rellenar por script (Illustrator solo permite abrir el
+// cuadro), así que se hace de forma automática por otro camino con el mismo
+// resultado: se compone la imagen sobre negro, se invierte y se le superpone la
+// original al 50 %; cualquier píxel opaco queda oscuro y el fondo blanco. Si por
+// lo que sea ese camino fallara (la forma sale como un rectángulo), el script
+// abre el cuadro "Ajustar equilibrio de colores" para que lo rellenes tú y
+// continúa solo con el calco y el expandir.
+// Acepta varias imágenes, aunque estén dentro de grupos o máscaras (pegadas
+// desde Photoshop).
 #target illustrator
 
 (function () {
@@ -26,7 +30,7 @@
     var ESQUINAS = 20;       // 0-100: menos = menos esquinas, contorno más redondeado
     var RUIDO = 50;          // px: ignora manchas y muescas más pequeñas que esto
 
-    // ── 1. Buscar imágenes dentro de la selección (también en grupos y máscaras) ──
+    // ── 1. Imágenes dentro de la selección (también en grupos y máscaras) ──
     function recoger(item, lista) {
         var t = item.typename, i;
         if (t === "RasterItem" || t === "PlacedItem") { lista.push(item); }
@@ -62,24 +66,21 @@
         var b = item.geometricBounds;
         return [b[0] - 1, b[1] + 1, b[2] + 1, b[3] - 1];
     }
-    // doc.rasterize necesita un rectángulo de recorte, y según la versión lo
-    // interpreta en coordenadas de documento o de mesa de trabajo. Si el
-    // resultado no cae encima del original, se repite con el otro sistema.
+    // doc.rasterize exige un rectángulo de recorte y, según la versión, lo lee en
+    // coordenadas de documento o de mesa de trabajo. Se comprueba que el resultado
+    // cae encima del original; si no, se repite con el otro sistema.
     function rasterizar(item, opts) {
         var sistemas = [CoordinateSystem.DOCUMENTCOORDINATESYSTEM, CoordinateSystem.ARTBOARDCOORDINATESYSTEM];
         var anterior = app.coordinateSystem, res = null, k;
         try {
-            for (k = 0; k < sistemas.length; k++) {
+            for (k = 0; k < sistemas.length && !res; k++) {
                 app.coordinateSystem = sistemas[k];
                 var dup = item.duplicate(item, ElementPlacement.PLACEBEFORE);
                 var antes = dup.geometricBounds;
                 var r = doc.rasterize(dup, margen(dup), opts);
                 var despues = r.geometricBounds;
-                if (Math.abs(despues[0] - antes[0]) < 3 && Math.abs(despues[1] - antes[1]) < 3) {
-                    res = r; break;
-                }
-                try { r.remove(); } catch (e1) {}
-                try { dup.remove(); } catch (e2) {}
+                if (Math.abs(despues[0] - antes[0]) < 3 && Math.abs(despues[1] - antes[1]) < 3) { res = r; }
+                else { try { r.remove(); } catch (e1) {} try { dup.remove(); } catch (e2) {} }
             }
         } finally {
             app.coordinateSystem = anterior;
@@ -103,8 +104,8 @@
         suma(grupo);
         return Math.abs(area) > caja * 0.97;
     }
-    // Calco blanco y negro suavizado + expansión. Devuelve el grupo expandido.
-    function calcar(raster) {
+    // Paso 2 y 3: Calco de imagen "Siluetas" + Expandir. Devuelve el grupo expandido.
+    function calcarYExpandir(raster) {
         var calco = raster.trace();
         var op = calco.tracing.tracingOptions;
         if (preset) { try { op.loadFromPreset(preset); } catch (e1) {} }
@@ -119,6 +120,54 @@
         try { op.noiseFidelity = RUIDO; } catch (e4) {}
         app.redraw();
         return calco.tracing.expandTracing();
+    }
+
+    // Paso 1 (automático): figura oscura en cualquier tono, fondo blanco.
+    function ennegrecerAutomatico(img, capa, temporales) {
+        var copiaB = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+        var ro = new RasterizeOptions();
+        ro.transparency = false;
+        ro.backgroundBlack = true;                 // transparente -> negro
+        ro.resolution = RESOLUCION;
+        ro.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
+        var inv = rasterizar(copiaB, ro);
+        temporales.push(inv);
+        doc.selection = null; inv.selected = true;
+        app.executeMenuCommand("Colors6");         // Editar colores > Invertir colores
+        var s1 = doc.selection;
+        if (s1.length && s1[0].typename === "RasterItem") { inv = s1[0]; }
+
+        var copiaC = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+        copiaC.blendingMode = BlendModes.NORMAL;
+        copiaC.opacity = 50;                       // (v + (255 - v)) / 2 = gris medio
+        var g = capa.groupItems.add();
+        temporales.push(g);
+        inv.move(g, ElementPlacement.PLACEATEND);
+        copiaC.move(g, ElementPlacement.PLACEATBEGINNING);
+
+        var ro2 = new RasterizeOptions();
+        ro2.transparency = false;
+        ro2.backgroundBlack = false;
+        ro2.resolution = RESOLUCION;
+        ro2.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
+        var plano = rasterizar(g, ro2);
+        temporales.push(plano);
+        return plano;
+    }
+
+    // Paso 1 (manual, de respaldo): abre "Ajustar equilibrio de colores" sobre
+    // una copia y espera a que pulses OK.
+    function ennegrecerConDialogo(img, capa, temporales) {
+        var copiaD = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+        temporales.push(copiaD);
+        doc.selection = null; copiaD.selected = true;
+        alert("Se abrirá 'Ajustar equilibrio de colores'.\n\n" +
+              "Pon  Modo de color: Escala de grises,  marca  Convertir,  Negro: 100 %  y pulsa OK.\n" +
+              "El script seguirá solo con el calco y el expandir.");
+        app.executeMenuCommand("Adjust3");         // Edición > Editar colores > Ajustar equilibrio de colores...
+        var s = doc.selection;
+        if (s.length && s[0].typename === "RasterItem") { copiaD = s[0]; }
+        return copiaD;
     }
 
     // ── 2. Procesar cada imagen ──
@@ -136,70 +185,36 @@
             var conAlfa = false;
             try { conAlfa = img.transparent === true; } catch (e6) {}
 
-            var fuente;
             if (conAlfa) {
-                // a) Imagen sobre fondo negro (transparente -> negro) e invertida:
-                //    fondo blanco, figura con los colores invertidos.
-                var copiaB = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
-                var ro = new RasterizeOptions();
-                ro.transparency = false;
-                ro.backgroundBlack = true;
-                ro.resolution = RESOLUCION;
-                ro.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                var inv = rasterizar(copiaB, ro);
-                temporales.push(inv);
-                doc.selection = null; inv.selected = true;
-                app.executeMenuCommand("Colors6");   // Editar colores > Invertir colores
-                var s1 = doc.selection;
-                if (s1.length && s1[0].typename === "RasterItem") { inv = s1[0]; }
-
-                // b) Encima, la imagen original al 50 % de opacidad (fusión normal):
-                //    cada píxel de la figura queda en (v + (255 - v)) / 2 = gris medio,
-                //    sea v blanco, negro o cualquier color; el fondo transparente sigue blanco.
-                var copiaC = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
-                copiaC.blendingMode = BlendModes.NORMAL;
-                copiaC.opacity = 50;
-                var g = capa.groupItems.add();
-                temporales.push(g);
-                inv.move(g, ElementPlacement.PLACEATEND);
-                copiaC.move(g, ElementPlacement.PLACEATBEGINNING);
-
-                // c) Aplanar el conjunto sobre blanco en un único raster.
-                var ro2 = new RasterizeOptions();
-                ro2.transparency = false;
-                ro2.backgroundBlack = false;
-                ro2.resolution = RESOLUCION;
-                ro2.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                fuente = rasterizar(g, ro2);
-                temporales.push(fuente);
+                var fuente = null;
+                try { fuente = ennegrecerAutomatico(img, capa, temporales); } catch (e7) { fuente = null; }
+                if (fuente) {
+                    forma = calcarYExpandir(fuente);
+                    if (esRectangulo(forma)) { try { forma.remove(); } catch (e8) {} forma = null; }
+                }
+                if (!forma) {
+                    forma = calcarYExpandir(ennegrecerConDialogo(img, capa, temporales));
+                }
             } else {
                 // Sin transparencia: lo que no es blanco es forma.
-                fuente = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
-                temporales.push(fuente);
-            }
-
-            forma = calcar(fuente);
-            if (conAlfa && esRectangulo(forma)) {
-                // El método por transparencia devolvió el rectángulo entero:
-                // se descarta y se usa el umbral directo sobre la imagen.
-                try { forma.remove(); } catch (e10) {}
                 var copiaA = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
                 temporales.push(copiaA);
-                forma = calcar(copiaA);
+                forma = calcarYExpandir(copiaA);
             }
+
             forma.name = "Silueta";
             pintar(forma, negro());
             resultados.push(forma);
         } catch (e) {
             errores.push("Imagen " + (i + 1) + ": " + e.message);
-            if (forma) { try { forma.remove(); } catch (e7) {} }
+            if (forma) { try { forma.remove(); } catch (e9) {} }
         }
         // Retirar copias de trabajo que sigan existiendo (el calco consume la suya).
-        for (var t = temporales.length - 1; t >= 0; t--) { try { temporales[t].remove(); } catch (e8) {} }
+        for (var t = temporales.length - 1; t >= 0; t--) { try { temporales[t].remove(); } catch (e10) {} }
     }
 
     doc.selection = null;
-    for (i = 0; i < resultados.length; i++) { try { resultados[i].selected = true; } catch (e9) {} }
+    for (i = 0; i < resultados.length; i++) { try { resultados[i].selected = true; } catch (e11) {} }
     app.redraw();
 
     if (errores.length) {
