@@ -5,9 +5,9 @@
 //
 // Cómo decide qué es "forma":
 //   · PNG con transparencia: TODO lo que no sea transparente es forma, sea del
-//     color que sea (también el blanco). Se hace componiendo la imagen sobre
-//     negro, invirtiendo colores y calcando; se une con un segundo calco de las
-//     zonas oscuras para no dejar huecos en sombras muy negras.
+//     color que sea (también el blanco). Se compone la imagen sobre negro, se
+//     invierte, y encima se multiplica la imagen original: el fondo queda
+//     blanco y la figura oscura en cualquier tono. Un solo calco, sin uniones.
 //   · Imagen sin transparencia: todo lo que no sea blanco puro es forma.
 // La imagen original no se toca; el vector queda encima, en un grupo "Silueta",
 // relleno K100 (o RGB 0,0,0 si el documento es RGB), sin trazo y seleccionado.
@@ -18,8 +18,13 @@
 (function () {
     if (app.documents.length === 0) { alert("Abre un documento primero."); return; }
     var doc = app.activeDocument;
-    var UMBRAL = 254;       // píxeles más claros que esto se consideran blanco/fondo
-    var RESOLUCION = 600;   // ppp de la copia de trabajo (solo afecta a la precisión del borde)
+
+    // ── Ajustes ──
+    var UMBRAL = 254;        // píxeles más claros que esto se consideran fondo
+    var RESOLUCION = 600;    // ppp de la copia de trabajo (precisión del borde)
+    var SUAVIDAD = 60;       // 0-100: trazado. Menos = curvas más suaves y menos puntos
+    var ESQUINAS = 20;       // 0-100: menos = menos esquinas, contorno más redondeado
+    var RUIDO = 50;          // px: ignora manchas y muescas más pequeñas que esto
 
     // ── 1. Buscar imágenes dentro de la selección (también en grupos y máscaras) ──
     function recoger(item, lista) {
@@ -53,7 +58,11 @@
         else if (item.typename === "CompoundPathItem") { for (j = 0; j < item.pathItems.length; j++) { pintar(item.pathItems[j], color); } }
         else if (item.typename === "GroupItem") { for (j = 0; j < item.pageItems.length; j++) { pintar(item.pageItems[j], color); } }
     }
-    // Calco blanco y negro con umbral alto y expansión. Devuelve el grupo expandido.
+    function margen(item) {
+        var b = item.geometricBounds;
+        return [b[0] - 1, b[1] + 1, b[2] + 1, b[3] - 1];
+    }
+    // Calco blanco y negro suavizado + expansión. Devuelve el grupo expandido.
     function calcar(raster) {
         var calco = raster.trace();
         var op = calco.tracing.tracingOptions;
@@ -64,85 +73,82 @@
         op.strokes = false;
         op.ignoreWhite = true;
         op.snapCurveToLines = false;
+        try { op.pathFidelity = SUAVIDAD; } catch (e2) {}
+        try { op.cornerFidelity = ESQUINAS; } catch (e3) {}
+        try { op.noiseFidelity = RUIDO; } catch (e4) {}
         app.redraw();
         return calco.tracing.expandTracing();
-    }
-    // Une varios grupos en una sola forma con Buscatrazos > Unificar.
-    function unir(grupos) {
-        if (grupos.length === 1) { return grupos[0]; }
-        var j;
-        doc.selection = null;
-        for (j = 0; j < grupos.length; j++) { grupos[j].selected = true; }
-        try {
-            app.executeMenuCommand("Live Pathfinder Add");
-            app.executeMenuCommand("expandStyle");
-            var s = doc.selection;
-            if (s.length === 1) { return s[0]; }
-            var g = doc.activeLayer.groupItems.add();
-            for (j = s.length - 1; j >= 0; j--) { s[j].move(g, ElementPlacement.PLACEATBEGINNING); }
-            return g;
-        } catch (e2) {
-            // Si Buscatrazos falla, se dejan las dos formas superpuestas en un grupo.
-            var g2 = doc.activeLayer.groupItems.add();
-            for (j = grupos.length - 1; j >= 0; j--) { grupos[j].move(g2, ElementPlacement.PLACEATBEGINNING); }
-            return g2;
-        }
     }
 
     // ── 2. Procesar cada imagen ──
     var resultados = [], errores = [];
     for (i = 0; i < imagenes.length; i++) {
-        var img = imagenes[i], temporales = [], partes = [];
+        var img = imagenes[i], temporales = [], forma = null;
         try {
             if (img.typename === "PlacedItem") {
                 doc.selection = null; img.selected = true;
-                try { img.embed(); } catch (e3) {}
+                try { img.embed(); } catch (e5) {}
                 var s0 = doc.selection;
                 if (s0.length && s0[0].typename === "RasterItem") { img = s0[0]; }
             }
             var capa = img.layer;
-
-            // A) Zonas oscuras (lo que no es blanco). Sobre una copia, fuera de grupos/máscaras.
-            var copiaA = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
-            temporales.push(copiaA);
-            partes.push(calcar(copiaA));
-
-            // B) Si hay transparencia: todo lo opaco, sea del color que sea.
             var conAlfa = false;
-            try { conAlfa = img.transparent === true; } catch (e4) {}
+            try { conAlfa = img.transparent === true; } catch (e6) {}
+
+            var fuente;
             if (conAlfa) {
+                // a) Imagen sobre fondo negro (transparente -> negro) e invertida:
+                //    fondo blanco, figura con los colores invertidos.
                 var copiaB = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
                 var ro = new RasterizeOptions();
                 ro.transparency = false;
-                ro.backgroundBlack = true;          // transparente -> negro
+                ro.backgroundBlack = true;
                 ro.resolution = RESOLUCION;
                 ro.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                // rasterize(objeto, rectánguloDeRecorte, opciones): el rectángulo es obligatorio.
-                var gb = copiaB.geometricBounds;
-                var plano = doc.rasterize(copiaB, [gb[0] - 1, gb[1] + 1, gb[2] + 1, gb[3] - 1], ro);
-                temporales.push(plano);
-                doc.selection = null; plano.selected = true;
-                app.executeMenuCommand("Colors6");  // Invertir colores: fondo blanco, forma oscura
+                var inv = doc.rasterize(copiaB, margen(copiaB), ro);
+                temporales.push(inv);
+                doc.selection = null; inv.selected = true;
+                app.executeMenuCommand("Colors6");   // Editar colores > Invertir colores
                 var s1 = doc.selection;
-                if (s1.length && s1[0].typename === "RasterItem") { plano = s1[0]; }
-                partes.push(calcar(plano));
+                if (s1.length && s1[0].typename === "RasterItem") { inv = s1[0]; }
+
+                // b) Encima, la imagen original en modo Multiplicar: blanco x invertido(=negro)
+                //    y negro x invertido(=blanco) dan oscuro; el fondo sigue blanco.
+                var copiaC = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+                copiaC.blendingMode = BlendModes.MULTIPLY;
+                var g = capa.groupItems.add();
+                temporales.push(g);
+                inv.move(g, ElementPlacement.PLACEATEND);
+                copiaC.move(g, ElementPlacement.PLACEATBEGINNING);
+
+                // c) Aplanar el conjunto sobre blanco en un único raster.
+                var ro2 = new RasterizeOptions();
+                ro2.transparency = false;
+                ro2.backgroundBlack = false;
+                ro2.resolution = RESOLUCION;
+                ro2.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
+                fuente = doc.rasterize(g, margen(g), ro2);
+                temporales.push(fuente);
+            } else {
+                // Sin transparencia: lo que no es blanco es forma.
+                fuente = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+                temporales.push(fuente);
             }
 
-            var forma = unir(partes);
+            forma = calcar(fuente);
             forma.name = "Silueta";
             pintar(forma, negro());
             resultados.push(forma);
         } catch (e) {
             errores.push("Imagen " + (i + 1) + ": " + e.message);
-            // Retirar calcos a medias para no dejar restos sobre la imagen.
-            for (var q = 0; q < partes.length; q++) { try { partes[q].remove(); } catch (e7) {} }
+            if (forma) { try { forma.remove(); } catch (e7) {} }
         }
-        // Limpiar copias de trabajo que sigan existiendo (los calcos ya consumieron las suyas).
-        for (var t = 0; t < temporales.length; t++) { try { temporales[t].remove(); } catch (e5) {} }
+        // Retirar copias de trabajo que sigan existiendo (el calco consume la suya).
+        for (var t = temporales.length - 1; t >= 0; t--) { try { temporales[t].remove(); } catch (e8) {} }
     }
 
     doc.selection = null;
-    for (i = 0; i < resultados.length; i++) { try { resultados[i].selected = true; } catch (e6) {} }
+    for (i = 0; i < resultados.length; i++) { try { resultados[i].selected = true; } catch (e9) {} }
     app.redraw();
 
     if (errores.length) {
