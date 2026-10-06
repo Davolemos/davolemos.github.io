@@ -62,6 +62,47 @@
         var b = item.geometricBounds;
         return [b[0] - 1, b[1] + 1, b[2] + 1, b[3] - 1];
     }
+    // doc.rasterize necesita un rectángulo de recorte, y según la versión lo
+    // interpreta en coordenadas de documento o de mesa de trabajo. Si el
+    // resultado no cae encima del original, se repite con el otro sistema.
+    function rasterizar(item, opts) {
+        var sistemas = [CoordinateSystem.DOCUMENTCOORDINATESYSTEM, CoordinateSystem.ARTBOARDCOORDINATESYSTEM];
+        var anterior = app.coordinateSystem, res = null, k;
+        try {
+            for (k = 0; k < sistemas.length; k++) {
+                app.coordinateSystem = sistemas[k];
+                var dup = item.duplicate(item, ElementPlacement.PLACEBEFORE);
+                var antes = dup.geometricBounds;
+                var r = doc.rasterize(dup, margen(dup), opts);
+                var despues = r.geometricBounds;
+                if (Math.abs(despues[0] - antes[0]) < 3 && Math.abs(despues[1] - antes[1]) < 3) {
+                    res = r; break;
+                }
+                try { r.remove(); } catch (e1) {}
+                try { dup.remove(); } catch (e2) {}
+            }
+        } finally {
+            app.coordinateSystem = anterior;
+        }
+        try { item.remove(); } catch (e3) {}
+        if (!res) { throw new Error("No se pudo rasterizar la imagen en su sitio."); }
+        return res;
+    }
+    // ¿La forma es (casi) el rectángulo completo? Señal de que el fondo salió negro.
+    function esRectangulo(grupo) {
+        var b, area = 0;
+        try { b = grupo.geometricBounds; } catch (e) { return false; }
+        var caja = Math.abs((b[2] - b[0]) * (b[1] - b[3]));
+        if (!caja) { return false; }
+        function suma(item) {
+            var j;
+            if (item.typename === "PathItem") { area += item.area; }
+            else if (item.typename === "CompoundPathItem") { for (j = 0; j < item.pathItems.length; j++) { suma(item.pathItems[j]); } }
+            else if (item.typename === "GroupItem") { for (j = 0; j < item.pageItems.length; j++) { suma(item.pageItems[j]); } }
+        }
+        suma(grupo);
+        return Math.abs(area) > caja * 0.97;
+    }
     // Calco blanco y negro suavizado + expansión. Devuelve el grupo expandido.
     function calcar(raster) {
         var calco = raster.trace();
@@ -105,7 +146,7 @@
                 ro.backgroundBlack = true;
                 ro.resolution = RESOLUCION;
                 ro.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                var inv = doc.rasterize(copiaB, margen(copiaB), ro);
+                var inv = rasterizar(copiaB, ro);
                 temporales.push(inv);
                 doc.selection = null; inv.selected = true;
                 app.executeMenuCommand("Colors6");   // Editar colores > Invertir colores
@@ -129,7 +170,7 @@
                 ro2.backgroundBlack = false;
                 ro2.resolution = RESOLUCION;
                 ro2.antiAliasingMethod = AntiAliasingMethod.ARTOPTIMIZED;
-                fuente = doc.rasterize(g, margen(g), ro2);
+                fuente = rasterizar(g, ro2);
                 temporales.push(fuente);
             } else {
                 // Sin transparencia: lo que no es blanco es forma.
@@ -138,6 +179,14 @@
             }
 
             forma = calcar(fuente);
+            if (conAlfa && esRectangulo(forma)) {
+                // El método por transparencia devolvió el rectángulo entero:
+                // se descarta y se usa el umbral directo sobre la imagen.
+                try { forma.remove(); } catch (e10) {}
+                var copiaA = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
+                temporales.push(copiaA);
+                forma = calcar(copiaA);
+            }
             forma.name = "Silueta";
             pintar(forma, negro());
             resultados.push(forma);
