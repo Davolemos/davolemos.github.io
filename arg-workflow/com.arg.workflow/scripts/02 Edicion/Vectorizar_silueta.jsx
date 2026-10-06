@@ -6,8 +6,8 @@
 // Cómo decide qué es "forma":
 //   · PNG con transparencia: TODO lo que no sea transparente es forma, sea del
 //     color que sea (también el blanco). Se compone la imagen sobre negro, se
-//     invierte, y encima se multiplica la imagen original: el fondo queda
-//     blanco y la figura oscura en cualquier tono. Un solo calco, sin uniones.
+//     invierte, y encima se pone la original al 50 %: el fondo queda blanco y
+//     la figura en gris medio en cualquier tono. Un solo calco, sin uniones.
 //   · Imagen sin transparencia: todo lo que no sea blanco puro es forma.
 // La imagen original no se toca; el vector queda encima, en un grupo "Silueta",
 // relleno K100 (o RGB 0,0,0 si el documento es RGB), sin trazo y seleccionado.
@@ -112,10 +112,12 @@
                 var s1 = doc.selection;
                 if (s1.length && s1[0].typename === "RasterItem") { inv = s1[0]; }
 
-                // b) Encima, la imagen original en modo Multiplicar: blanco x invertido(=negro)
-                //    y negro x invertido(=blanco) dan oscuro; el fondo sigue blanco.
+                // b) Encima, la imagen original al 50 % de opacidad (fusión normal):
+                //    cada píxel de la figura queda en (v + (255 - v)) / 2 = gris medio,
+                //    sea v blanco, negro o cualquier color; el fondo transparente sigue blanco.
                 var copiaC = img.duplicate(capa, ElementPlacement.PLACEATBEGINNING);
-                copiaC.blendingMode = BlendModes.MULTIPLY;
+                copiaC.blendingMode = BlendModes.NORMAL;
+                copiaC.opacity = 50;
                 var g = capa.groupItems.add();
                 temporales.push(g);
                 inv.move(g, ElementPlacement.PLACEATEND);
