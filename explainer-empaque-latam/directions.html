@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direcciones · Empaque LatAm</title>
+<style>
+  @font-face { font-family: "Inter Display"; src: url(src/fonts/InterDisplay-SemiBold.otf); font-weight: 600; }
+  @font-face { font-family: "Plex Mono"; src: url(src/fonts/IBMPlexMono-Regular.woff2); font-weight: 400; }
+  :root { --bg:#F2EDE4; --ink:#1E1A16; --ink2:#4B443C; --muted:#6B635A; --line:#D8CFC2; --accent:#C9501C; --blue:#2148A0; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 "Inter Display", system-ui, sans-serif; }
+  main { max-width:1200px; margin:0 auto; padding:48px 16px 80px; }
+  .eyebrow { font:12px/1.4 "Plex Mono", monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  h1 { font-size:clamp(28px,4vw,44px); line-height:1.1; margin:8px 0 12px; }
+  p.lead { max-width:62ch; color:var(--ink2); margin:0 0 32px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .card { border:1px solid var(--line); border-radius:12px; padding:16px; background:#F7F3EC; }
+  .card.win { border:2px solid var(--ink); }
+  .card h2 { font-size:20px; margin:12px 0 4px; }
+  .card p { margin:0 0 8px; color:var(--ink2); font-size:15px; }
+  .verdict { font:13px/1.5 "Plex Mono", monospace; color:var(--ink); }
+  svg { width:100%; height:auto; display:block; border-radius:8px; background:var(--bg); border:1px solid var(--line); }
+  .tag { display:inline-block; font:12px "Plex Mono", monospace; padding:2px 8px; border-radius:99px; border:1px solid var(--ink); }
+  section.log { margin-top:40px; max-width:70ch; }
+  section.log li { margin-bottom:6px; color:var(--ink2); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Paso 3 · Direcciones · Decisión registrada</div>
+  <h1>¿Por qué el empaque gana o pierde en la tiendita?</h1>
+  <p class="lead">Idea: en Latinoamérica, mucho consumo masivo se compra desde el mostrador de la tienda de barrio. A esa distancia los claims no se leen; solo sobreviven el color, la forma y el nombre. Cuatro direcciones para contarlo en 65 segundos.</p>
+
+  <div class="grid">
+    <article class="card win">
+      <svg viewBox="0 0 240 150" role="img" aria-label="Pared de bolsas colgadas detrás de un mostrador, desenfocada; una bolsa azul destaca">
+        <g opacity=".9">
+          <line x1="40" y1="10" x2="40" y2="118" stroke="#B9AE9E"/><line x1="90" y1="10" x2="90" y2="118" stroke="#B9AE9E"/><line x1="140" y1="10" x2="140" y2="118" stroke="#B9AE9E"/><line x1="190" y1="10" x2="190" y2="118" stroke="#B9AE9E"/>
+          <rect x="26" y="16" width="28" height="40" rx="4" fill="#E6DAC4"/><rect x="76" y="16" width="28" height="40" rx="4" fill="#DEDCCB"/><rect x="126" y="16" width="28" height="40" rx="4" fill="#E9DFC0"/><rect x="176" y="16" width="28" height="40" rx="4" fill="#E2D6BF"/>
+          <rect x="26" y="66" width="28" height="40" rx="4" fill="#E3DFD8"/><rect x="76" y="66" width="28" height="40" rx="4" fill="#E6DAC4"/><rect x="126" y="66" width="28" height="40" rx="4" fill="#2148A0"/><rect x="176" y="66" width="28" height="40" rx="4" fill="#DEDCCB"/>
+        </g>
+        <rect x="0" y="120" width="240" height="30" fill="#DCD2C3"/>
+      </svg>
+      <span class="tag">Ganadora</span>
+      <h2>A · La prueba del mostrador</h2>
+      <p>Una tira de bolsas colgadas detrás del mostrador. La distancia desenfoca la imagen y los claims desaparecen. Un cambio de color decide quién se encuentra.</p>
+      <p class="verdict">Por qué: es la escena real de la región, la causa (distancia) se ve en pantalla y el giro es una sola variable.</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 240 150" role="img" aria-label="Góndola de supermercado con mapa de calor de mirada">
+        <rect x="20" y="20" width="200" height="4" fill="#B9AE9E"/><rect x="20" y="70" width="200" height="4" fill="#B9AE9E"/><rect x="20" y="120" width="200" height="4" fill="#B9AE9E"/>
+        <rect x="30" y="34" width="20" height="36" fill="#E6DAC4"/><rect x="56" y="34" width="20" height="36" fill="#DEDCCB"/><rect x="82" y="34" width="20" height="36" fill="#E9DFC0"/><rect x="108" y="34" width="20" height="36" fill="#E2D6BF"/>
+        <circle cx="92" cy="52" r="18" fill="#C9501C" opacity=".25"/><circle cx="92" cy="52" r="8" fill="#C9501C" opacity=".4"/>
+      </svg>
+      <h2>B · Rastreo de mirada</h2>
+      <p>Un mapa de calor sobre una góndola de supermercado muestra dónde se posan los ojos.</p>
+      <p class="verdict">Descartada: el supermercado no es la escena típica de la región y el mapa exige datos de mirada que no tenemos (métrica falsa).</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 240 150" role="img" aria-label="Empaque despiezado en capas: frente, claims, reverso">
+        <rect x="60" y="30" width="70" height="100" rx="6" fill="#E6DAC4" transform="skewY(-8)"/>
+        <rect x="90" y="40" width="70" height="100" rx="6" fill="#DEDCCB" transform="skewY(-8)" opacity=".9"/>
+        <rect x="120" y="50" width="70" height="100" rx="6" fill="#E9DFC0" transform="skewY(-8)" opacity=".9"/>
+      </svg>
+      <h2>C · Anatomía del empaque</h2>
+      <p>El frente se despieza en capas: marca, claims, ilustración, información legal.</p>
+      <p class="verdict">Descartada: enseña jerarquía pero no el porqué; no hay causa y efecto que se pueda ver.</p>
+    </article>
+
+    <article class="card">
+      <svg viewBox="0 0 240 150" role="img" aria-label="Mapa esquemático de Latinoamérica con porcentajes por país">
+        <path d="M95 15 L130 20 L140 45 L125 60 L150 75 L160 100 L140 135 L120 140 L110 110 L100 80 L85 55 Z" fill="#DEDCCB" stroke="#B9AE9E"/>
+        <circle cx="118" cy="95" r="6" fill="#1E1A16"/><circle cx="105" cy="35" r="5" fill="#1E1A16"/>
+      </svg>
+      <h2>D · Mapa del canal</h2>
+      <p>Un mapa de la región con la participación del canal tradicional en cada país.</p>
+      <p class="verdict">Descartada: las cifras cambian según la fuente y el método, y el mapa decora; la idea vive en el empaque.</p>
+    </article>
+  </div>
+
+  <section class="log">
+    <div class="eyebrow">Preguntas de revisión</div>
+    <ul>
+      <li><b>¿Para quién es?</b> Dueños de marca y diseñadores de PyMEs latinoamericanas que creen que más claims venden más.</li>
+      <li><b>¿Qué comunicamos?</b> El frente del empaque sirve para que te encuentren; los claims sirven cuando ya te tienen en la mano.</li>
+      <li><b>¿Necesita un nombre?</b> Sí, uno solo: «la prueba del mostrador», porque es el siguiente paso que el espectador puede hacer.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
