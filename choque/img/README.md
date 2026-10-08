@@ -1,23 +1,32 @@
 # Imágenes del sitio
 
 Reemplaza los archivos manteniendo el mismo nombre y la página los toma sola.
+Las imágenes actuales están recortadas de capturas de pantalla: cámbialas por los originales
+(JPG o WebP, idealmente de menos de 300 KB cada una).
 
 ```
 img/
-├── marca/
-│   └── simbolo.svg            Símbolo de chóque (también es el favicon). Cámbialo por el SVG oficial.
-├── proyectos/
-│   ├── ricketts-lab/
-│   │   └── portada.jpg        Portada del carrusel · 1600×1200 px (4:3)
-│   └── modo-hermetico/
-│       └── portada.jpg        Portada del carrusel · 1600×1200 px (4:3)
-└── social/                    Imagen para compartir en redes (og.jpg · 1200×630 px)
+├── marca/simbolo.svg              Símbolo de chóque y favicon (cámbialo por el SVG oficial)
+├── equipo/equipo.jpg              Foto "Meet the team" (falta) · 1600×900 px
+├── social/og.jpg                  Imagen para compartir en redes (falta) · 1200×630 px
+└── proyectos/
+    ├── chavela/
+    │   ├── portada.jpg            Tarjeta en la home · 4:5 (1200×1500)
+    │   ├── collage.jpg            Imagen principal del caso · horizontal
+    │   ├── logo-poster.jpg        Galería · horizontal
+    │   ├── periodico.jpg          Galería · cuadrada
+    │   ├── comida.jpg             Galería · cuadrada
+    │   ├── merch.jpg              Galería · horizontal
+    │   ├── menu.jpg               Galería · cuadrada
+    │   └── tote-delantal.jpg      Galería · horizontal
+    ├── sultavolo/portada.jpg      Tarjeta · 4:5
+    ├── mansa-galleta/portada.jpg  Tarjeta · 4:5 (la actual está incompleta; la home usa un bloque de color)
+    ├── fondas-de-colon/portada.jpg
+    └── ricketts-lab/portada.jpg
 ```
 
-Las portadas actuales están recortadas de una captura de pantalla y tienen poca resolución.
+## Agregar un proyecto
 
-## Agregar un proyecto nuevo
-
-1. Crea `img/proyectos/<nombre-del-proyecto>/portada.jpg` (4:3, ~1600×1200, JPG o WebP de menos de 300 KB).
-2. En `index.html`, duplica un bloque `<li class="card">` dentro de `#track`, cambia la ruta de la imagen, el `alt`, el título y la categoría.
-3. El contador del carrusel se actualiza solo.
+1. Crea `img/proyectos/<nombre>/portada.jpg` en 4:5.
+2. En `index.html`, duplica un `<li class="card">` dentro de `#track` y cambia imagen, `alt`, nombre y frase.
+3. Para una página de caso, copia `proyectos/chavela.html`, cambia textos e imágenes y enlaza la tarjeta a ella.
