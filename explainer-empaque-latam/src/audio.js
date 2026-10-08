@@ -70,7 +70,7 @@
     }
 
     // ---- Pulse: soft off-beat shaker from the model onward ----
-    for (let b = 10.5; b < 97; b += 1) {
+    for (let b = T.scenes[1].from + 0.5; b < 97; b += 1) {
       const t0 = at(b);
       const s = noise(t0, 0.08);
       const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 7000; bp.Q.value = 1.2;
@@ -101,7 +101,7 @@
       g.gain.linearRampToValueAtTime(0.09, t0 + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.09);
       o.connect(g).connect(pan(0.15)); o.start(t0); o.stop(t0 + 0.1);
     });
-    T.cues.strike.forEach((b) => {
+    (T.cues.strike || []).forEach((b) => {
       const t0 = at(b), d = 0.5;
       const s = noise(t0, d);
       const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 2;

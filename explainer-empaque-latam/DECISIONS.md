@@ -20,3 +20,10 @@ Una línea por decisión, en el orden en que se tomó.
 16. **Sonido:** un pad en Re (D–Bm7–Gmaj7–A), un bajo en cada compás y un shaker suave a contratiempo desde el modelo en adelante. El motivo La–Re–Fa♯ vuelve en los 4 momentos de la idea clave (se encuentra el azul, cambio de color, se encuentra el naranja, cierre).
 17. **Loudness:** una ganancia estática de +2.67 dB sobre la mezcla procedural (sin loudnorm dinámico), que deja el audio en unos −16 LUFS sin tocar la dinámica.
 18. **9:16:** el escenario va en el tercio medio y el ~30 % inferior queda libre para la interfaz de la plataforma.
+19. **Después de la revisión de diseño (subagente):** el dato pasa a S1 como lo que está en juego, y S2 enseña solo lo que sobrevive a la distancia.
+20. **El gancho se plantea como pregunta** («¿Más claims, más ventas?») y no se tacha; lo responden S3 y S4.
+21. **«tu empaque»:** una etiqueta marca a Crujís en la pared (beats 38.5–42 y 58.5–63), para que el espectador sepa cuál es el suyo antes del cambio de color.
+22. **ZAS lleva claims como los demás:** el color es la única diferencia visible, así nadie concluye «quita los claims».
+23. **El cierre se acerca hasta que los claims se leen** (zoom 4.6), y la línea dice «en la mano», con el mismo nombre que el medidor.
+24. **El medidor descansa mientras no cambia** (se oculta entre los beats 42 y 85).
+25. **La muestra de color lleva un marco de tinta**, porque el beige sobre el fondo beige no se veía.

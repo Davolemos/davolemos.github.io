@@ -102,7 +102,10 @@
           { t: 'HORNEADO', kind: 'pill', x: 22, y: 62, w: 46 },
         ] });
       } else if (isB) {
-        Object.assign(p, { base: C.blue, deep: C.blueDeep, name: 'ZAS', claims: [] });
+        Object.assign(p, { base: C.blue, logo: '#0F2A66', name: 'ZAS', claims: [
+          { t: 'NUEVO', kind: 'dot', x: 39, y: -22 }, { t: 'ORIGINAL', kind: 'pill', x: -24, y: -14, w: 46 },
+          { t: 'CON SAL', kind: 'pill', x: 22, y: 62, w: 42 }, { t: 'NATURAL', kind: 'dot', x: -42, y: 58 },
+        ] }); // same layout as everyone else: color is the only difference
       } else {
         const k = 3 + Math.floor(rnd() * 3);
         const spots = [[38, -22, 'dot'], [-30, -24, 'pill'], [-24, -9, 'pill'], [-42, 58, 'dot'], [22, 62, 'pill'], [40, 2, 'dot']];
@@ -163,11 +166,6 @@
 
   function paintBrand(g, p) {
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    if (p.isB) {
-      g.fillStyle = C.white; g.font = `900 40px ${F.display}`;
-      g.fillText('ZAS', 0, -30);
-      return;
-    }
     g.fillStyle = p.logo;
     g.beginPath(); g.roundRect(-30, -60, 60, 20, 5); g.fill();
     g.fillStyle = C.white; g.font = `700 10px ${F.display}`;
@@ -180,13 +178,13 @@
     g.textAlign = 'center'; g.textBaseline = 'middle';
     if (cl.kind === 'dot') {
       g.beginPath(); g.arc(0, 0, 13, 0, Math.PI * 2); g.fillStyle = '#B4302A'; g.fill();
-      g.fillStyle = C.white; g.font = `800 5.6px ${F.display}`;
+      g.fillStyle = C.white; g.font = `800 6.2px ${F.display}`;
       const parts = cl.t.split(' ');
       if (parts.length > 1) { g.fillText(parts[0], 0, -3.3); g.fillText(parts[1], 0, 3.3); } else g.fillText(cl.t, 0, 0.3);
     } else {
       const w = cl.w || 40;
       g.beginPath(); g.roundRect(-w / 2, -6.5, w, 13, 6.5); g.fillStyle = '#2F6B3A'; g.fill();
-      g.fillStyle = C.white; g.font = `700 6.4px ${F.display}`; g.fillText(cl.t, 0, 0.4);
+      g.fillStyle = C.white; g.font = `700 7.2px ${F.display}`; g.fillText(cl.t, 0, 0.4);
     }
     g.restore();
   }
@@ -218,15 +216,17 @@
   // ---- Camera ---------------------------------------------------------------------
   const HAND = { x: packA.x, y: packA.y, z: 3.3 };
   const WALL = { x: 500, y: 450, z: 1 };
+  const READ = { x: packA.x, y: packA.y + 4, z: 4.6 }; // payoff: close enough to read the claims
+  function between(P, Q, k) {
+    // interpolate zoom in log space so the move feels even, and keep the focal path straight on screen
+    const z = Math.exp(lerp(Math.log(P.z), Math.log(Q.z), k));
+    const kk = Math.abs(P.z - Q.z) < 1e-6 ? k : (P.z / z - 1) / (P.z / Q.z - 1);
+    return { x: lerp(P.x, Q.x, kk), y: lerp(P.y, Q.y, kk), z };
+  }
   function camera(b) {
     const m = T.moves;
-    const out = move(b, m.cameraOut[0], m.cameraOut[1], easeIO);
-    const back = move(b, m.cameraIn[0], m.cameraIn[1], easeIO);
-    const k = out * (1 - back);
-    // interpolate zoom in log space so the move feels even
-    const z = Math.exp(lerp(Math.log(HAND.z), Math.log(WALL.z), k));
-    const kk = (HAND.z / z - 1) / (HAND.z / WALL.z - 1); // keep the focal path straight on screen
-    return { x: lerp(HAND.x, WALL.x, kk), y: lerp(HAND.y, WALL.y, kk), z };
+    if (b >= m.cameraIn[0]) return between(WALL, READ, move(b, m.cameraIn[0], m.cameraIn[1], easeIO));
+    return between(HAND, WALL, move(b, m.cameraOut[0], m.cameraOut[1], easeIO));
   }
   // world -> stage units (0..1000)
   const toStage = (cam, x, y) => ({ x: (x - cam.x) * cam.z + 500, y: (y - cam.y) * cam.z + 450 });
@@ -349,9 +349,9 @@
       const from = P(20, 20), to = { x: P(60, 0).x + 70, y: P(0, 40).y };
       g.globalAlpha = a;
       const x = lerp(from.x, to.x, k), y = lerp(from.y, to.y, k);
-      g.fillStyle = packA.base; g.strokeStyle = C.ink; g.lineWidth = 2;
-      g.beginPath(); g.roundRect(x - 28, y - 28, 56, 56, 6); g.fill(); g.stroke();
-      label('color', x + 44, y, 'left');
+      g.fillStyle = C.ink; g.beginPath(); g.roundRect(x - 42, y - 42, 84, 84, 10); g.fill();
+      g.fillStyle = packA.base; g.beginPath(); g.roundRect(x - 34, y - 34, 68, 68, 6); g.fill();
+      label('color', x + 56, y, 'left');
       g.globalAlpha = 1;
     }
     if (b >= sv.forma && out > 0) { // forma: the silhouette traced crisp
@@ -382,8 +382,24 @@
       g.globalAlpha = 1;
     }
 
-    // distance meter (stage band 900..1000)
-    const mi = ramp(b, T.moves.meterIn[0], T.moves.meterIn[1]);
+    // which pack is yours: a thin outline and a name tag
+    for (const [t0, t1] of T.moves.tagA) {
+      if (b < t0 || b > t1) continue;
+      const a = ramp(b, t0, t0 + 0.6) * (1 - ramp(b, t1 - 0.6, t1));
+      const rc = stageRect(cam, A_SLOT[0], A_SLOT[1], 8);
+      g.globalAlpha = a; g.strokeStyle = C.ink; g.lineWidth = 2;
+      g.beginPath(); g.roundRect(rc.x, rc.y, rc.w, rc.h, 8); g.stroke();
+      g.font = `500 ${22 * L.ui}px ${F.mono}`; g.textAlign = 'center'; g.textBaseline = 'bottom';
+      const tw = g.measureText('tu empaque').width + 16;
+      g.fillStyle = C.ink; g.beginPath(); g.roundRect(rc.x + rc.w / 2 - tw / 2, rc.y - 34 * L.ui - 6, tw, 34 * L.ui, 6); g.fill();
+      g.fillStyle = C.bg; g.fillText('tu empaque', rc.x + rc.w / 2, rc.y - 12 - 2 * L.ui);
+      g.globalAlpha = 1;
+    }
+
+    // distance meter (stage band 900..1000); rests while it doesn't change
+    const mm = T.moves;
+    const mi = Math.max(ramp(b, mm.meterIn[0], mm.meterIn[1]) * (1 - ramp(b, mm.meterOut[0], mm.meterOut[1])),
+      ramp(b, mm.meterBack[0], mm.meterBack[1]));
     if (mi > 0) {
       g.globalAlpha = mi;
       const x0 = FMT === "16x9" ? 210 : 110, x1 = FMT === "16x9" ? 790 : 890, y = 922;
@@ -438,7 +454,7 @@
       });
       if (e.src && b >= e.l2in) {
         g.globalAlpha = ramp(b, e.l2in + 0.5, e.l2in + 1.1) * outA;
-        g.font = `400 ${Math.round(fs * (FMT === '16x9' ? 0.4 : 0.5))}px ${F.mono}`; g.fillStyle = C.muted;
+        g.font = `400 ${Math.round(fs * (FMT === '16x9' ? 0.55 : 0.6))}px ${F.mono}`; g.fillStyle = C.muted;
         g.fillText(e.src, L.tx, top + lh * 2 + fs * 0.65);
       }
       g.globalAlpha = 1;
