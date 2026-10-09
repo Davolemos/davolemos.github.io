@@ -319,6 +319,8 @@ footer.site nav { display: flex; gap: 20px; }
 .gallery { display: grid; gap: clamp(12px, 2vw, 20px); }
 @media (min-width: 800px) { .gallery .pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 2vw, 20px); } }
 .gallery .pair { display: grid; gap: clamp(12px, 2vw, 20px); }
+.gallery .trio { display: grid; gap: clamp(12px, 2vw, 20px); }
+@media (min-width: 800px) { .gallery .trio { grid-template-columns: repeat(3, 1fr); } }
 .statement { padding-block: clamp(56px, 9vw, 120px); }
 .statement p { font-size: clamp(26px, 4vw, 52px); line-height: 1.12; letter-spacing: -0.035em; font-weight: 500; max-width: 26ch; }
 

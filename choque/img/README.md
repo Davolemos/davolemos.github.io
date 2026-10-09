@@ -27,7 +27,9 @@ img/
     │   ├── portada.jpg            Tarjeta y reel en la home
     │   └── hero, logo, brindis, simbolo, patron, paleta, individual, etiquetas (.jpg)  Página del caso
     ├── mansa-galleta/portada.jpg  Tarjeta · 4:5
-    ├── fondas-de-colon/portada.jpg
+    ├── fondas-de-colon/
+    │   ├── portada.jpg            Tarjeta y reel en la home
+    │   └── hero, simbolo-logo, patron, web, pescado, delantal, plan-tinta, comida-web (.jpg)  Página del caso
     └── ricketts-lab/portada.jpg
 ```
 
@@ -35,4 +37,4 @@ img/
 
 1. Crea `img/proyectos/<nombre>/portada.jpg` en 4:5.
 2. En `index.html`, duplica un `<li class="card">` dentro de `#track` y cambia imagen, `alt`, nombre y frase.
-3. Para una página de caso, copia `proyectos/chavela.html` o `proyectos/sultavolo.html`, cambia textos e imágenes y enlaza la tarjeta a ella.
+3. Para una página de caso, copia cualquiera de las páginas de `proyectos/`, cambia textos e imágenes y enlaza la tarjeta a ella.
