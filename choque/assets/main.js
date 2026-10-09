@@ -6,8 +6,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // data-en-alt (image alt) and data-en-aria (aria-label). Visitors whose browser
 // isn't in Spanish get English by default; their choice is remembered.
 const STRINGS = {
-  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto' },
-  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project' },
+  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto', copied: 'Correo copiado' },
+  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project', copied: 'Email copied' },
 };
 const LANG_KEY = 'choque-lang';
 let lang = (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
@@ -157,3 +157,19 @@ if (menuBtn && menu) {
   });
   matchMedia('(min-width: 721px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 }
+
+// Email buttons: open the mail app and also copy the address, so it still works
+// where mailto: links are blocked or no mail app is set up
+document.querySelectorAll('a.btn[href^="mailto:"]').forEach((btn) => {
+  const email = btn.getAttribute('href').slice(7).split('?')[0];
+  btn.title = email;
+  let timer;
+  btn.addEventListener('click', () => {
+    navigator.clipboard?.writeText(email).then(() => {
+      if (!timer) btn.dataset.label = btn.innerHTML;
+      clearTimeout(timer);
+      btn.innerHTML = `<svg class="mail" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg> ${t('copied')}`;
+      timer = setTimeout(() => { btn.innerHTML = btn.dataset.label; timer = null; }, 2500);
+    }).catch(() => {});
+  });
+});
