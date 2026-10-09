@@ -292,9 +292,7 @@ section { scroll-margin-top: 90px; }
 @media (hover: hover) and (pointer: fine) { .contact-card .btn-ghost:hover { background: rgb(245 244 240 / 0.08); } }
 .card-mark {
   display: block; width: clamp(56px, 8vw, 96px); height: auto; margin-bottom: clamp(24px, 4vw, 40px);
-  animation: spin 40s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 footer.site { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-block: 24px calc(24px + env(safe-area-inset-bottom)); font-size: 14px; color: var(--ink-2); }
 footer.site a { display: inline-flex; align-items: center; min-height: 44px; }
@@ -338,7 +336,7 @@ footer.site nav { display: flex; gap: 20px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal, .js .media.reveal { transform: none; clip-path: none; transition: opacity 300ms ease; transition-delay: 0ms; }
-  .marquee-inner, .card-mark, .status .dot::after { animation: none; }
+  .marquee-inner, .status .dot::after { animation: none; }
   .rotator > span { transition: opacity 200ms ease; transform: none !important; filter: none !important; }
   .menu, .menu.open, .menu li a, .menu.open li a { transition: opacity 150ms ease; transform: none; transition-delay: 0ms; }
   .svc h3, .card .media img, .next .t svg { transition: none; }
