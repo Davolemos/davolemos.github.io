@@ -32,7 +32,9 @@ img/
     ├── fondas-de-colon/
     │   ├── portada.jpg            Tarjeta y reel en la home
     │   └── hero, simbolo-logo, patron, web, pescado, delantal, plan-tinta, comida-web (.jpg)  Página del caso
-    └── ricketts-lab/portada.jpg
+    └── ricketts-lab/
+        ├── portada.jpg            Tarjeta y reel en la home
+        └── hero, frase, sonrisa, protesis, logo, paleta, simbolo, web (.jpg)  Página del caso
 ```
 
 ## Agregar un proyecto
