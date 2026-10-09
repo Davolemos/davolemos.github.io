@@ -1,4 +1,4 @@
-// chóque — interacciones compartidas
+// choque — interacciones compartidas
 document.documentElement.classList.add('js');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
