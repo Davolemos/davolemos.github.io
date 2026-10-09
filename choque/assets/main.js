@@ -6,8 +6,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // data-en-alt (image alt) and data-en-aria (aria-label). Visitors whose browser
 // isn't in Spanish get English by default; their choice is remembered.
 const STRINGS = {
-  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto' },
-  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project' },
+  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto', copied: 'Correo copiado' },
+  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project', copied: 'Email copied' },
 };
 const LANG_KEY = 'choque-lang';
 let lang = (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
@@ -158,3 +158,29 @@ if (menuBtn && menu) {
   matchMedia('(min-width: 721px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 }
 
+// Email buttons open the mail app. If no app opens (the page keeps focus),
+// the address is copied and the button says so, so the visitor can paste it.
+// The copy itself happens on the tap, because browsers only allow it then.
+document.querySelectorAll('a.btn[href^="mailto:"]').forEach((btn) => {
+  const email = btn.getAttribute('href').slice(7).split('?')[0];
+  btn.title = email;
+  let timer;
+  btn.addEventListener('click', () => {
+    const copied = navigator.clipboard?.writeText(email);
+    let left = false;
+    const leave = () => { left = true; };
+    addEventListener('blur', leave, { once: true });
+    document.addEventListener('visibilitychange', leave, { once: true });
+    setTimeout(() => {
+      removeEventListener('blur', leave);
+      document.removeEventListener('visibilitychange', leave);
+      if (left || !copied) return;
+      copied.then(() => {
+        if (!timer) btn.dataset.label = btn.innerHTML;
+        clearTimeout(timer);
+        btn.innerHTML = `<svg class="mail" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg> ${t('copied')}`;
+        timer = setTimeout(() => { btn.innerHTML = btn.dataset.label; timer = null; }, 2500);
+      }).catch(() => {});
+    }, 1000);
+  });
+});
