@@ -319,8 +319,11 @@ footer.site { position: relative; }
 .privacy-btn[aria-expanded="true"] { color: var(--ink); }
 @media (hover: hover) and (pointer: fine) { footer.site a:hover, .privacy-btn:hover { color: var(--ink); } }
 .privacy {
-  position: absolute; right: 0; bottom: calc(100% - 12px); z-index: 20;
-  width: min(440px, 100%); max-height: min(70vh, 560px); overflow-y: auto; overscroll-behavior: contain;
+  position: fixed; z-index: 60;
+  right: var(--gutter); bottom: calc(16px + env(safe-area-inset-bottom));
+  width: min(440px, calc(100% - 2 * var(--gutter)));
+  max-height: min(560px, calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  overflow-y: auto; overscroll-behavior: contain;
   padding: 18px 22px 24px; border-radius: 20px;
   background: var(--ink); color: var(--bg);
   box-shadow: 0 0 0 1px rgb(245 244 240 / 0.08), 0 24px 48px -16px rgb(17 17 16 / 0.4);
@@ -340,7 +343,7 @@ footer.site { position: relative; }
 .privacy-body { font-size: 14.5px; line-height: 1.55; color: #C9C8C1; }
 .privacy-body .meta { font-size: 13px; color: #8F8E88; }
 .privacy-body h4 { margin: 16px 0 4px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bg); }
-.privacy-body a { display: inline; min-height: 0; color: var(--bg); text-decoration: underline; text-underline-offset: 0.15em; }
+footer.site .privacy-body a { display: inline; min-height: 0; color: var(--bg); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* ---------- Case study ---------- */
 .case-hero { padding-top: clamp(120px, 18vh, 180px); padding-bottom: clamp(32px, 5vw, 56px); }
