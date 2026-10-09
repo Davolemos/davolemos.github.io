@@ -6,7 +6,10 @@ Las imágenes actuales están recortadas de capturas de pantalla: cámbialas por
 
 ```
 img/
-├── marca/simbolo.svg              Símbolo de chóque y favicon (cámbialo por el SVG oficial)
+├── marca/
+│   ├── logo-negro.png             Logo completo en la barra de navegación
+│   ├── simbolo-blanco.png         Símbolo en la tarjeta "¿Listo para el impacto?"
+│   └── simbolo-negro.png          Símbolo en la franja en movimiento y favicon
 ├── equipo/equipo.jpg              Foto "Meet the team" (falta) · 1600×900 px
 ├── social/og.jpg                  Imagen para compartir en redes (falta) · 1200×630 px
 └── proyectos/
