@@ -60,7 +60,7 @@ if (track) {
 // Reel: flips through project photos; the link always points to the visible project
 const reel = document.getElementById('reel');
 if (reel) {
-  const INTERVAL = 1000; // ms por foto
+  const INTERVAL = 2500; // ms por foto
   const imgs = [...reel.querySelectorAll('img')];
   const name = document.getElementById('reel-name');
   const cur = document.getElementById('reel-cur');
