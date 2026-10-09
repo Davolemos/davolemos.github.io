@@ -95,7 +95,7 @@ if (track) {
 // Reel: flips through project photos; the link always points to the visible project
 const reel = document.getElementById('reel');
 if (reel) {
-  const INTERVAL = 500; // ms por foto
+  const INTERVAL = 700; // ms por foto (la frase del titular cambia al mismo tiempo)
   const imgs = [...reel.querySelectorAll('img')];
   const name = document.getElementById('reel-name');
   const cur = document.getElementById('reel-cur');
