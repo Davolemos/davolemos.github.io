@@ -10,17 +10,19 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-// Rotating phrase
+// Rotating phrase: advances together with the project reel (event "reel:change");
+// pages without a reel rotate on their own timer
 const words = [...document.querySelectorAll('.rotator > span')];
 if (words.length > 1) {
   let w = 0;
-  setInterval(() => {
-    if (document.hidden) return;
+  const nextWord = () => {
     const cur = words[w], nxt = words[(w = (w + 1) % words.length)];
     cur.classList.add('out'); cur.setAttribute('aria-hidden', 'true');
     nxt.classList.remove('out'); nxt.removeAttribute('aria-hidden');
     setTimeout(() => cur.classList.remove('out'), 260);
-  }, 2800);
+  };
+  if (document.getElementById('reel')) document.addEventListener('reel:change', nextWord);
+  else setInterval(() => { if (!document.hidden) nextWord(); }, 2800);
 }
 
 // Carousel
@@ -80,7 +82,11 @@ if (reel) {
     cur.textContent = pad(i + 1);
     reel.setAttribute('aria-label', `Ver proyecto ${img.dataset.name}`);
   };
-  const tick = () => { if (!userPaused && !hover && !document.hidden) show(i + 1); };
+  const tick = () => {
+    if (userPaused || hover || document.hidden) return;
+    show(i + 1);
+    document.dispatchEvent(new CustomEvent('reel:change'));
+  };
   const sync = () => {
     toggle.setAttribute('aria-pressed', String(userPaused));
     toggleLabel.textContent = userPaused ? 'Reproducir' : 'Pausar';
