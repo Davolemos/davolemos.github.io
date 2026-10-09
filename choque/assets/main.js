@@ -43,8 +43,8 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-// Rotating phrase: on the home page it advances each time the project reel
-// completes a lap (event "reel:lap"); other pages rotate on their own timer
+// Rotating phrase: on the home page it advances with every reel photo
+// (event "reel:change"); other pages rotate on their own timer
 const words = [...document.querySelectorAll('.rotator > span')];
 if (words.length > 1) {
   let w = 0;
@@ -52,9 +52,9 @@ if (words.length > 1) {
     const cur = words[w], nxt = words[(w = (w + 1) % words.length)];
     cur.classList.add('out'); cur.setAttribute('aria-hidden', 'true');
     nxt.classList.remove('out'); nxt.removeAttribute('aria-hidden');
-    setTimeout(() => cur.classList.remove('out'), 260);
+    setTimeout(() => cur.classList.remove('out'), 160);
   };
-  if (document.getElementById('reel')) document.addEventListener('reel:lap', nextWord);
+  if (document.getElementById('reel')) document.addEventListener('reel:change', nextWord);
   else setInterval(() => { if (!document.hidden) nextWord(); }, 2800);
 }
 
@@ -118,7 +118,7 @@ if (reel) {
   const tick = () => {
     if (userPaused || hover || document.hidden) return;
     show(i + 1);
-    if (i === 0) document.dispatchEvent(new CustomEvent('reel:lap'));
+    document.dispatchEvent(new CustomEvent('reel:change'));
   };
   const sync = () => {
     toggle.setAttribute('aria-pressed', String(userPaused));

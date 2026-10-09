@@ -178,10 +178,10 @@ section { scroll-margin-top: 90px; }
 .rotator { display: inline-grid; vertical-align: bottom; }
 .rotator > span {
   grid-area: 1 / 1; white-space: nowrap; font-weight: 600;
-  transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out), filter 400ms var(--ease-out);
+  transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out), filter 220ms var(--ease-out);
 }
 .rotator > span[aria-hidden="true"] { opacity: 0; transform: translateY(0.4em); filter: blur(4px); }
-.rotator > span.out { opacity: 0; transform: translateY(-0.3em); filter: blur(4px); transition-duration: 250ms; }
+.rotator > span.out { opacity: 0; transform: translateY(-0.3em); filter: blur(4px); transition-duration: 140ms; }
 
 /* ---------- Reel ---------- */
 .reel { position: relative; padding-bottom: clamp(16px, 3vw, 32px); }
