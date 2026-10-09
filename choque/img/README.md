@@ -26,7 +26,9 @@ img/
     ├── sultavolo/
     │   ├── portada.jpg            Tarjeta y reel en la home
     │   └── hero, logo, brindis, simbolo, patron, paleta, individual, etiquetas (.jpg)  Página del caso
-    ├── mansa-galleta/portada.jpg  Tarjeta · 4:5
+    ├── mansa-galleta/
+    │   ├── portada.jpg            Tarjeta y reel en la home
+    │   └── hero, logo, matcha, chocolate, bolsa, galletas, sello, caja-modelo (.jpg)  Página del caso
     ├── fondas-de-colon/
     │   ├── portada.jpg            Tarjeta y reel en la home
     │   └── hero, simbolo-logo, patron, web, pescado, delantal, plan-tinta, comida-web (.jpg)  Página del caso
