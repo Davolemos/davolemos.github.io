@@ -43,7 +43,8 @@ const io = new IntersectionObserver((entries) => {
 }, { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-// Rotating phrase
+// Rotating phrase: on the home page it advances each time the project reel
+// completes a lap (event "reel:lap"); other pages rotate on their own timer
 const words = [...document.querySelectorAll('.rotator > span')];
 if (words.length > 1) {
   let w = 0;
@@ -53,7 +54,8 @@ if (words.length > 1) {
     nxt.classList.remove('out'); nxt.removeAttribute('aria-hidden');
     setTimeout(() => cur.classList.remove('out'), 260);
   };
-  setInterval(() => { if (!document.hidden) nextWord(); }, 2800);
+  if (document.getElementById('reel')) document.addEventListener('reel:lap', nextWord);
+  else setInterval(() => { if (!document.hidden) nextWord(); }, 2800);
 }
 
 // Carousel
@@ -116,6 +118,7 @@ if (reel) {
   const tick = () => {
     if (userPaused || hover || document.hidden) return;
     show(i + 1);
+    if (i === 0) document.dispatchEvent(new CustomEvent('reel:lap'));
   };
   const sync = () => {
     toggle.setAttribute('aria-pressed', String(userPaused));
