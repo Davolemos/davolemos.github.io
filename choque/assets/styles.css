@@ -178,8 +178,8 @@ section { scroll-margin-top: 90px; }
 .hero { padding-bottom: clamp(32px, 5vw, 56px); }
 .reel-frame { display: block; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 24px; cursor: pointer; }
 @media (min-width: 700px) { .reel-frame { aspect-ratio: 3 / 2; } }
-.reel-frame img { position: absolute; inset: 0; opacity: 0; transition: opacity 600ms ease, transform 3000ms var(--ease-out); transform: scale(1.04); }
-.reel-frame img.on { opacity: 1; transform: none; }
+.reel-frame img { position: absolute; inset: 0; opacity: 0; transition: opacity 120ms linear; }
+.reel-frame img.on { opacity: 1; }
 .reel-frame::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to top, rgb(17 17 16 / 0.55), rgb(17 17 16 / 0) 45%); }
 .reel-cap { position: absolute; left: clamp(16px, 3vw, 32px); right: 140px; bottom: clamp(16px, 3vw, 28px); z-index: 2; display: grid; gap: 6px; color: #F5F4F0; }
 .reel-name { font-size: clamp(32px, 6vw, 80px); font-weight: 500; line-height: 0.95; letter-spacing: -0.05em; }
