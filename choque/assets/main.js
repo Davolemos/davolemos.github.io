@@ -184,3 +184,24 @@ document.querySelectorAll('a.btn[href^="mailto:"]').forEach((btn) => {
     }, 1000);
   });
 });
+
+// Privacy policy bubble in the footer
+const privacyBtn = document.querySelector('.privacy-btn');
+const privacy = document.getElementById('privacy');
+if (privacyBtn && privacy) {
+  const setPrivacy = (open) => {
+    privacy.classList.toggle('open', open);
+    privacy.inert = !open;
+    privacyBtn.setAttribute('aria-expanded', String(open));
+    if (open) privacy.querySelector('.privacy-close').focus({ preventScroll: true });
+  };
+  const isOpen = () => privacy.classList.contains('open');
+  privacyBtn.addEventListener('click', () => setPrivacy(!isOpen()));
+  privacy.querySelector('.privacy-close').addEventListener('click', () => { setPrivacy(false); privacyBtn.focus(); });
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !privacy.contains(e.target) && !privacyBtn.contains(e.target)) setPrivacy(false);
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setPrivacy(false); privacyBtn.focus(); }
+  });
+}
