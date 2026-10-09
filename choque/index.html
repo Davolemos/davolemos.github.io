@@ -55,6 +55,28 @@
     </div>
   </section>
 
+  <!-- ===== Reel de proyectos: cambia de foto cada segundo; el clic lleva al proyecto visible ===== -->
+  <section class="reel wrap" aria-label="Proyectos destacados">
+    <a class="reel-frame media reveal" id="reel" href="proyectos/chavela.html">
+      <img class="on" src="img/proyectos/chavela/portada.jpg" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1031" height="1265">
+      <img src="img/proyectos/fondas-de-colon/portada.jpg" alt="" data-name="Fondas de Colón" data-href="#fondas-de-colon" width="1031" height="1264">
+      <img src="img/proyectos/chavela/periodico.jpg" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1031" height="1033">
+      <img src="img/proyectos/ricketts-lab/portada.jpg" alt="" data-name="Ricketts Lab" data-href="#ricketts-lab" width="1031" height="1264">
+      <img src="img/proyectos/sultavolo/portada.jpg" alt="" data-name="Sultavolo" data-href="#sultavolo" width="1031" height="534">
+      <img src="img/proyectos/chavela/menu.jpg" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1031" height="1030">
+      <span class="reel-cap">
+        <span class="reel-name" id="reel-name">Chavela</span>
+        <span class="reel-count"><span id="reel-cur">01</span> / <span id="reel-tot">06</span></span>
+      </span>
+      <span class="case-link">Ver proyecto <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+    </a>
+    <button class="reel-toggle" id="reel-toggle" type="button" aria-pressed="false">
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>
+      <span id="reel-toggle-label">Pausar</span>
+    </button>
+  </section>
+
   <!-- ===== Proyectos ===== -->
   <section class="work" id="proyectos" aria-labelledby="work-title">
     <div class="wrap head">

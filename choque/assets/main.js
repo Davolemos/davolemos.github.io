@@ -56,3 +56,42 @@ if (track) {
   const target = location.hash && track.querySelector(location.hash);
   if (target) track.scrollLeft = target.offsetLeft - cards[0].offsetLeft;
 }
+
+// Reel: flips through project photos; the link always points to the visible project
+const reel = document.getElementById('reel');
+if (reel) {
+  const INTERVAL = 1000; // ms por foto
+  const imgs = [...reel.querySelectorAll('img')];
+  const name = document.getElementById('reel-name');
+  const cur = document.getElementById('reel-cur');
+  const toggle = document.getElementById('reel-toggle');
+  const toggleLabel = document.getElementById('reel-toggle-label');
+  const pad = (n) => String(n).padStart(2, '0');
+  document.getElementById('reel-tot').textContent = pad(imgs.length);
+  let i = 0, userPaused = reduce, hover = false, timer;
+
+  const show = (n) => {
+    imgs[i].classList.remove('on');
+    i = (n + imgs.length) % imgs.length;
+    const img = imgs[i];
+    img.classList.add('on');
+    reel.href = img.dataset.href;
+    name.textContent = img.dataset.name;
+    cur.textContent = pad(i + 1);
+    reel.setAttribute('aria-label', `Ver proyecto ${img.dataset.name}`);
+  };
+  const tick = () => { if (!userPaused && !hover && !document.hidden) show(i + 1); };
+  const sync = () => {
+    toggle.setAttribute('aria-pressed', String(userPaused));
+    toggleLabel.textContent = userPaused ? 'Reproducir' : 'Pausar';
+  };
+  toggle.addEventListener('click', () => { userPaused = !userPaused; sync(); });
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    reel.addEventListener('pointerenter', () => { hover = true; });
+    reel.addEventListener('pointerleave', () => { hover = false; });
+  }
+  reel.addEventListener('focus', () => { hover = true; });
+  reel.addEventListener('blur', () => { hover = false; });
+  show(0); sync();
+  timer = setInterval(tick, INTERVAL);
+}
