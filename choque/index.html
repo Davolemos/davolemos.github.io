@@ -53,7 +53,15 @@
 <main id="main">
   <!-- ===== Hero ===== -->
   <section class="hero wrap" id="top">
-    <span class="eyebrow reveal"><span class="dot" aria-hidden="true"></span>Agencia de diseño estratégico · Panamá</span>
+    <!-- ESTADO DE LA AGENDA
+         Agenda disponible:  data-status="abierta"  →  luz verde
+         Agenda llena:       data-status="cerrada"  →  luz roja
+         Cambia también el texto y mantenlo corto para que quepa en una línea en el celular,
+         por ejemplo: "Agenda cerrada · Noviembre" -->
+    <a class="status reveal" data-status="abierta" href="#contacto">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Agenda abierta · Octubre</span>
+    </a>
     <h1 class="reveal" style="--i:1">Brands born<br>from <em>impact.</em></h1>
     <p class="hero-sub reveal" style="--i:2">
       Estamos comprometidos con
@@ -186,7 +194,7 @@
 
   <!-- ===== Nosotros ===== -->
   <section class="manifesto wrap" id="nosotros" aria-label="Nosotros">
-    <p class="label reveal">Nosotros</p>
+    <p class="label reveal">Agencia de diseño estratégico · Panamá</p>
     <p class="reveal" style="--i:1">Un chóque es el instante en que algo cambia de dirección. <span class="mute">Diseñamos marcas para ese momento: claras en su estrategia, inconfundibles en su forma.</span></p>
   </section>
 
