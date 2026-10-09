@@ -14,7 +14,7 @@
 <script src="../assets/main.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -22,93 +22,96 @@
 </svg>
 
 <header class="nav">
-  <a class="logo" href="../index.html" aria-label="chóque, inicio"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
-  <nav aria-label="Principal">
+  <a class="logo" href="../index.html" aria-label="chóque, inicio" data-en-aria="chóque, home"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
+  <nav aria-label="Principal" data-en-aria="Main">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button><span aria-hidden="true">·</span><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
     <ul>
-      <li><a href="../index.html#proyectos" aria-current="page">Proyectos</a></li>
-      <li><a href="../index.html#servicios" class="hide-sm">Servicios</a></li>
-      <li><a href="../index.html#nosotros">Nosotros</a></li>
-      <li><a href="#contacto" class="show-sm">Contacto</a></li>
-      <li><a href="#contacto" class="cta">Hablemos</a></li>
+      <li><a href="../index.html#proyectos" aria-current="page" data-en="Projects">Proyectos</a></li>
+      <li><a href="../index.html#servicios" class="hide-sm" data-en="Services">Servicios</a></li>
+      <li><a href="../index.html#nosotros" data-en="About">Nosotros</a></li>
+      <li><a href="#contacto" class="show-sm" data-en="Contact">Contacto</a></li>
+      <li><a href="#contacto" class="cta" data-en="Let's talk">Hablemos</a></li>
     </ul>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menú <span class="bars" aria-hidden="true"></span></button>
   </nav>
 </header>
 
-<div class="menu" id="menu" aria-label="Menú" inert>
+<div class="menu" id="menu" aria-label="Menú" data-en-aria="Menu" inert>
   <ul>
-    <li><a href="../index.html#proyectos" style="--i:0">Proyectos</a></li>
-    <li><a href="../index.html#servicios" style="--i:1">Servicios</a></li>
-    <li><a href="../index.html#nosotros" style="--i:2">Nosotros</a></li>
-    <li><a href="#contacto" style="--i:3">Contacto</a></li>
+    <li><a href="../index.html#proyectos" style="--i:0" data-en="Projects">Proyectos</a></li>
+    <li><a href="../index.html#servicios" style="--i:1" data-en="Services">Servicios</a></li>
+    <li><a href="../index.html#nosotros" style="--i:2" data-en="About">Nosotros</a></li>
+    <li><a href="#contacto" style="--i:3" data-en="Contact">Contacto</a></li>
   </ul>
   <div class="menu-foot">
     <a href="mailto:choquecreativo@gmail.com">choquecreativo@gmail.com</a>
-    <span>Ciudad de Panamá, Panamá</span>
+    <span data-en="Panama City, Panama">Ciudad de Panamá, Panamá</span>
   </div>
 </div>
 
 <main id="main">
   <article>
     <header class="case-hero wrap">
-      <p class="label reveal">Proyecto — Chavela</p>
-      <h1 class="reveal" style="--i:1">La historia del amor que duele <em>bonito.</em></h1>
-      <p class="intro reveal" style="--i:2">Chavela es un nuevo restaurante mexicano en Ciudad de Panamá que se destaca por su buena comida y una auténtica experiencia culinaria mexicana.</p>
+      <p class="label reveal" data-en="Project — Chavela">Proyecto — Chavela</p>
+      <h1 class="reveal" style="--i:1" data-en="The story of a love that hurts <em>beautifully.</em>">La historia del amor que duele <em>bonito.</em></h1>
+      <p class="intro reveal" style="--i:2" data-en="Chavela is a new Mexican restaurant in Panama City known for great food and an authentic Mexican dining experience.">Chavela es un nuevo restaurante mexicano en Ciudad de Panamá que se destaca por su buena comida y una auténtica experiencia culinaria mexicana.</p>
     </header>
 
     <div class="wrap">
       <div class="media reveal">
-        <img src="../img/proyectos/chavela/collage.jpg" alt="Collage de Chavela: mujer con vestido bordado entre nopales, un volcán humeante, una carta manuscrita y el símbolo del corazón en llamas" width="1031" height="546">
+        <img src="../img/proyectos/chavela/collage.jpg" alt="Collage de Chavela: mujer con vestido bordado entre nopales, un volcán humeante, una carta manuscrita y el símbolo del corazón en llamas" data-en-alt="Chavela collage: a woman in an embroidered dress among prickly pears, a smoking volcano, a handwritten letter and the flaming heart symbol" width="1031" height="546">
       </div>
     </div>
 
     <div class="case-body wrap">
       <dl class="facts reveal">
-        <div><dt>Cliente</dt><dd>Chavela</dd></div>
-        <div><dt>Año</dt><dd>2024</dd></div>
-        <div class="full"><dt>Servicios</dt><dd>Estrategia<br>Identidad de marca<br>Ilustración<br>Señalización y gráficos ambientales</dd></div>
+        <div><dt data-en="Client">Cliente</dt><dd>Chavela</dd></div>
+        <div><dt data-en="Year">Año</dt><dd>2024</dd></div>
+        <div class="full"><dt data-en="Services">Servicios</dt><dd data-en="Strategy<br>Brand identity<br>Illustration<br>Signage and environmental graphics">Estrategia<br>Identidad de marca<br>Ilustración<br>Señalización y gráficos ambientales</dd></div>
       </dl>
 
       <div class="story">
         <section class="reveal">
-          <h2>El reto</h2>
-          <p class="q">¿Cómo conviertes un nombre sin historia en una leyenda?</p>
-          <p>El proyecto partía del nombre “Chavela”, con gran potencial, pero sin una narrativa que le otorgara identidad, carácter o un significado capaz de trascender la experiencia gastronómica.</p>
-          <p>Nuestro reto era transformar ese nombre en un universo de marca: uno que pudiera conectar emocionalmente con las personas.</p>
+          <h2 data-en="The challenge">El reto</h2>
+          <p class="q" data-en="How do you turn a name with no story into a legend?">¿Cómo conviertes un nombre sin historia en una leyenda?</p>
+          <p data-en="The project started from the name “Chavela”: full of potential, but with no narrative to give it identity, character or a meaning that could go beyond the dining experience.">El proyecto partía del nombre “Chavela”, con gran potencial, pero sin una narrativa que le otorgara identidad, carácter o un significado capaz de trascender la experiencia gastronómica.</p>
+          <p data-en="Our challenge was to turn that name into a brand universe, one that could connect with people emotionally.">Nuestro reto era transformar ese nombre en un universo de marca: uno que pudiera conectar emocionalmente con las personas.</p>
         </section>
         <section class="reveal">
-          <h2>La idea</h2>
-          <p class="q">Construimos un universo narrativo completo alrededor del nombre “Chavela”.</p>
-          <p>Un personaje con una historia propia: una mujer nacida en un pueblo entre volcanes, que cocina con memorias en lugar de recetas y convierte cada platillo en una expresión de sus emociones. Esa leyenda dio origen al concepto “Amor que duele bonito”, una narrativa donde el fuego representa la pasión.</p>
-          <p>El corazón en llamas se convirtió en el símbolo de la marca; la tipografía, la paleta cromática, las ilustraciones y el lenguaje visual fueron diseñados para ilustrar la vida y personalidad de Chavela.</p>
+          <h2 data-en="The idea">La idea</h2>
+          <p class="q" data-en="We built a complete narrative universe around the name “Chavela”.">Construimos un universo narrativo completo alrededor del nombre “Chavela”.</p>
+          <p data-en="A character with her own story: a woman born in a village among volcanoes, who cooks from memories instead of recipes and turns every dish into an expression of her emotions. That legend gave rise to the concept “A love that hurts beautifully”, a narrative where fire stands for passion.">Un personaje con una historia propia: una mujer nacida en un pueblo entre volcanes, que cocina con memorias en lugar de recetas y convierte cada platillo en una expresión de sus emociones. Esa leyenda dio origen al concepto “Amor que duele bonito”, una narrativa donde el fuego representa la pasión.</p>
+          <p data-en="The flaming heart became the brand’s symbol. The typography, color palette, illustrations and visual language were designed to portray Chavela’s life and personality.">El corazón en llamas se convirtió en el símbolo de la marca; la tipografía, la paleta cromática, las ilustraciones y el lenguaje visual fueron diseñados para ilustrar la vida y personalidad de Chavela.</p>
         </section>
       </div>
     </div>
 
     <div class="gallery wrap">
-      <div class="media reveal"><img src="../img/proyectos/chavela/logo-poster.jpg" alt="Logotipo de Chavela en blanco sobre rojo junto a un póster negro con la silueta de una mujer frente a un volcán, México 1977" width="1031" height="527" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/chavela/logo-poster.jpg" alt="Logotipo de Chavela en blanco sobre rojo junto a un póster negro con la silueta de una mujer frente a un volcán, México 1977" data-en-alt="Chavela logo in white on red next to a black poster with the silhouette of a woman before a volcano, Mexico 1977" width="1031" height="527" loading="lazy"></div>
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/chavela/periodico.jpg" alt="Periódico ficticio “La Voz del Pueblo” de 1977 que cuenta la leyenda de Chavela" width="1031" height="1033" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/chavela/comida.jpg" alt="Mesa con tacos, salsas y bebidas de jamaica en el restaurante" width="1031" height="1031" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/chavela/periodico.jpg" alt="Periódico ficticio “La Voz del Pueblo” de 1977 que cuenta la leyenda de Chavela" data-en-alt="Fictional 1977 newspaper “La Voz del Pueblo” telling the legend of Chavela" width="1031" height="1033" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/chavela/comida.jpg" alt="Mesa con tacos, salsas y bebidas de jamaica en el restaurante" data-en-alt="Table with tacos, salsas and hibiscus drinks at the restaurant" width="1031" height="1031" loading="lazy"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/chavela/merch.jpg" alt="Camiseta “Fuego que abraza”, mural del bar con neón y tres bebidas de la casa" width="1031" height="577" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/chavela/merch.jpg" alt="Camiseta “Fuego que abraza”, mural del bar con neón y tres bebidas de la casa" data-en-alt="“Fuego que abraza” T-shirt, the bar mural with neon and three house drinks" width="1031" height="577" loading="lazy"></div>
     </div>
 
     <div class="statement wrap">
-      <p class="reveal">Más que desarrollar la identidad de un restaurante, creamos un personaje, una mitología y un universo visual capaces de convertir una simple comida en una experiencia cargada de <em>emoción, memoria y cultura mexicana.</em></p>
+      <p class="reveal" data-en="More than a restaurant identity, we created a character, a mythology and a visual universe that turn a simple meal into an experience full of <em>emotion, memory and Mexican culture.</em>">Más que desarrollar la identidad de un restaurante, creamos un personaje, una mitología y un universo visual capaces de convertir una simple comida en una experiencia cargada de <em>emoción, memoria y cultura mexicana.</em></p>
     </div>
 
     <div class="gallery wrap">
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/chavela/menu.jpg" alt="Menú de Chavela con flores ilustradas entre hojas de agave" width="1031" height="1030" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/chavela/fachada.jpg" alt="Fachada nocturna del restaurante con el letrero iluminado" width="1031" height="1265" loading="lazy" style="aspect-ratio:1"></div>
+        <div class="media reveal"><img src="../img/proyectos/chavela/menu.jpg" alt="Menú de Chavela con flores ilustradas entre hojas de agave" data-en-alt="Chavela menu with illustrated flowers among agave leaves" width="1031" height="1030" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/chavela/fachada.jpg" alt="Fachada nocturna del restaurante con el letrero iluminado" data-en-alt="The restaurant’s storefront at night with its sign lit up" width="1031" height="1265" loading="lazy" style="aspect-ratio:1"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/chavela/tote-delantal.jpg" alt="Bolsa de tela roja “Sabor que enciende fuego” y delantal con el logotipo de Chavela" width="1031" height="578" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/chavela/tote-delantal.jpg" alt="Bolsa de tela roja “Sabor que enciende fuego” y delantal con el logotipo de Chavela" data-en-alt="Red tote bag “Sabor que enciende fuego” and an apron with the Chavela logo" width="1031" height="578" loading="lazy"></div>
     </div>
 
     <div class="wrap">
       <a class="next" href="mansa-galleta.html">
-        <p class="label">Siguiente proyecto</p>
+        <p class="label" data-en="Next project">Siguiente proyecto</p>
         <span class="t">Mansa Galleta <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
       </a>
     </div>
@@ -118,16 +121,16 @@
   <section class="contact wrap" id="contacto" aria-labelledby="contact-title">
     <div class="contact-card reveal">
       <img class="card-mark" src="../img/marca/simbolo-blanco.png" alt="" width="982" height="983">
-      <h2 id="contact-title">¿Listo para el <em>impacto?</em></h2>
-      <p>Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
+      <h2 id="contact-title" data-en="Ready for <em>impact?</em>">¿Listo para el <em>impacto?</em></h2>
+      <p data-en="Tell us about your brand. We reply within 48 hours.">Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
       <div class="actions">
-        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com" data-en="Write to us <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
         <a class="btn btn-ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <footer class="site">
       <span>© <span data-year>2026</span> chóque studio</span>
-      <nav aria-label="Redes"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
+      <nav aria-label="Redes" data-en-aria="Social"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
     </footer>
   </section>
 </main>

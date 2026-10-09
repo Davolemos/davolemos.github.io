@@ -2,6 +2,39 @@
 document.documentElement.classList.add('js');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Language (ES / EN). Texts carry their English version in data-en (innerHTML),
+// data-en-alt (image alt) and data-en-aria (aria-label). Visitors whose browser
+// isn't in Spanish get English by default; their choice is remembered.
+const STRINGS = {
+  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto' },
+  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project' },
+};
+const LANG_KEY = 'choque-lang';
+let lang = (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
+  || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+const t = (key) => STRINGS[lang][key];
+const applyLang = (next) => {
+  lang = next;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-en]').forEach((el) => {
+    if (el.dataset.es === undefined) el.dataset.es = el.innerHTML;
+    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.es;
+  });
+  for (const [attr, en, es] of [['alt', 'enAlt', 'esAlt'], ['aria-label', 'enAria', 'esAria']]) {
+    document.querySelectorAll(`[data-${attr === 'alt' ? 'en-alt' : 'en-aria'}]`).forEach((el) => {
+      if (el.dataset[es] === undefined) el.dataset[es] = el.getAttribute(attr);
+      el.setAttribute(attr, lang === 'en' ? el.dataset[en] : el.dataset[es]);
+    });
+  }
+  document.querySelectorAll('.lang [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  document.dispatchEvent(new CustomEvent('langchange'));
+};
+document.querySelectorAll('.lang [data-lang]').forEach((b) => b.addEventListener('click', () => {
+  applyLang(b.dataset.lang);
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+}));
+applyLang(lang);
+
 document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 
 // Reveal on scroll
@@ -78,7 +111,7 @@ if (reel) {
     reel.href = img.dataset.href;
     name.textContent = img.dataset.name;
     cur.textContent = pad(i + 1);
-    reel.setAttribute('aria-label', `Ver proyecto ${img.dataset.name}`);
+    reel.setAttribute('aria-label', `${t('viewProject')} ${img.dataset.name}`);
   };
   const tick = () => {
     if (userPaused || hover || document.hidden) return;
@@ -86,7 +119,7 @@ if (reel) {
   };
   const sync = () => {
     toggle.setAttribute('aria-pressed', String(userPaused));
-    toggleLabel.textContent = userPaused ? 'Reproducir' : 'Pausar';
+    toggleLabel.textContent = userPaused ? t('play') : t('pause');
   };
   toggle.addEventListener('click', () => { userPaused = !userPaused; sync(); });
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -96,6 +129,7 @@ if (reel) {
   reel.addEventListener('focus', () => { hover = true; });
   reel.addEventListener('blur', () => { hover = false; });
   show(0); sync();
+  document.addEventListener('langchange', () => { sync(); reel.setAttribute('aria-label', `${t('viewProject')} ${imgs[i].dataset.name}`); });
   timer = setInterval(tick, INTERVAL);
 }
 
@@ -107,11 +141,13 @@ if (menuBtn && menu) {
     menu.classList.toggle('open', open);
     menu.inert = !open;
     menuBtn.setAttribute('aria-expanded', String(open));
-    menuBtn.firstChild.textContent = open ? 'Cerrar ' : 'Menú ';
+    menuBtn.firstChild.textContent = `${open ? t('close') : t('menu')} `;
     document.documentElement.style.overflow = open ? 'hidden' : '';
     if (open) menu.querySelector('a').focus({ preventScroll: true });
   };
   menuBtn.addEventListener('click', () => setOpen(!menu.classList.contains('open')));
+  const label = () => { menuBtn.firstChild.textContent = `${menu.classList.contains('open') ? t('close') : t('menu')} `; };
+  document.addEventListener('langchange', label); label();
   menu.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
   addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && menu.classList.contains('open')) { setOpen(false); menuBtn.focus(); }

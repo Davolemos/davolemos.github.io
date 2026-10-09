@@ -14,7 +14,7 @@
 <script src="../assets/main.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -22,89 +22,92 @@
 </svg>
 
 <header class="nav">
-  <a class="logo" href="../index.html" aria-label="chóque, inicio"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
-  <nav aria-label="Principal">
+  <a class="logo" href="../index.html" aria-label="chóque, inicio" data-en-aria="chóque, home"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
+  <nav aria-label="Principal" data-en-aria="Main">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button><span aria-hidden="true">·</span><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
     <ul>
-      <li><a href="../index.html#proyectos" aria-current="page">Proyectos</a></li>
-      <li><a href="../index.html#servicios" class="hide-sm">Servicios</a></li>
-      <li><a href="../index.html#nosotros">Nosotros</a></li>
-      <li><a href="#contacto" class="show-sm">Contacto</a></li>
-      <li><a href="#contacto" class="cta">Hablemos</a></li>
+      <li><a href="../index.html#proyectos" aria-current="page" data-en="Projects">Proyectos</a></li>
+      <li><a href="../index.html#servicios" class="hide-sm" data-en="Services">Servicios</a></li>
+      <li><a href="../index.html#nosotros" data-en="About">Nosotros</a></li>
+      <li><a href="#contacto" class="show-sm" data-en="Contact">Contacto</a></li>
+      <li><a href="#contacto" class="cta" data-en="Let's talk">Hablemos</a></li>
     </ul>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menú <span class="bars" aria-hidden="true"></span></button>
   </nav>
 </header>
 
-<div class="menu" id="menu" aria-label="Menú" inert>
+<div class="menu" id="menu" aria-label="Menú" data-en-aria="Menu" inert>
   <ul>
-    <li><a href="../index.html#proyectos" style="--i:0">Proyectos</a></li>
-    <li><a href="../index.html#servicios" style="--i:1">Servicios</a></li>
-    <li><a href="../index.html#nosotros" style="--i:2">Nosotros</a></li>
-    <li><a href="#contacto" style="--i:3">Contacto</a></li>
+    <li><a href="../index.html#proyectos" style="--i:0" data-en="Projects">Proyectos</a></li>
+    <li><a href="../index.html#servicios" style="--i:1" data-en="Services">Servicios</a></li>
+    <li><a href="../index.html#nosotros" style="--i:2" data-en="About">Nosotros</a></li>
+    <li><a href="#contacto" style="--i:3" data-en="Contact">Contacto</a></li>
   </ul>
   <div class="menu-foot">
     <a href="mailto:choquecreativo@gmail.com">choquecreativo@gmail.com</a>
-    <span>Ciudad de Panamá, Panamá</span>
+    <span data-en="Panama City, Panama">Ciudad de Panamá, Panamá</span>
   </div>
 </div>
 
 <main id="main">
   <article>
     <header class="case-hero wrap">
-      <p class="label reveal">Proyecto — Mansa Galleta</p>
-      <h1 class="reveal" style="--i:1">¡Manso Sabor, Mansa <em>Actitud!</em></h1>
-      <p class="intro reveal" style="--i:2">Acá no se habla bajito, acá se grita con sabor. La identidad visual fue diseñada para que cada letra, cada color y cada bocado digan “¡MANSA GALLETA!”, a todo volumen.</p>
+      <p class="label reveal" data-en="Project — Mansa Galleta">Proyecto — Mansa Galleta</p>
+      <h1 class="reveal" style="--i:1" data-en="Mighty Flavor, Mighty <em>Attitude!</em>">¡Manso Sabor, Mansa <em>Actitud!</em></h1>
+      <p class="intro reveal" style="--i:2" data-en="No whispering here: we shout with flavor. The visual identity was designed so that every letter, every color and every bite says “¡MANSA GALLETA!” at full volume.">Acá no se habla bajito, acá se grita con sabor. La identidad visual fue diseñada para que cada letra, cada color y cada bocado digan “¡MANSA GALLETA!”, a todo volumen.</p>
     </header>
 
     <div class="wrap">
       <div class="media reveal">
-        <img src="../img/proyectos/mansa-galleta/hero.jpg" alt="Galletas estilo Nueva York sobre madera junto al sello “New York Style” y una galleta con el lettering Mansa Galleta grabado" width="1031" height="546">
+        <img src="../img/proyectos/mansa-galleta/hero.jpg" alt="Galletas estilo Nueva York sobre madera junto al sello “New York Style” y una galleta con el lettering Mansa Galleta grabado" data-en-alt="New York–style cookies on wood next to the “New York Style” seal and a cookie stamped with the Mansa Galleta lettering" width="1031" height="546">
       </div>
     </div>
 
     <div class="case-body wrap">
       <dl class="facts reveal">
-        <div><dt>Cliente</dt><dd>Mansa Galleta</dd></div>
-        <div><dt>Año</dt><dd>2024</dd></div>
-        <div class="full"><dt>Servicios</dt><dd>Identidad visual<br>Lettering<br>Packaging</dd></div>
+        <div><dt data-en="Client">Cliente</dt><dd>Mansa Galleta</dd></div>
+        <div><dt data-en="Year">Año</dt><dd>2024</dd></div>
+        <div class="full"><dt data-en="Services">Servicios</dt><dd data-en="Visual identity<br>Lettering<br>Packaging">Identidad visual<br>Lettering<br>Packaging</dd></div>
       </dl>
 
       <div class="story">
         <section class="reveal">
-          <h2>El reto</h2>
-          <p class="q">Traer la galleta estilo New York al paladar local con una personalidad imposible de confundir en un mercado lleno de dulces iguales.</p>
+          <h2 data-en="The challenge">El reto</h2>
+          <p class="q" data-en="Bring the New York–style cookie to local taste buds with a personality no one could mistake in a market full of look-alike sweets.">Traer la galleta estilo New York al paladar local con una personalidad imposible de confundir en un mercado lleno de dulces iguales.</p>
         </section>
         <section class="reveal">
-          <h2>La idea</h2>
-          <p>Un sello con actitud, lettering propio y una voz que habla como la calle: manso sabor, mansa actitud. La galleta gruesa, la marca más gruesa todavía.</p>
+          <h2 data-en="The idea">La idea</h2>
+          <p data-en="A seal with attitude, custom lettering and a voice that talks like the street: mighty flavor, mighty attitude. A thick cookie, and an even bolder brand.">Un sello con actitud, lettering propio y una voz que habla como la calle: manso sabor, mansa actitud. La galleta gruesa, la marca más gruesa todavía.</p>
         </section>
       </div>
     </div>
 
     <div class="gallery wrap">
-      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/logo.jpg" alt="Lettering Mansa Galleta en verde oscuro sobre menta junto a una M gigante" width="1031" height="576" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/logo.jpg" alt="Lettering Mansa Galleta en verde oscuro sobre menta junto a una M gigante" data-en-alt="Mansa Galleta lettering in dark green on mint next to a giant M" width="1031" height="576" loading="lazy"></div>
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/mansa-galleta/matcha.jpg" alt="Galletas de matcha con chispas de chocolate blanco apiladas" width="1031" height="1030" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/mansa-galleta/chocolate.jpg" alt="Galleta de chocolate bañada en salsa de chocolate con trozos de brownie sobre fondo amarillo" width="1031" height="1030" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/mansa-galleta/matcha.jpg" alt="Galletas de matcha con chispas de chocolate blanco apiladas" data-en-alt="Stacked matcha cookies with white chocolate chips" width="1031" height="1030" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/mansa-galleta/chocolate.jpg" alt="Galleta de chocolate bañada en salsa de chocolate con trozos de brownie sobre fondo amarillo" data-en-alt="Chocolate cookie covered in chocolate sauce with brownie chunks on yellow" width="1031" height="1030" loading="lazy"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/bolsa.jpg" alt="Empaque verde “Maaaansas galletas al estilo NY” con una galleta de merengue tostado contra el cielo" width="1031" height="577" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/bolsa.jpg" alt="Empaque verde “Maaaansas galletas al estilo NY” con una galleta de merengue tostado contra el cielo" data-en-alt="Green “Maaaansas galletas al estilo NY” pouch with a toasted-meringue cookie against the sky" width="1031" height="577" loading="lazy"></div>
     </div>
 
     <div class="statement wrap">
-      <p class="reveal">Porque lo bueno se repite y nosotros lo repetimos bien alto: <em>MAAAAAAAAANSA GALLETA.</em></p>
+      <p class="reveal" data-en="Because good things deserve repeating, and we repeat it loud: <em>MAAAAAAAAANSA GALLETA.</em>">Porque lo bueno se repite y nosotros lo repetimos bien alto: <em>MAAAAAAAAANSA GALLETA.</em></p>
     </div>
 
     <div class="gallery wrap">
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/mansa-galleta/galletas.jpg" alt="Nueve galletas de distintos sabores en una cuadrícula sobre azulejos color menta" width="1031" height="1030" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/mansa-galleta/sello.jpg" alt="Símbolo de Mansa Galleta: una mano haciendo el gesto de “perfecto”, en verde oscuro sobre amarillo" width="1031" height="1029" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/mansa-galleta/galletas.jpg" alt="Nueve galletas de distintos sabores en una cuadrícula sobre azulejos color menta" data-en-alt="Nine cookies in different flavors in a grid on mint tiles" width="1031" height="1030" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/mansa-galleta/sello.jpg" alt="Símbolo de Mansa Galleta: una mano haciendo el gesto de “perfecto”, en verde oscuro sobre amarillo" data-en-alt="Mansa Galleta symbol: a hand making the “perfect” sign, dark green on yellow" width="1031" height="1029" loading="lazy"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/caja-modelo.jpg" alt="Caja abierta con seis galletas surtidas junto a una mujer comiendo una galleta rodeada de galletas flotando" width="1031" height="576" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/mansa-galleta/caja-modelo.jpg" alt="Caja abierta con seis galletas surtidas junto a una mujer comiendo una galleta rodeada de galletas flotando" data-en-alt="Open box of six assorted cookies next to a woman eating a cookie surrounded by floating cookies" width="1031" height="576" loading="lazy"></div>
     </div>
 
     <div class="wrap">
       <a class="next" href="ricketts-lab.html">
-        <p class="label">Siguiente proyecto</p>
+        <p class="label" data-en="Next project">Siguiente proyecto</p>
         <span class="t">Ricketts Lab <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
       </a>
     </div>
@@ -114,16 +117,16 @@
   <section class="contact wrap" id="contacto" aria-labelledby="contact-title">
     <div class="contact-card reveal">
       <img class="card-mark" src="../img/marca/simbolo-blanco.png" alt="" width="982" height="983">
-      <h2 id="contact-title">¿Listo para el <em>impacto?</em></h2>
-      <p>Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
+      <h2 id="contact-title" data-en="Ready for <em>impact?</em>">¿Listo para el <em>impacto?</em></h2>
+      <p data-en="Tell us about your brand. We reply within 48 hours.">Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
       <div class="actions">
-        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com" data-en="Write to us <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
         <a class="btn btn-ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <footer class="site">
       <span>© <span data-year>2026</span> chóque studio</span>
-      <nav aria-label="Redes"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
+      <nav aria-label="Redes" data-en-aria="Social"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
     </footer>
   </section>
 </main>

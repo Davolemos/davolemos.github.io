@@ -14,7 +14,7 @@
 <script src="assets/main.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -23,29 +23,32 @@
 </svg>
 
 <header class="nav">
-  <a class="logo" href="#top" aria-label="chóque, inicio"><img src="img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
-  <nav aria-label="Principal">
+  <a class="logo" href="#top" aria-label="chóque, inicio" data-en-aria="chóque, home"><img src="img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
+  <nav aria-label="Principal" data-en-aria="Main">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button><span aria-hidden="true">·</span><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
     <ul>
-      <li><a href="#proyectos">Proyectos</a></li>
-      <li><a href="#servicios" class="hide-sm">Servicios</a></li>
-      <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#contacto" class="show-sm">Contacto</a></li>
-      <li><a href="#contacto" class="cta">Hablemos</a></li>
+      <li><a href="#proyectos" data-en="Projects">Proyectos</a></li>
+      <li><a href="#servicios" class="hide-sm" data-en="Services">Servicios</a></li>
+      <li><a href="#nosotros" data-en="About">Nosotros</a></li>
+      <li><a href="#contacto" class="show-sm" data-en="Contact">Contacto</a></li>
+      <li><a href="#contacto" class="cta" data-en="Let's talk">Hablemos</a></li>
     </ul>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menú <span class="bars" aria-hidden="true"></span></button>
   </nav>
 </header>
 
-<div class="menu" id="menu" aria-label="Menú" inert>
+<div class="menu" id="menu" aria-label="Menú" data-en-aria="Menu" inert>
   <ul>
-    <li><a href="#proyectos" style="--i:0">Proyectos</a></li>
-    <li><a href="#servicios" style="--i:1">Servicios</a></li>
-    <li><a href="#nosotros" style="--i:2">Nosotros</a></li>
-    <li><a href="#contacto" style="--i:3">Contacto</a></li>
+    <li><a href="#proyectos" style="--i:0" data-en="Projects">Proyectos</a></li>
+    <li><a href="#servicios" style="--i:1" data-en="Services">Servicios</a></li>
+    <li><a href="#nosotros" style="--i:2" data-en="About">Nosotros</a></li>
+    <li><a href="#contacto" style="--i:3" data-en="Contact">Contacto</a></li>
   </ul>
   <div class="menu-foot">
     <a href="mailto:choquecreativo@gmail.com">choquecreativo@gmail.com</a>
-    <span>Ciudad de Panamá, Panamá</span>
+    <span data-en="Panama City, Panama">Ciudad de Panamá, Panamá</span>
   </div>
 </div>
 
@@ -55,29 +58,30 @@
     <!-- ESTADO DE LA AGENDA
          Agenda disponible:  data-status="abierta"  →  luz verde
          Agenda llena:       data-status="cerrada"  →  luz roja
-         Cambia también el texto y mantenlo corto para que quepa en una línea en el celular,
-         por ejemplo: "Agenda cerrada · Noviembre" -->
+         Cambia también el texto en español y en inglés (data-en) y mantenlos cortos para que
+         quepan en una línea en el celular, por ejemplo:
+         <span data-en="Booking closed · November">Agenda cerrada · Noviembre</span> -->
     <a class="status reveal" data-status="abierta" href="#contacto">
       <span class="dot" aria-hidden="true"></span>
-      <span>Agenda abierta · Octubre</span>
+      <span data-en="Booking open · October">Agenda abierta · Octubre</span>
     </a>
     <h1 class="reveal" style="--i:1">Brands born<br>from <em>impact.</em></h1>
     <p class="hero-sub reveal" style="--i:2">
-      Estamos comprometidos con
+      <span data-en="We are committed to">Estamos comprometidos con</span>
       <span class="rotator">
-        <span>el diseño estratégico.</span>
-        <span aria-hidden="true">marcas imposibles de ignorar.</span>
-        <span aria-hidden="true">la creación como disrupción.</span>
+        <span data-en="strategic design.">el diseño estratégico.</span>
+        <span aria-hidden="true" data-en="brands impossible to ignore.">marcas imposibles de ignorar.</span>
+        <span aria-hidden="true" data-en="creation as disruption.">la creación como disrupción.</span>
       </span>
     </p>
     <div class="actions reveal" style="--i:3">
-      <a class="btn btn-dark" href="#proyectos">Ver proyectos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
-      <a class="btn btn-ghost" href="#contacto">Hablemos</a>
+      <a class="btn btn-dark" href="#proyectos" data-en="See our work <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver proyectos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+      <a class="btn btn-ghost" href="#contacto" data-en="Let's talk">Hablemos</a>
     </div>
   </section>
 
   <!-- ===== Reel de proyectos: cambia de foto cada segundo; el clic lleva al proyecto visible ===== -->
-  <section class="reel wrap" aria-label="Proyectos destacados">
+  <section class="reel wrap" aria-label="Proyectos destacados" data-en-aria="Featured projects">
     <a class="reel-frame media reveal" id="reel" href="proyectos/chavela.html">
       <img class="on" src="img/proyectos/chavela/portada.jpg" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1000" height="1239">
       <img src="img/proyectos/mansa-galleta/portada.jpg" style="object-position: 50% 30%" alt="" data-name="Mansa Galleta" data-href="proyectos/mansa-galleta.html" width="1031" height="1263">
@@ -89,7 +93,7 @@
         <span class="reel-name" id="reel-name">Chavela</span>
         <span class="reel-count"><span id="reel-cur">01</span> / <span id="reel-tot">06</span></span>
       </span>
-      <span class="case-link">Ver proyecto <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+      <span class="case-link" data-en="View project <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver proyecto <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
     </a>
     <button class="reel-toggle" id="reel-toggle" type="button" aria-pressed="false">
       <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
@@ -102,13 +106,13 @@
   <section class="work" id="proyectos" aria-labelledby="work-title">
     <div class="wrap head">
       <div>
-        <p class="label reveal">Trabajo seleccionado</p>
-        <h2 id="work-title" class="h2 reveal" style="--i:1">Proyectos</h2>
+        <p class="label reveal" data-en="Selected work">Trabajo seleccionado</p>
+        <h2 id="work-title" class="h2 reveal" style="--i:1" data-en="Projects">Proyectos</h2>
       </div>
       <div class="controls reveal" style="--i:2">
         <span class="count" aria-live="polite"><span id="cur">01</span> / <span id="tot">05</span></span>
-        <button class="icon-btn" id="prev" aria-label="Proyecto anterior"><svg aria-hidden="true"><use href="#arrow-l"/></svg></button>
-        <button class="icon-btn" id="next" aria-label="Proyecto siguiente"><svg aria-hidden="true"><use href="#arrow-r"/></svg></button>
+        <button class="icon-btn" id="prev" aria-label="Proyecto anterior" data-en-aria="Previous project"><svg aria-hidden="true"><use href="#arrow-l"/></svg></button>
+        <button class="icon-btn" id="next" aria-label="Proyecto siguiente" data-en-aria="Next project"><svg aria-hidden="true"><use href="#arrow-r"/></svg></button>
       </div>
     </div>
 
@@ -116,56 +120,56 @@
       <li class="card" id="chavela">
         <a href="proyectos/chavela.html">
           <div class="media reveal">
-            <span class="tag">Identidad · Restaurante</span>
-            <img src="img/proyectos/chavela/portada.jpg" alt="Símbolo de Chavela: un corazón en llamas con la letra C, en blanco sobre rojo" width="1000" height="1239">
-            <span class="case-link">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+            <span class="tag" data-en="Identity · Restaurant">Identidad · Restaurante</span>
+            <img src="img/proyectos/chavela/portada.jpg" alt="Símbolo de Chavela: un corazón en llamas con la letra C, en blanco sobre rojo" data-en-alt="Chavela symbol: a flaming heart with the letter C, white on red" width="1000" height="1239">
+            <span class="case-link" data-en="View case <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
           </div>
           <p class="name">Chavela</p>
-          <h3>La historia del amor que duele bonito.</h3>
+          <h3 data-en="The story of a love that hurts beautifully.">La historia del amor que duele bonito.</h3>
         </a>
       </li>
       <li class="card" id="sultavolo">
         <a href="proyectos/sultavolo.html">
           <div class="media reveal">
             <span class="tag">Branding</span>
-            <img src="img/proyectos/sultavolo/portada.jpg" alt="Vista cenital de una familia alrededor de una mesa redonda, enmarcada por un trazo blanco en forma de flor" width="1031" height="534" loading="lazy">
-            <span class="case-link">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+            <img src="img/proyectos/sultavolo/portada.jpg" alt="Vista cenital de una familia alrededor de una mesa redonda, enmarcada por un trazo blanco en forma de flor" data-en-alt="Overhead view of a family around a round table, framed by a white flower-shaped line" width="1031" height="534" loading="lazy">
+            <span class="case-link" data-en="View case <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
           </div>
           <p class="name">Sultavolo</p>
-          <h3>La mesa como lienzo y cada comida una obra de arte.</h3>
+          <h3 data-en="The table as a canvas, every meal a work of art.">La mesa como lienzo y cada comida una obra de arte.</h3>
         </a>
       </li>
       <li class="card" id="mansa-galleta">
         <a href="proyectos/mansa-galleta.html">
           <div class="media reveal">
             <span class="tag">Packaging</span>
-            <img src="img/proyectos/mansa-galleta/portada.jpg" alt="Galleta estilo Nueva York con merengue tostado asomando de un empaque verde que dice “Maaaansas galletas al estilo NY”" width="1031" height="1263" loading="lazy">
-            <span class="case-link">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+            <img src="img/proyectos/mansa-galleta/portada.jpg" alt="Galleta estilo Nueva York con merengue tostado asomando de un empaque verde que dice “Maaaansas galletas al estilo NY”" data-en-alt="New York–style cookie with toasted meringue peeking out of a green pouch that reads “Maaaansas galletas al estilo NY”" width="1031" height="1263" loading="lazy">
+            <span class="case-link" data-en="View case <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
           </div>
           <p class="name">Mansa Galleta</p>
-          <h3>¡Manso sabor, mansa actitud!</h3>
+          <h3 data-en="Mighty flavor, mighty attitude!">¡Manso sabor, mansa actitud!</h3>
         </a>
       </li>
       <li class="card" id="fondas-de-colon">
         <a href="proyectos/fondas-de-colon.html">
           <div class="media reveal">
-            <span class="tag">Identidad · Digital</span>
-            <img src="img/proyectos/fondas-de-colon/portada.jpg" alt="Logotipo de Fondas de Colón sobre una ilustración colorida de mariscos y frutas" width="1031" height="1264" loading="lazy">
-            <span class="case-link">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+            <span class="tag" data-en="Identity · Digital">Identidad · Digital</span>
+            <img src="img/proyectos/fondas-de-colon/portada.jpg" alt="Logotipo de Fondas de Colón sobre una ilustración colorida de mariscos y frutas" data-en-alt="Fondas de Colón logo over a colorful illustration of seafood and fruit" width="1031" height="1264" loading="lazy">
+            <span class="case-link" data-en="View case <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
           </div>
           <p class="name">Fondas de Colón</p>
-          <h3>Evolucionando la gastronomía local hacia una vitrina digital global.</h3>
+          <h3 data-en="Taking local cuisine to a global digital showcase.">Evolucionando la gastronomía local hacia una vitrina digital global.</h3>
         </a>
       </li>
       <li class="card" id="ricketts-lab">
         <a href="proyectos/ricketts-lab.html">
           <div class="media reveal">
-            <span class="tag">Identidad · Salud</span>
-            <img src="img/proyectos/ricketts-lab/portada.jpg" alt="Logotipo de Ricketts Lab sobre prótesis dentales fotografiadas en primer plano" width="1031" height="1264" loading="lazy">
-            <span class="case-link">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+            <span class="tag" data-en="Identity · Healthcare">Identidad · Salud</span>
+            <img src="img/proyectos/ricketts-lab/portada.jpg" alt="Logotipo de Ricketts Lab sobre prótesis dentales fotografiadas en primer plano" data-en-alt="Ricketts Lab logo over a close-up of dental prostheses" width="1031" height="1264" loading="lazy">
+            <span class="case-link" data-en="View case <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver caso <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
           </div>
           <p class="name">Ricketts Lab</p>
-          <h3>Autoridad clínica. Identidad construida a escala micrométrica.</h3>
+          <h3 data-en="Clinical authority. An identity built at micrometric scale.">Autoridad clínica. Identidad construida a escala micrométrica.</h3>
         </a>
       </li>
     </ul>
@@ -173,8 +177,8 @@
 
   <div class="marquee" aria-hidden="true">
     <div class="marquee-inner">
-      <span>Marcas imposibles de ignorar <img src="img/marca/simbolo-negro.png" alt=""> Brands born from impact <img src="img/marca/simbolo-negro.png" alt=""></span>
-      <span>Marcas imposibles de ignorar <img src="img/marca/simbolo-negro.png" alt=""> Brands born from impact <img src="img/marca/simbolo-negro.png" alt=""></span>
+      <span data-en="Impossible to ignore <img src=&quot;img/marca/simbolo-negro.png&quot; alt=&quot;&quot;> Brands born from impact <img src=&quot;img/marca/simbolo-negro.png&quot; alt=&quot;&quot;>">Marcas imposibles de ignorar <img src="img/marca/simbolo-negro.png" alt=""> Brands born from impact <img src="img/marca/simbolo-negro.png" alt=""></span>
+      <span data-en="Impossible to ignore <img src=&quot;img/marca/simbolo-negro.png&quot; alt=&quot;&quot;> Brands born from impact <img src=&quot;img/marca/simbolo-negro.png&quot; alt=&quot;&quot;>">Marcas imposibles de ignorar <img src="img/marca/simbolo-negro.png" alt=""> Brands born from impact <img src="img/marca/simbolo-negro.png" alt=""></span>
     </div>
   </div>
 
@@ -182,38 +186,38 @@
   <section class="services wrap" id="servicios" aria-labelledby="svc-title">
     <div class="head">
       <div>
-        <p class="label reveal">Qué hacemos</p>
-        <h2 id="svc-title" class="h2 reveal" style="--i:1">Servicios</h2>
+        <p class="label reveal" data-en="What we do">Qué hacemos</p>
+        <h2 id="svc-title" class="h2 reveal" style="--i:1" data-en="Services">Servicios</h2>
       </div>
     </div>
     <ol class="svc-list">
-      <li class="svc reveal"><span class="n">01</span><h3>Estrategia de marca</h3><p>Diagnóstico, posicionamiento y una idea de marca que ordena todas las decisiones.</p></li>
-      <li class="svc reveal" style="--i:1"><span class="n">02</span><h3>Identidad visual</h3><p>Símbolo, wordmark, tipografía, color y un sistema que funciona en cada punto de contacto.</p></li>
-      <li class="svc reveal" style="--i:2"><span class="n">03</span><h3>Packaging</h3><p>Empaques que se ganan la góndola y se quedan en la memoria.</p></li>
-      <li class="svc reveal" style="--i:3"><span class="n">04</span><h3>Plataformas digitales</h3><p>Sitios y experiencias que traducen la marca a pantalla, con el mismo nivel de detalle.</p></li>
+      <li class="svc reveal"><span class="n">01</span><h3 data-en="Brand strategy">Estrategia de marca</h3><p data-en="Diagnosis, positioning and a brand idea that guides every decision.">Diagnóstico, posicionamiento y una idea de marca que ordena todas las decisiones.</p></li>
+      <li class="svc reveal" style="--i:1"><span class="n">02</span><h3 data-en="Visual identity">Identidad visual</h3><p data-en="Symbol, wordmark, typography, color and a system that works at every touchpoint.">Símbolo, wordmark, tipografía, color y un sistema que funciona en cada punto de contacto.</p></li>
+      <li class="svc reveal" style="--i:2"><span class="n">03</span><h3>Packaging</h3><p data-en="Packaging that wins the shelf and stays in people’s memory.">Empaques que se ganan la góndola y se quedan en la memoria.</p></li>
+      <li class="svc reveal" style="--i:3"><span class="n">04</span><h3 data-en="Digital platforms">Plataformas digitales</h3><p data-en="Websites and experiences that bring the brand to the screen with the same attention to detail.">Sitios y experiencias que traducen la marca a pantalla, con el mismo nivel de detalle.</p></li>
     </ol>
   </section>
 
   <!-- ===== Nosotros ===== -->
-  <section class="manifesto wrap" id="nosotros" aria-label="Nosotros">
-    <p class="label reveal">Agencia de diseño estratégico · Panamá</p>
-    <p class="reveal" style="--i:1">Un chóque es el instante en que algo cambia de dirección. <span class="mute">Diseñamos marcas para ese momento: claras en su estrategia, inconfundibles en su forma.</span></p>
+  <section class="manifesto wrap" id="nosotros" aria-label="Nosotros" data-en-aria="About">
+    <p class="label reveal" data-en="Strategic design agency · Panama">Agencia de diseño estratégico · Panamá</p>
+    <p class="reveal" style="--i:1" data-en="A chóque is the moment something changes direction. <span class=&quot;mute&quot;>We design brands for that moment: clear in strategy, unmistakable in form.</span>">Un chóque es el instante en que algo cambia de dirección. <span class="mute">Diseñamos marcas para ese momento: claras en su estrategia, inconfundibles en su forma.</span></p>
   </section>
 
   <!-- ===== Contacto ===== -->
   <section class="contact wrap" id="contacto" aria-labelledby="contact-title">
     <div class="contact-card reveal">
       <img class="card-mark" src="img/marca/simbolo-blanco.png" alt="" width="982" height="983">
-      <h2 id="contact-title">¿Listo para el <em>impacto?</em></h2>
-      <p>Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
+      <h2 id="contact-title" data-en="Ready for <em>impact?</em>">¿Listo para el <em>impacto?</em></h2>
+      <p data-en="Tell us about your brand. We reply within 48 hours.">Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
       <div class="actions">
-        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com" data-en="Write to us <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
         <a class="btn btn-ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <footer class="site">
       <span>© <span data-year>2026</span> chóque studio</span>
-      <nav aria-label="Redes"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
+      <nav aria-label="Redes" data-en-aria="Social"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
     </footer>
   </section>
 </main>

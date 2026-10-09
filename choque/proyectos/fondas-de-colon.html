@@ -14,7 +14,7 @@
 <script src="../assets/main.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -22,88 +22,91 @@
 </svg>
 
 <header class="nav">
-  <a class="logo" href="../index.html" aria-label="chóque, inicio"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
-  <nav aria-label="Principal">
+  <a class="logo" href="../index.html" aria-label="chóque, inicio" data-en-aria="chóque, home"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
+  <nav aria-label="Principal" data-en-aria="Main">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button><span aria-hidden="true">·</span><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
     <ul>
-      <li><a href="../index.html#proyectos" aria-current="page">Proyectos</a></li>
-      <li><a href="../index.html#servicios" class="hide-sm">Servicios</a></li>
-      <li><a href="../index.html#nosotros">Nosotros</a></li>
-      <li><a href="#contacto" class="show-sm">Contacto</a></li>
-      <li><a href="#contacto" class="cta">Hablemos</a></li>
+      <li><a href="../index.html#proyectos" aria-current="page" data-en="Projects">Proyectos</a></li>
+      <li><a href="../index.html#servicios" class="hide-sm" data-en="Services">Servicios</a></li>
+      <li><a href="../index.html#nosotros" data-en="About">Nosotros</a></li>
+      <li><a href="#contacto" class="show-sm" data-en="Contact">Contacto</a></li>
+      <li><a href="#contacto" class="cta" data-en="Let's talk">Hablemos</a></li>
     </ul>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menú <span class="bars" aria-hidden="true"></span></button>
   </nav>
 </header>
 
-<div class="menu" id="menu" aria-label="Menú" inert>
+<div class="menu" id="menu" aria-label="Menú" data-en-aria="Menu" inert>
   <ul>
-    <li><a href="../index.html#proyectos" style="--i:0">Proyectos</a></li>
-    <li><a href="../index.html#servicios" style="--i:1">Servicios</a></li>
-    <li><a href="../index.html#nosotros" style="--i:2">Nosotros</a></li>
-    <li><a href="#contacto" style="--i:3">Contacto</a></li>
+    <li><a href="../index.html#proyectos" style="--i:0" data-en="Projects">Proyectos</a></li>
+    <li><a href="../index.html#servicios" style="--i:1" data-en="Services">Servicios</a></li>
+    <li><a href="../index.html#nosotros" style="--i:2" data-en="About">Nosotros</a></li>
+    <li><a href="#contacto" style="--i:3" data-en="Contact">Contacto</a></li>
   </ul>
   <div class="menu-foot">
     <a href="mailto:choquecreativo@gmail.com">choquecreativo@gmail.com</a>
-    <span>Ciudad de Panamá, Panamá</span>
+    <span data-en="Panama City, Panama">Ciudad de Panamá, Panamá</span>
   </div>
 </div>
 
 <main id="main">
   <article>
     <header class="case-hero wrap">
-      <p class="label reveal">Proyecto — Fondas de Colón</p>
-      <h1 class="reveal" style="--i:1">Evolucionando la gastronomía local hacia una vitrina digital <em>global.</em></h1>
-      <p class="intro reveal" style="--i:2">Junto al PNUD, transformamos la riqueza gastronómica de Colón en una plataforma interactiva que rescata historias y promueve el desarrollo socioeconómico local.</p>
+      <p class="label reveal" data-en="Project — Fondas de Colón">Proyecto — Fondas de Colón</p>
+      <h1 class="reveal" style="--i:1" data-en="Taking local cuisine to a <em>global</em> digital showcase.">Evolucionando la gastronomía local hacia una vitrina digital <em>global.</em></h1>
+      <p class="intro reveal" style="--i:2" data-en="Together with UNDP, we turned Colón’s culinary heritage into an interactive platform that preserves stories and drives local socioeconomic development.">Junto al PNUD, transformamos la riqueza gastronómica de Colón en una plataforma interactiva que rescata historias y promueve el desarrollo socioeconómico local.</p>
     </header>
 
     <div class="wrap">
       <div class="media reveal">
-        <img src="../img/proyectos/fondas-de-colon/hero.jpg" alt="Collage de fondas de Colón: la fachada de Delicias El Inquieto, el equipo del Restaurante Hudson haciendo el gesto C-3 y un plato de camarones, con el logo del PNUD" width="1031" height="544">
+        <img src="../img/proyectos/fondas-de-colon/hero.jpg" alt="Collage de fondas de Colón: la fachada de Delicias El Inquieto, el equipo del Restaurante Hudson haciendo el gesto C-3 y un plato de camarones, con el logo del PNUD" data-en-alt="Collage of Colón fondas: the Delicias El Inquieto storefront, the Restaurante Hudson team making the C-3 sign and a shrimp dish, with the UNDP logo" width="1031" height="544">
       </div>
     </div>
 
     <div class="case-body wrap">
       <dl class="facts reveal">
-        <div><dt>Cliente</dt><dd>Fondas de Colón</dd></div>
-        <div><dt>Año</dt><dd>2025</dd></div>
-        <div class="full"><dt>Servicios</dt><dd>Identidad visual<br>Diseño web<br>Colaterales</dd></div>
+        <div><dt data-en="Client">Cliente</dt><dd>Fondas de Colón</dd></div>
+        <div><dt data-en="Year">Año</dt><dd>2025</dd></div>
+        <div class="full"><dt data-en="Services">Servicios</dt><dd data-en="Visual identity<br>Web design<br>Collateral">Identidad visual<br>Diseño web<br>Colaterales</dd></div>
       </dl>
 
       <div class="story">
         <section class="reveal">
-          <h2>El reto</h2>
-          <p class="q">Dignificar la cocina popular colonense y llevarla a una vitrina digital sin que pierda su sabor de barrio.</p>
+          <h2 data-en="The challenge">El reto</h2>
+          <p class="q" data-en="Give Colón’s street cooking the recognition it deserves and bring it to a digital showcase without losing its neighborhood flavor.">Dignificar la cocina popular colonense y llevarla a una vitrina digital sin que pierda su sabor de barrio.</p>
         </section>
         <section class="reveal">
-          <h2>La idea</h2>
-          <p>Creamos un símbolo que fusiona el orgullo territorial (el gesto C-3), la herramienta del trabajo (la cuchara) y la sazón única (el corazón) que define a cada fonda.</p>
+          <h2 data-en="The idea">La idea</h2>
+          <p data-en="We created a symbol that fuses local pride (the C-3 hand sign), the tool of the trade (the spoon) and the unique seasoning (the heart) that defines every fonda.">Creamos un símbolo que fusiona el orgullo territorial (el gesto C-3), la herramienta del trabajo (la cuchara) y la sazón única (el corazón) que define a cada fonda.</p>
         </section>
       </div>
     </div>
 
     <div class="gallery wrap">
-      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/simbolo-logo.jpg" alt="Construcción del símbolo con sus partes señaladas (C-3, cuchara y corazón) junto al logotipo de Fondas de Colón sobre amarillo" width="1031" height="576" loading="lazy"></div>
-      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/patron.jpg" alt="Patrón ilustrado de Fondas de Colón con cangrejos, langostinos y frutas en colores vivos" width="1031" height="684" loading="lazy"></div>
-      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/web.jpg" alt="Página de inicio del sitio de Fondas de Colón: “El corazón de Colón fonda por fonda”, con buscador y cifras de 45+ fondas, 100+ platos y 50+ tradiciones" width="1031" height="575" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/simbolo-logo.jpg" alt="Construcción del símbolo con sus partes señaladas (C-3, cuchara y corazón) junto al logotipo de Fondas de Colón sobre amarillo" data-en-alt="Symbol construction with its parts labeled (C-3, spoon and heart) next to the Fondas de Colón logo on yellow" width="1031" height="576" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/patron.jpg" alt="Patrón ilustrado de Fondas de Colón con cangrejos, langostinos y frutas en colores vivos" data-en-alt="Fondas de Colón illustrated pattern with crabs, prawns and fruit in bright colors" width="1031" height="684" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/web.jpg" alt="Página de inicio del sitio de Fondas de Colón: “El corazón de Colón fonda por fonda”, con buscador y cifras de 45+ fondas, 100+ platos y 50+ tradiciones" data-en-alt="Fondas de Colón homepage: “El corazón de Colón fonda por fonda”, with a search bar and figures of 45+ fondas, 100+ dishes and 50+ traditions" width="1031" height="575" loading="lazy"></div>
       <div class="trio">
-        <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/pescado.jpg" alt="Mano con guante sazonando un pescado entero" width="1031" height="1028" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/fondas-de-colon/delantal.jpg" alt="Logotipo de Fondas de Colón bordado en un delantal de mezclilla" width="1031" height="1027" loading="lazy"></div>
-        <div class="media reveal" style="--i:2"><img src="../img/proyectos/fondas-de-colon/plan-tinta.jpg" alt="Ilustración de una empanada amarilla con el texto “Plan tintá”" width="1031" height="1027" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/pescado.jpg" alt="Mano con guante sazonando un pescado entero" data-en-alt="Gloved hand seasoning a whole fish" width="1031" height="1028" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/fondas-de-colon/delantal.jpg" alt="Logotipo de Fondas de Colón bordado en un delantal de mezclilla" data-en-alt="Fondas de Colón logo embroidered on a denim apron" width="1031" height="1027" loading="lazy"></div>
+        <div class="media reveal" style="--i:2"><img src="../img/proyectos/fondas-de-colon/plan-tinta.jpg" alt="Ilustración de una empanada amarilla con el texto “Plan tintá”" data-en-alt="Illustration of a yellow empanada with the words “Plan tintá”" width="1031" height="1027" loading="lazy"></div>
       </div>
     </div>
 
     <div class="statement wrap">
-      <p class="reveal">Diseñamos con propósito una plataforma que rescata el alma de nuestras fondas tradicionales, celebra siglos de sabor e historia, y convierte sabores locales en <em>experiencias globales.</em></p>
+      <p class="reveal" data-en="We designed, with purpose, a platform that preserves the soul of our traditional fondas, celebrates centuries of flavor and history, and turns local flavors into <em>global experiences.</em>">Diseñamos con propósito una plataforma que rescata el alma de nuestras fondas tradicionales, celebra siglos de sabor e historia, y convierte sabores locales en <em>experiencias globales.</em></p>
       <div class="actions reveal"><a class="btn btn-ghost" href="https://www.fondasdecolon.com" target="_blank" rel="noopener">www.fondasdecolon.com <svg aria-hidden="true"><use href="#arrow-r"/></svg></a></div>
     </div>
 
     <div class="gallery wrap">
-      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/comida-web.jpg" alt="Plato de pescado frito con patacones junto a una laptop en la playa mostrando el sitio de Fondas de Colón" width="1031" height="574" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/fondas-de-colon/comida-web.jpg" alt="Plato de pescado frito con patacones junto a una laptop en la playa mostrando el sitio de Fondas de Colón" data-en-alt="Fried fish with patacones next to a laptop on the beach showing the Fondas de Colón website" width="1031" height="574" loading="lazy"></div>
     </div>
 
     <div class="wrap">
       <a class="next" href="chavela.html">
-        <p class="label">Siguiente proyecto</p>
+        <p class="label" data-en="Next project">Siguiente proyecto</p>
         <span class="t">Chavela <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
       </a>
     </div>
@@ -113,16 +116,16 @@
   <section class="contact wrap" id="contacto" aria-labelledby="contact-title">
     <div class="contact-card reveal">
       <img class="card-mark" src="../img/marca/simbolo-blanco.png" alt="" width="982" height="983">
-      <h2 id="contact-title">¿Listo para el <em>impacto?</em></h2>
-      <p>Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
+      <h2 id="contact-title" data-en="Ready for <em>impact?</em>">¿Listo para el <em>impacto?</em></h2>
+      <p data-en="Tell us about your brand. We reply within 48 hours.">Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
       <div class="actions">
-        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com" data-en="Write to us <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
         <a class="btn btn-ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <footer class="site">
       <span>© <span data-year>2026</span> chóque studio</span>
-      <nav aria-label="Redes"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
+      <nav aria-label="Redes" data-en-aria="Social"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
     </footer>
   </section>
 </main>

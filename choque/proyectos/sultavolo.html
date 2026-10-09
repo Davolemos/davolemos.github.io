@@ -14,7 +14,7 @@
 <script src="../assets/main.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#main" data-en="Skip to content">Saltar al contenido</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -22,89 +22,92 @@
 </svg>
 
 <header class="nav">
-  <a class="logo" href="../index.html" aria-label="chóque, inicio"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
-  <nav aria-label="Principal">
+  <a class="logo" href="../index.html" aria-label="chóque, inicio" data-en-aria="chóque, home"><img src="../img/marca/logo-negro.png" alt="chóque" width="1160" height="310"></a>
+  <nav aria-label="Principal" data-en-aria="Main">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button type="button" data-lang="es" aria-pressed="true" title="Español">ES</button><span aria-hidden="true">·</span><button type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
     <ul>
-      <li><a href="../index.html#proyectos" aria-current="page">Proyectos</a></li>
-      <li><a href="../index.html#servicios" class="hide-sm">Servicios</a></li>
-      <li><a href="../index.html#nosotros">Nosotros</a></li>
-      <li><a href="#contacto" class="show-sm">Contacto</a></li>
-      <li><a href="#contacto" class="cta">Hablemos</a></li>
+      <li><a href="../index.html#proyectos" aria-current="page" data-en="Projects">Proyectos</a></li>
+      <li><a href="../index.html#servicios" class="hide-sm" data-en="Services">Servicios</a></li>
+      <li><a href="../index.html#nosotros" data-en="About">Nosotros</a></li>
+      <li><a href="#contacto" class="show-sm" data-en="Contact">Contacto</a></li>
+      <li><a href="#contacto" class="cta" data-en="Let's talk">Hablemos</a></li>
     </ul>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menú <span class="bars" aria-hidden="true"></span></button>
   </nav>
 </header>
 
-<div class="menu" id="menu" aria-label="Menú" inert>
+<div class="menu" id="menu" aria-label="Menú" data-en-aria="Menu" inert>
   <ul>
-    <li><a href="../index.html#proyectos" style="--i:0">Proyectos</a></li>
-    <li><a href="../index.html#servicios" style="--i:1">Servicios</a></li>
-    <li><a href="../index.html#nosotros" style="--i:2">Nosotros</a></li>
-    <li><a href="#contacto" style="--i:3">Contacto</a></li>
+    <li><a href="../index.html#proyectos" style="--i:0" data-en="Projects">Proyectos</a></li>
+    <li><a href="../index.html#servicios" style="--i:1" data-en="Services">Servicios</a></li>
+    <li><a href="../index.html#nosotros" style="--i:2" data-en="About">Nosotros</a></li>
+    <li><a href="#contacto" style="--i:3" data-en="Contact">Contacto</a></li>
   </ul>
   <div class="menu-foot">
     <a href="mailto:choquecreativo@gmail.com">choquecreativo@gmail.com</a>
-    <span>Ciudad de Panamá, Panamá</span>
+    <span data-en="Panama City, Panama">Ciudad de Panamá, Panamá</span>
   </div>
 </div>
 
 <main id="main">
   <article>
     <header class="case-hero wrap">
-      <p class="label reveal">Proyecto — Sultavolo</p>
-      <h1 class="reveal" style="--i:1">La mesa como lienzo y cada comida una obra de <em>arte.</em></h1>
+      <p class="label reveal" data-en="Project — Sultavolo">Proyecto — Sultavolo</p>
+      <h1 class="reveal" style="--i:1" data-en="The table as a canvas, every meal a work of <em>art.</em>">La mesa como lienzo y cada comida una obra de <em>arte.</em></h1>
     </header>
 
     <div class="wrap">
       <div class="media reveal">
-        <img src="../img/proyectos/sultavolo/hero.jpg" alt="Mesa vista desde arriba con platos de bordes verdes y rayas naranjas, y el logotipo SŪLTAVOLO en blanco" width="1031" height="545">
+        <img src="../img/proyectos/sultavolo/hero.jpg" alt="Mesa vista desde arriba con platos de bordes verdes y rayas naranjas, y el logotipo SŪLTAVOLO en blanco" data-en-alt="Table seen from above with green-rimmed, orange-striped plates and the SŪLTAVOLO logo in white" width="1031" height="545">
       </div>
     </div>
 
     <div class="case-body wrap">
       <dl class="facts reveal">
-        <div><dt>Cliente</dt><dd>Sultavolo</dd></div>
-        <div><dt>Año</dt><dd>2024</dd></div>
-        <div class="full"><dt>Servicios</dt><dd>Branding<br>Identidad visual<br>Dirección de arte</dd></div>
+        <div><dt data-en="Client">Cliente</dt><dd>Sultavolo</dd></div>
+        <div><dt data-en="Year">Año</dt><dd>2024</dd></div>
+        <div class="full"><dt data-en="Services">Servicios</dt><dd data-en="Branding<br>Visual identity<br>Art direction">Branding<br>Identidad visual<br>Dirección de arte</dd></div>
       </dl>
 
       <div class="story">
         <section class="reveal">
-          <h2>El reto</h2>
-          <p class="q">Diferenciar una marca de decoración de mesas en un mercado donde todo se parece, dándole un discurso propio más allá del producto.</p>
+          <h2 data-en="The challenge">El reto</h2>
+          <p class="q" data-en="Setting a tableware brand apart in a market where everything looks alike, giving it a voice of its own beyond the product.">Diferenciar una marca de decoración de mesas en un mercado donde todo se parece, dándole un discurso propio más allá del producto.</p>
         </section>
         <section class="reveal">
-          <h2>La idea</h2>
-          <p class="q">La mesa como lienzo.</p>
-          <p>Cada montaje es una composición y cada comida, una obra de arte. La identidad se comporta como una galería: deja que la mesa hable.</p>
+          <h2 data-en="The idea">La idea</h2>
+          <p class="q" data-en="The table as a canvas.">La mesa como lienzo.</p>
+          <p data-en="Every setting is a composition and every meal a work of art. The identity behaves like a gallery: it lets the table speak.">Cada montaje es una composición y cada comida, una obra de arte. La identidad se comporta como una galería: deja que la mesa hable.</p>
         </section>
       </div>
     </div>
 
     <div class="gallery wrap">
-      <div class="media reveal"><img src="../img/proyectos/sultavolo/logo.jpg" alt="Logotipo de Sultavolo: símbolo floral azul marino junto al nombre SŪLTAVOLO sobre fondo crema" width="1031" height="576" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/sultavolo/logo.jpg" alt="Logotipo de Sultavolo: símbolo floral azul marino junto al nombre SŪLTAVOLO sobre fondo crema" data-en-alt="Sultavolo logo: a navy floral symbol next to the name SŪLTAVOLO on cream" width="1031" height="576" loading="lazy"></div>
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/sultavolo/brindis.jpg" alt="Dos manos brindan con copas de colores sobre una mesa montada con platos de Sultavolo" width="1031" height="1029" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/sultavolo/simbolo.jpg" alt="Símbolo de Sultavolo en azul marino sobre naranja" width="1031" height="1030" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/sultavolo/brindis.jpg" alt="Dos manos brindan con copas de colores sobre una mesa montada con platos de Sultavolo" data-en-alt="Two hands toasting with colored glasses over a table set with Sultavolo plates" width="1031" height="1029" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/sultavolo/simbolo.jpg" alt="Símbolo de Sultavolo en azul marino sobre naranja" data-en-alt="Sultavolo symbol in navy on orange" width="1031" height="1030" loading="lazy"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/sultavolo/patron.jpg" alt="Patrón tipográfico SŪLTAVOLO en naranja enmarcando una mesa de desayuno con un sello circular" width="1031" height="577" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/sultavolo/patron.jpg" alt="Patrón tipográfico SŪLTAVOLO en naranja enmarcando una mesa de desayuno con un sello circular" data-en-alt="Orange SŪLTAVOLO type pattern framing a breakfast table with a round seal" width="1031" height="577" loading="lazy"></div>
     </div>
 
     <div class="statement wrap">
-      <p class="reveal">Sultavolo dejó de vender decoración para vender experiencias: <em>cada mesa firmada como una pieza única.</em></p>
+      <p class="reveal" data-en="Sultavolo stopped selling decor and started selling experiences: <em>every table signed as a one-of-a-kind piece.</em>">Sultavolo dejó de vender decoración para vender experiencias: <em>cada mesa firmada como una pieza única.</em></p>
     </div>
 
     <div class="gallery wrap">
       <div class="pair">
-        <div class="media reveal"><img src="../img/proyectos/sultavolo/paleta.jpg" alt="Paleta de color de Sultavolo: azul marino, crema, naranja, rosa, lila, verde oliva y celeste" width="1031" height="1031" loading="lazy"></div>
-        <div class="media reveal" style="--i:1"><img src="../img/proyectos/sultavolo/individual.jpg" alt="Individual de tela con ilustraciones tropicales y el lema “Compartir, disfrutar, comer bonito” sobre fondo rosa" width="1031" height="1031" loading="lazy"></div>
+        <div class="media reveal"><img src="../img/proyectos/sultavolo/paleta.jpg" alt="Paleta de color de Sultavolo: azul marino, crema, naranja, rosa, lila, verde oliva y celeste" data-en-alt="Sultavolo color palette: navy, cream, orange, pink, lilac, olive green and sky blue" width="1031" height="1031" loading="lazy"></div>
+        <div class="media reveal" style="--i:1"><img src="../img/proyectos/sultavolo/individual.jpg" alt="Individual de tela con ilustraciones tropicales y el lema “Compartir, disfrutar, comer bonito” sobre fondo rosa" data-en-alt="Fabric placemat with tropical illustrations and the motto “Compartir, disfrutar, comer bonito” on pink" width="1031" height="1031" loading="lazy"></div>
       </div>
-      <div class="media reveal"><img src="../img/proyectos/sultavolo/etiquetas.jpg" alt="Etiquetas colgantes y bolsas de tela con la identidad de Sultavolo sobre un mantel verde" width="1031" height="578" loading="lazy"></div>
+      <div class="media reveal"><img src="../img/proyectos/sultavolo/etiquetas.jpg" alt="Etiquetas colgantes y bolsas de tela con la identidad de Sultavolo sobre un mantel verde" data-en-alt="Hang tags and tote bags with the Sultavolo identity on a green tablecloth" width="1031" height="578" loading="lazy"></div>
     </div>
 
     <div class="wrap">
       <a class="next" href="fondas-de-colon.html">
-        <p class="label">Siguiente proyecto</p>
+        <p class="label" data-en="Next project">Siguiente proyecto</p>
         <span class="t">Fondas de Colón <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
       </a>
     </div>
@@ -114,16 +117,16 @@
   <section class="contact wrap" id="contacto" aria-labelledby="contact-title">
     <div class="contact-card reveal">
       <img class="card-mark" src="../img/marca/simbolo-blanco.png" alt="" width="982" height="983">
-      <h2 id="contact-title">¿Listo para el <em>impacto?</em></h2>
-      <p>Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
+      <h2 id="contact-title" data-en="Ready for <em>impact?</em>">¿Listo para el <em>impacto?</em></h2>
+      <p data-en="Tell us about your brand. We reply within 48 hours.">Cuéntanos de tu marca. Respondemos en menos de 48 horas.</p>
       <div class="actions">
-        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
+        <a class="btn btn-light" href="mailto:choquecreativo@gmail.com" data-en="Write to us <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Escríbenos <svg aria-hidden="true"><use href="#arrow-r"/></svg></a>
         <a class="btn btn-ghost" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <footer class="site">
       <span>© <span data-year>2026</span> chóque studio</span>
-      <nav aria-label="Redes"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
+      <nav aria-label="Redes" data-en-aria="Social"><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></nav>
     </footer>
   </section>
 </main>
