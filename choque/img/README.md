@@ -14,7 +14,8 @@ img/
 ├── social/og.jpg                  Imagen para compartir en redes (falta) · 1200×630 px
 └── proyectos/
     ├── chavela/
-    │   ├── portada.jpg            Tarjeta en la home · 4:5 (1200×1500)
+    │   ├── portada.jpg            Tarjeta y reel en la home · 4:5 (1200×1500)
+    │   ├── fachada.jpg            Galería del caso y reel
     │   ├── collage.jpg            Imagen principal del caso · horizontal
     │   ├── logo-poster.jpg        Galería · horizontal
     │   ├── periodico.jpg          Galería · cuadrada
@@ -23,7 +24,7 @@ img/
     │   ├── menu.jpg               Galería · cuadrada
     │   └── tote-delantal.jpg      Galería · horizontal
     ├── sultavolo/portada.jpg      Tarjeta · 4:5
-    ├── mansa-galleta/portada.jpg  Tarjeta · 4:5 (la actual está incompleta; la home usa un bloque de color)
+    ├── mansa-galleta/portada.jpg  Tarjeta · 4:5
     ├── fondas-de-colon/portada.jpg
     └── ricketts-lab/portada.jpg
 ```
