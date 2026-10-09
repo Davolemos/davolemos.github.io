@@ -71,13 +71,54 @@ section { scroll-margin-top: 90px; }
 .nav .cta { background: var(--ink); color: var(--bg); padding: 0 18px; }
 @media (hover: hover) and (pointer: fine) { .nav .cta:hover { background: #2A2A28; } }
 .nav .show-sm { display: none; }
-@media (max-width: 560px) {
-  .nav { padding-left: 12px; }
-  .logo { font-size: 19px; }
-  .logo svg { width: 22px; height: 22px; }
-  .nav ul a { padding: 0 8px; font-size: 14px; }
-  .nav .cta, .nav .hide-sm { display: none; }
-  .nav .show-sm { display: inline-flex; }
+/* Mobile menu */
+.menu-btn {
+  display: none; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px 0 18px;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--ink); color: var(--bg); font: 500 15px/1 var(--sans);
+  transition: transform 160ms var(--ease-out);
+}
+.menu-btn:active { transform: scale(0.96); }
+.menu-btn .bars { position: relative; width: 16px; height: 10px; }
+.menu-btn .bars::before, .menu-btn .bars::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 1.75px; border-radius: 2px; background: currentColor;
+  transition: transform 250ms var(--ease-out);
+}
+.menu-btn .bars::before { top: 0; }
+.menu-btn .bars::after { bottom: 0; }
+.menu-btn[aria-expanded="true"] .bars::before { transform: translateY(4.1px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] .bars::after { transform: translateY(-4.1px) rotate(-45deg); }
+
+.menu {
+  position: fixed; inset: 0; z-index: 40;
+  display: none; flex-direction: column; justify-content: space-between; gap: 32px;
+  padding: calc(112px + env(safe-area-inset-top)) var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  opacity: 0; visibility: hidden;
+  transition: opacity 200ms var(--ease-out), visibility 0s linear 200ms;
+}
+.menu.open { opacity: 1; visibility: visible; transition: opacity 250ms var(--ease-out); }
+.menu ul { display: grid; }
+.menu li { border-bottom: 1px solid var(--line); }
+.menu li a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding-block: 14px 10px; font-size: clamp(44px, 13vw, 64px); font-weight: 500; line-height: 1; letter-spacing: -0.05em;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+.menu li a small { font-size: 14px; font-weight: 400; letter-spacing: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.menu.open li a { opacity: 1; transform: none; transition-duration: 400ms; transition-delay: calc(60ms + var(--i, 0) * 40ms); }
+.menu li a:active { color: var(--ink-2); }
+.menu-foot { display: grid; gap: 4px; font-size: 15px; color: var(--ink-2); }
+.menu-foot a { color: var(--ink); font-size: 17px; min-height: 44px; display: inline-flex; align-items: center; }
+
+@media (max-width: 720px) {
+  .nav { padding: 8px 8px 8px 16px; }
+  .nav ul { display: none; }
+  .logo { font-size: 25px; gap: 7px; }
+  .logo svg { width: 30px; height: 30px; }
+  .menu-btn { display: inline-flex; }
+  .menu { display: flex; }
 }
 
 /* ---------- Buttons ---------- */
@@ -291,5 +332,6 @@ footer.site nav { display: flex; gap: 20px; }
   .js .reveal, .js .media.reveal { transform: none; clip-path: none; transition: opacity 300ms ease; transition-delay: 0ms; }
   .marquee-inner, .burst { animation: none; }
   .rotator > span { transition: opacity 200ms ease; transform: none !important; filter: none !important; }
+  .menu, .menu.open, .menu li a, .menu.open li a { transition: opacity 150ms ease; transform: none; transition-delay: 0ms; }
   .svc h3, .card .media img, .logo svg, .next .t svg { transition: none; }
 }
