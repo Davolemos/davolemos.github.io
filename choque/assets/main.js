@@ -208,3 +208,13 @@ if (privacyBtn && privacy) {
 
 // Animated covers: stay still for visitors who prefer reduced motion
 if (reduce) document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
+
+// Basic image protection: no right-click "Save image" and no drag-to-desktop on photos and videos
+const isMedia = (el) => el instanceof Element && el.closest('img, video, .media');
+document.addEventListener('contextmenu', (e) => { if (isMedia(e.target)) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if (isMedia(e.target)) e.preventDefault(); });
+document.querySelectorAll('img').forEach((img) => { img.draggable = false; });
+document.querySelectorAll('video').forEach((v) => {
+  v.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback');
+  v.disablePictureInPicture = true;
+});
