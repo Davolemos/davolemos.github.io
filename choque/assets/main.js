@@ -232,9 +232,10 @@ if (statusPill) {
     .then((s) => {
       if (!s || typeof s.abierta !== 'boolean' || !MONTHS[s.mes]) return;
       const mesEs = s.mes[0].toUpperCase() + s.mes.slice(1);
+      const back = !s.abierta && MONTHS[s.regreso];
       const label = statusPill.querySelector('[data-en]');
-      label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}`;
-      label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}`;
+      label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}${back ? ` · Regresamos en ${s.regreso}` : ''}`;
+      label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}${back ? ` · Back in ${MONTHS[s.regreso]}` : ''}`;
       label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
       statusPill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
     })
