@@ -1,0 +1,4 @@
+# Despliegue en Netlify: el sitio está en /choque y la función del estado de agenda en /netlify/functions
+[build]
+  publish = "choque"
+  functions = "netlify/functions"

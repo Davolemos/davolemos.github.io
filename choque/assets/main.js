@@ -1,0 +1,242 @@
+// choque — interacciones compartidas
+document.documentElement.classList.add('js');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Language (ES / EN). Texts carry their English version in data-en (innerHTML),
+// data-en-alt (image alt) and data-en-aria (aria-label). Visitors whose browser
+// isn't in Spanish get English by default; their choice is remembered.
+const STRINGS = {
+  es: { menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto', copied: 'Correo copiado' },
+  en: { menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project', copied: 'Email copied' },
+};
+const LANG_KEY = 'choque-lang';
+let lang = (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
+  || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+const t = (key) => STRINGS[lang][key];
+const applyLang = (next) => {
+  lang = next;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-en]').forEach((el) => {
+    if (el.dataset.es === undefined) el.dataset.es = el.innerHTML;
+    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.es;
+  });
+  for (const [attr, en, es] of [['alt', 'enAlt', 'esAlt'], ['aria-label', 'enAria', 'esAria']]) {
+    document.querySelectorAll(`[data-${attr === 'alt' ? 'en-alt' : 'en-aria'}]`).forEach((el) => {
+      if (el.dataset[es] === undefined) el.dataset[es] = el.getAttribute(attr);
+      el.setAttribute(attr, lang === 'en' ? el.dataset[en] : el.dataset[es]);
+    });
+  }
+  document.querySelectorAll('.lang [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  document.dispatchEvent(new CustomEvent('langchange'));
+};
+document.querySelectorAll('.lang [data-lang]').forEach((b) => b.addEventListener('click', () => {
+  applyLang(b.dataset.lang);
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+}));
+applyLang(lang);
+
+document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+// Reveal on scroll
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+}, { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+// Rotating phrase: on the home page it advances with every reel photo
+// (event "reel:change"); other pages rotate on their own timer
+const words = [...document.querySelectorAll('.rotator > span')];
+if (words.length > 1) {
+  let w = 0;
+  const nextWord = () => {
+    const cur = words[w], nxt = words[(w = (w + 1) % words.length)];
+    cur.classList.add('out'); cur.setAttribute('aria-hidden', 'true');
+    nxt.classList.remove('out'); nxt.removeAttribute('aria-hidden');
+    setTimeout(() => cur.classList.remove('out'), 160);
+  };
+  if (document.getElementById('reel')) document.addEventListener('reel:change', nextWord);
+  else setInterval(() => { if (!document.hidden) nextWord(); }, 2800);
+}
+
+// Carousel
+const track = document.getElementById('track');
+if (track) {
+  const cards = [...track.children];
+  const prev = document.getElementById('prev'), next = document.getElementById('next');
+  const cur = document.getElementById('cur');
+  const pad = (n) => String(n).padStart(2, '0');
+  document.getElementById('tot').textContent = pad(cards.length);
+  const index = () => {
+    const start = cards[0].offsetLeft;
+    let best = 0, d = Infinity;
+    cards.forEach((c, i) => { const k = Math.abs(c.offsetLeft - start - track.scrollLeft); if (k < d) { d = k; best = i; } });
+    return best;
+  };
+  const update = () => {
+    cur.textContent = pad(index() + 1);
+    prev.disabled = track.scrollLeft < 4;
+    next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+  };
+  const go = (dir) => {
+    const i = Math.max(0, Math.min(cards.length - 1, index() + dir));
+    track.scrollTo({ left: cards[i].offsetLeft - cards[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+  };
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+  track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+  addEventListener('resize', update);
+  update();
+
+  // Deep link to a project card (#chavela, #mansa-galleta…)
+  const target = location.hash && track.querySelector(location.hash);
+  if (target) track.scrollLeft = target.offsetLeft - cards[0].offsetLeft;
+}
+
+// Reel: flips through project photos; the link always points to the visible project
+const reel = document.getElementById('reel');
+if (reel) {
+  const INTERVAL = 700; // ms por foto (la frase del titular cambia al mismo tiempo)
+  const imgs = [...reel.querySelectorAll('img')];
+  const name = document.getElementById('reel-name');
+  const cur = document.getElementById('reel-cur');
+  const toggle = document.getElementById('reel-toggle');
+  const toggleLabel = document.getElementById('reel-toggle-label');
+  const pad = (n) => String(n).padStart(2, '0');
+  document.getElementById('reel-tot').textContent = pad(imgs.length);
+  let i = 0, userPaused = reduce, hover = false, timer;
+
+  const show = (n) => {
+    imgs[i].classList.remove('on');
+    i = (n + imgs.length) % imgs.length;
+    const img = imgs[i];
+    img.classList.add('on');
+    reel.href = img.dataset.href;
+    name.textContent = img.dataset.name;
+    cur.textContent = pad(i + 1);
+    reel.setAttribute('aria-label', `${t('viewProject')} ${img.dataset.name}`);
+  };
+  const tick = () => {
+    if (userPaused || hover || document.hidden) return;
+    show(i + 1);
+    document.dispatchEvent(new CustomEvent('reel:change'));
+  };
+  const sync = () => {
+    toggle.setAttribute('aria-pressed', String(userPaused));
+    toggleLabel.textContent = userPaused ? t('play') : t('pause');
+  };
+  toggle.addEventListener('click', () => { userPaused = !userPaused; sync(); });
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    reel.addEventListener('pointerenter', () => { hover = true; });
+    reel.addEventListener('pointerleave', () => { hover = false; });
+  }
+  reel.addEventListener('focus', () => { hover = true; });
+  reel.addEventListener('blur', () => { hover = false; });
+  show(0); sync();
+  document.addEventListener('langchange', () => { sync(); reel.setAttribute('aria-label', `${t('viewProject')} ${imgs[i].dataset.name}`); });
+  timer = setInterval(tick, INTERVAL);
+}
+
+// Mobile menu
+const menuBtn = document.getElementById('menu-btn');
+const menu = document.getElementById('menu');
+if (menuBtn && menu) {
+  const setOpen = (open) => {
+    menu.classList.toggle('open', open);
+    menu.inert = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.firstChild.textContent = `${open ? t('close') : t('menu')} `;
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) menu.querySelector('a').focus({ preventScroll: true });
+  };
+  menuBtn.addEventListener('click', () => setOpen(!menu.classList.contains('open')));
+  const label = () => { menuBtn.firstChild.textContent = `${menu.classList.contains('open') ? t('close') : t('menu')} `; };
+  document.addEventListener('langchange', label); label();
+  menu.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) { setOpen(false); menuBtn.focus(); }
+  });
+  matchMedia('(min-width: 721px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+}
+
+// Email buttons open the mail app. If no app opens (the page keeps focus),
+// the address is copied and the button says so, so the visitor can paste it.
+// The copy itself happens on the tap, because browsers only allow it then.
+document.querySelectorAll('a.btn[href^="mailto:"]').forEach((btn) => {
+  const email = btn.getAttribute('href').slice(7).split('?')[0];
+  btn.title = email;
+  let timer;
+  btn.addEventListener('click', () => {
+    const copied = navigator.clipboard?.writeText(email);
+    let left = false;
+    const leave = () => { left = true; };
+    addEventListener('blur', leave, { once: true });
+    document.addEventListener('visibilitychange', leave, { once: true });
+    setTimeout(() => {
+      removeEventListener('blur', leave);
+      document.removeEventListener('visibilitychange', leave);
+      if (left || !copied) return;
+      copied.then(() => {
+        if (!timer) btn.dataset.label = btn.innerHTML;
+        clearTimeout(timer);
+        btn.innerHTML = `<svg class="mail" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg> ${t('copied')}`;
+        timer = setTimeout(() => { btn.innerHTML = btn.dataset.label; timer = null; }, 2500);
+      }).catch(() => {});
+    }, 1000);
+  });
+});
+
+// Privacy policy bubble in the footer
+const privacyBtn = document.querySelector('.privacy-btn');
+const privacy = document.getElementById('privacy');
+if (privacyBtn && privacy) {
+  const setPrivacy = (open) => {
+    privacy.classList.toggle('open', open);
+    privacy.inert = !open;
+    privacyBtn.setAttribute('aria-expanded', String(open));
+    if (open) privacy.querySelector('.privacy-close').focus({ preventScroll: true });
+  };
+  const isOpen = () => privacy.classList.contains('open');
+  privacyBtn.addEventListener('click', () => setPrivacy(!isOpen()));
+  privacy.querySelector('.privacy-close').addEventListener('click', () => { setPrivacy(false); privacyBtn.focus(); });
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !privacy.contains(e.target) && !privacyBtn.contains(e.target)) setPrivacy(false);
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setPrivacy(false); privacyBtn.focus(); }
+  });
+}
+
+// Animated covers: stay still for visitors who prefer reduced motion
+if (reduce) document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
+
+// Basic image protection: no right-click "Save image" and no drag-to-desktop on photos and videos
+const isMedia = (el) => el instanceof Element && el.closest('img, video, .media');
+document.addEventListener('contextmenu', (e) => { if (isMedia(e.target)) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if (isMedia(e.target)) e.preventDefault(); });
+document.querySelectorAll('img').forEach((img) => { img.draggable = false; });
+document.querySelectorAll('video').forEach((v) => {
+  v.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback');
+  v.disablePictureInPicture = true;
+});
+
+// Agenda status pill: the HTML holds a default; when the site runs on Netlify the
+// current status set from the admin panel (/api/estado) replaces it.
+const statusPill = document.querySelector('.status[data-status]');
+if (statusPill) {
+  const MONTHS = {
+    enero: 'January', febrero: 'February', marzo: 'March', abril: 'April', mayo: 'May', junio: 'June',
+    julio: 'July', agosto: 'August', septiembre: 'September', octubre: 'October', noviembre: 'November', diciembre: 'December',
+  };
+  fetch('/api/estado', { cache: 'no-store' })
+    .then((r) => (r.ok && (r.headers.get('content-type') || '').includes('json') ? r.json() : null))
+    .then((s) => {
+      if (!s || typeof s.abierta !== 'boolean' || !MONTHS[s.mes]) return;
+      const mesEs = s.mes[0].toUpperCase() + s.mes.slice(1);
+      const label = statusPill.querySelector('[data-en]');
+      label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}`;
+      label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}`;
+      label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
+      statusPill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
+    })
+    .catch(() => {});
+}
