@@ -205,3 +205,6 @@ if (privacyBtn && privacy) {
     if (e.key === 'Escape' && isOpen()) { setPrivacy(false); privacyBtn.focus(); }
   });
 }
+
+// Animated covers: stay still for visitors who prefer reduced motion
+if (reduce) document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
