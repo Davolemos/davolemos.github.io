@@ -35,6 +35,7 @@
   .remember { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); margin-top: 8px; }
   .preview { display: grid; gap: 10px; }
   .preview .status { justify-self: start; }
+  [hidden] { display: none !important; }
   .btn { width: 100%; }
   .msg { min-height: 1.4em; font-size: 15px; text-align: center; }
   .msg.ok { color: #1F7A45; } .msg.err { color: #B4291C; }
@@ -73,6 +74,17 @@
       </select>
     </div>
 
+    <div id="regreso-box" hidden>
+      <label class="lbl" for="regreso" style="display:block">Regresamos en</label>
+      <select id="regreso">
+        <option value="">No mostrar</option>
+        <option value="enero">Enero</option><option value="febrero">Febrero</option><option value="marzo">Marzo</option>
+        <option value="abril">Abril</option><option value="mayo">Mayo</option><option value="junio">Junio</option>
+        <option value="julio">Julio</option><option value="agosto">Agosto</option><option value="septiembre">Septiembre</option>
+        <option value="octubre">Octubre</option><option value="noviembre">Noviembre</option><option value="diciembre">Diciembre</option>
+      </select>
+    </div>
+
     <div class="preview">
       <span class="lbl" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Así se verá</span>
       <span class="status" id="preview" data-status="abierta"><span class="dot" aria-hidden="true"></span><span id="preview-text">Agenda abierta · Octubre</span></span>
@@ -92,6 +104,10 @@
 <script>
   const form = document.getElementById('form');
   const mes = document.getElementById('mes');
+  const regreso = document.getElementById('regreso');
+  const regresoBox = document.getElementById('regreso-box');
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const cap = (m) => m[0].toUpperCase() + m.slice(1);
   const pass = document.getElementById('password');
   const remember = document.getElementById('remember');
   const msg = document.getElementById('msg');
@@ -102,20 +118,27 @@
 
   const estado = () => form.elements.estado.value;
   const render = () => {
-    const m = mes.value[0].toUpperCase() + mes.value.slice(1);
-    previewText.textContent = `${estado() === 'abierta' ? 'Agenda abierta' : 'Agenda cerrada'} · ${m}`;
+    const cerrada = estado() === 'cerrada';
+    regresoBox.hidden = !cerrada;
+    const back = cerrada && regreso.value ? ` · Regresamos en ${regreso.value}` : '';
+    previewText.textContent = `${cerrada ? 'Agenda cerrada' : 'Agenda abierta'} · ${cap(mes.value)}${back}`;
     preview.dataset.status = estado();
   };
   const say = (text, kind) => { msg.textContent = text; msg.className = 'msg ' + (kind || ''); };
 
   try { const p = localStorage.getItem(KEY); if (p) { pass.value = p; remember.checked = true; } } catch {}
-  mes.value = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date().getMonth()];
+  mes.value = MESES[new Date().getMonth()];
+  regreso.value = MESES[(new Date().getMonth() + 1) % 12];
   render();
 
   // Load the current status
   fetch('/api/estado', { cache: 'no-store' })
     .then((r) => (r.ok ? r.json() : Promise.reject()))
-    .then((s) => { form.elements.estado.value = s.abierta ? 'abierta' : 'cerrada'; mes.value = s.mes; render(); })
+    .then((s) => {
+      form.elements.estado.value = s.abierta ? 'abierta' : 'cerrada'; mes.value = s.mes;
+      regreso.value = s.regreso || (s.abierta ? MESES[(MESES.indexOf(s.mes) + 1) % 12] : '');
+      render();
+    })
     .catch(() => say('No se pudo leer el estado actual. Este panel funciona solo en el sitio publicado en Netlify.', 'err'));
 
   form.addEventListener('change', render);
@@ -126,7 +149,7 @@
     try {
       const r = await fetch('/api/estado', {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ password: pass.value, abierta: estado() === 'abierta', mes: mes.value }),
+        body: JSON.stringify({ password: pass.value, abierta: estado() === 'abierta', mes: mes.value, regreso: estado() === 'cerrada' ? regreso.value : '' }),
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data.error || 'No se pudo guardar. Intenta de nuevo.');
