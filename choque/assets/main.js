@@ -218,3 +218,25 @@ document.querySelectorAll('video').forEach((v) => {
   v.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback');
   v.disablePictureInPicture = true;
 });
+
+// Agenda status pill: the HTML holds a default; when the site runs on Netlify the
+// current status set from the admin panel (/api/estado) replaces it.
+const statusPill = document.querySelector('.status[data-status]');
+if (statusPill) {
+  const MONTHS = {
+    enero: 'January', febrero: 'February', marzo: 'March', abril: 'April', mayo: 'May', junio: 'June',
+    julio: 'July', agosto: 'August', septiembre: 'September', octubre: 'October', noviembre: 'November', diciembre: 'December',
+  };
+  fetch('/api/estado', { cache: 'no-store' })
+    .then((r) => (r.ok && (r.headers.get('content-type') || '').includes('json') ? r.json() : null))
+    .then((s) => {
+      if (!s || typeof s.abierta !== 'boolean' || !MONTHS[s.mes]) return;
+      const mesEs = s.mes[0].toUpperCase() + s.mes.slice(1);
+      const label = statusPill.querySelector('[data-en]');
+      label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}`;
+      label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}`;
+      label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
+      statusPill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
+    })
+    .catch(() => {});
+}
