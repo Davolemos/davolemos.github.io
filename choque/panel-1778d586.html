@@ -39,6 +39,22 @@
   .btn { width: 100%; }
   .msg { min-height: 1.4em; font-size: 15px; text-align: center; }
   .msg.ok { color: #1F7A45; } .msg.err { color: #B4291C; }
+  .stats-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .stats-head h2 { font-size: 24px; letter-spacing: -0.03em; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+  .seg button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: none; color: var(--ink-2); font: 500 14px var(--sans); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tile { padding: 14px; border-radius: 16px; background: var(--bg); }
+  .tile b { display: block; font-size: 30px; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .tile span { font-size: 13px; color: var(--ink-2); }
+  .rows h3 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .rows table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .rows th { font-size: 12px; font-weight: 500; color: var(--ink-2); text-align: right; padding: 4px 0; }
+  .rows th:first-child, .rows td:first-child { text-align: left; }
+  .rows td { padding: 8px 0; border-top: 1px solid var(--line); text-align: right; }
+  .rows td + td, .rows th + th { width: 84px; }
+  .note { font-size: 13.5px; color: var(--ink-2); }
 </style>
 </head>
 <body>
@@ -99,6 +115,35 @@
     <button class="btn btn-dark" type="submit" id="save">Guardar cambios</button>
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
   </form>
+
+  <section class="card" aria-labelledby="stats-title">
+    <div class="stats-head">
+      <h2 id="stats-title">Resultados de la web</h2>
+      <div class="seg" role="group" aria-label="Mes">
+        <button type="button" data-mes="0" aria-pressed="true">Este mes</button>
+        <button type="button" data-mes="1" aria-pressed="false">Mes pasado</button>
+      </div>
+    </div>
+    <div id="stats" hidden>
+      <div class="tiles">
+        <div class="tile"><b id="s-visitas">0</b><span>Visitas</span></div>
+        <div class="tile"><b id="s-contactos">0</b><span>Contactos</span></div>
+        <div class="tile"><b id="s-conv">0%</b><span>Visitas que te contactan</span></div>
+      </div>
+      <p class="note" id="s-detalle" style="margin-top:12px"></p>
+      <div class="rows" style="margin-top:20px">
+        <h3>De dónde llegan</h3>
+        <table><thead><tr><th>Fuente</th><th>Visitas</th><th>Contactos</th></tr></thead><tbody id="s-fuentes"></tbody></table>
+      </div>
+      <div class="rows" style="margin-top:20px">
+        <h3>Páginas más vistas</h3>
+        <table><thead><tr><th>Página</th><th>Vistas</th><th>Contactos</th></tr></thead><tbody id="s-paginas"></tbody></table>
+      </div>
+    </div>
+    <button class="btn btn-ghost" type="button" id="stats-load">Ver resultados</button>
+    <p class="msg" id="stats-msg" role="status" aria-live="polite"></p>
+    <p class="note">Las visitas se cuentan sin cookies ni datos personales. Los briefs completos te llegan por correo y están en Netlify → Forms. Este dispositivo no se cuenta.</p>
+  </section>
 </main>
 
 <script>
@@ -140,6 +185,59 @@
       render();
     })
     .catch(() => say('No se pudo leer el estado actual. Este panel funciona solo en el sitio publicado en Netlify.', 'err'));
+
+  // This device belongs to the studio: the site's visit counter skips it
+  try { localStorage.setItem('choque-yo', '1'); } catch {}
+
+  // Results: visits, sources and contacts (/api/metricas)
+  const stats = document.getElementById('stats');
+  const statsLoad = document.getElementById('stats-load');
+  const statsMsg = document.getElementById('stats-msg');
+  const segs = [...document.querySelectorAll('.seg [data-mes]')];
+  const FUENTES = { google: 'Google', bing: 'Bing', instagram: 'Instagram', facebook: 'Facebook', behance: 'Behance', linkedin: 'LinkedIn', tiktok: 'TikTok', whatsapp: 'WhatsApp', directo: 'Directo (escribieron la dirección o un link guardado)', otro: 'Otros sitios' };
+  const PROYECTOS = { chavela: 'Chavela', 'mansa-galleta': 'Mansa Galleta', sultavolo: 'Sultavolo', 'fondas-de-colon': 'Fondas de Colón', 'ricketts-lab': 'Ricketts Lab' };
+  const SERVICIOS = { 'branding-panama': 'Branding', 'diseno-de-logos-panama': 'Logos', 'diseno-de-empaques-panama': 'Empaques', 'diseno-grafico-panama': 'Diseño gráfico', 'diseno-web-panama': 'Diseño web' };
+  const pagina = (id) => {
+    if (id === 'inicio') return 'Inicio';
+    const [k, slug] = id.split('~');
+    return k === 'proyectos' ? `Proyecto: ${PROYECTOS[slug] || slug}` : `Servicio: ${SERVICIOS[slug] || slug}`;
+  };
+  const mesClave = (atras) => {
+    const [y, m] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Panama', year: 'numeric', month: '2-digit' }).format(new Date()).split('-').map(Number);
+    const d = new Date(y, m - 1 - atras, 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  };
+  const fila = (cells) => {
+    const tr = document.createElement('tr');
+    cells.forEach((c) => { const td = document.createElement('td'); td.textContent = c; tr.append(td); });
+    return tr;
+  };
+  let atras = 0;
+  const loadStats = async () => {
+    if (!pass.value) { statsMsg.textContent = 'Escribe la contraseña arriba.'; statsMsg.className = 'msg err'; pass.focus(); return; }
+    statsLoad.disabled = true; statsMsg.textContent = 'Cargando…'; statsMsg.className = 'msg';
+    try {
+      const r = await fetch('/api/metricas', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: pass.value, mes: mesClave(atras) }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || 'No se pudieron leer los resultados.');
+      document.getElementById('s-visitas').textContent = d.visitas;
+      document.getElementById('s-contactos').textContent = d.contactos.total;
+      document.getElementById('s-conv').textContent = d.visitas ? `${Math.round((d.contactos.total / d.visitas) * 1000) / 10}%` : '—';
+      document.getElementById('s-detalle').textContent = `${d.vistas} páginas vistas · WhatsApp ${d.contactos.whatsapp} · Email ${d.contactos.email} · Brief ${d.contactos.brief}`;
+      document.getElementById('s-fuentes').replaceChildren(...(d.fuentes.length ? d.fuentes.map((f) => fila([FUENTES[f.nombre] || f.nombre, f.visitas, f.contactos])) : [fila(['Aún no hay visitas este mes', '', ''])]));
+      document.getElementById('s-paginas').replaceChildren(...(d.paginas.length ? d.paginas.slice(0, 10).map((p) => fila([pagina(p.nombre), p.vistas, p.contactos])) : [fila(['—', '', ''])]));
+      stats.hidden = false; statsLoad.textContent = 'Actualizar'; statsMsg.textContent = '';
+    } catch (err) {
+      statsMsg.textContent = err.message === 'Failed to fetch' ? 'Sin conexión con el servidor. Intenta de nuevo.' : err.message; statsMsg.className = 'msg err';
+    } finally { statsLoad.disabled = false; }
+  };
+  statsLoad.addEventListener('click', loadStats);
+  segs.forEach((b) => b.addEventListener('click', () => {
+    atras = Number(b.dataset.mes);
+    segs.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    if (!stats.hidden || pass.value) loadStats();
+  }));
+  if (pass.value) loadStats();
 
   form.addEventListener('change', render);
   form.addEventListener('submit', async (e) => {
