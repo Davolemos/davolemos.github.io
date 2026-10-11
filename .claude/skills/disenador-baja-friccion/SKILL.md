@@ -37,6 +37,7 @@ Identifica qué pide el usuario y entrega directamente — no expliques cómo se
    - **Hallazgos priorizados** (crítico / importante / pulido), cada uno con *qué falla → por qué → corrección concreta*.
    - **Quick wins** aplicables sin rediseñar.
    - Checklist de `references/checklist.md` marcado (✅ / ⚠️ / ❌) solo en los puntos que se pueden evaluar con lo recibido; lo no evaluable va como "pendiente de prueba física / con usuarios".
+   - **Al final, siempre:** el prompt de edición de imagen (ver sección "Prompt para generador de imágenes").
 
 ### 2. Diseño o dirección de un empaque nuevo
 1. Si falta información crítica (categoría, variantes, claims, mercado/regulación, formato/sustrato), pregunta solo lo indispensable; si no, asume y marca los supuestos.
@@ -44,6 +45,7 @@ Identifica qué pide el usuario y entrega directamente — no expliques cómo se
 3. Entrega la **arquitectura frontal por zonas**, el **orden del reverso**, el **sistema de variantes** (mínimo 3 señales por SKU), los **tokens de jerarquía** y las especificaciones tipográficas **por función** (frente, instrucciones, ingredientes, advertencias, tabla, digital).
 4. Propón siempre una familia de **al menos tres variantes**, nunca un único SKU perfecto.
 5. Cierra con plan de prototipos y pruebas (ver `references/guia-completa.md` → Proceso).
+6. Si hay una imagen de referencia (empaque actual, mockup o competencia), termina con el prompt de edición de imagen.
 
 ### 3. Naming, wordmark, tipografía, color o identidad verbal
 Usa las secciones correspondientes de `references/guia-completa.md`. Para naming, evalúa cada candidato en: pronunciación predecible, lectura en voz alta, escritura tras escucharlo, recuerdo diferido, confusión con competidores y legibilidad a baja resolución.
@@ -101,6 +103,38 @@ Cada nivel se diferencia por **tamaño y espacio**, no solo por color. El resto 
 - Diferenciar b/d, p/q, I/l/1, O/0, rn/m, c/e.
 - Contraste medido: referencia ≥ 4.5:1 texto normal, ≥ 3:1 texto grande, más prueba física bajo luz de tienda.
 - Evaluar altura de x real impresa, no solo puntos. UE: altura de x mínima 1.2 mm (0.9 mm si la cara mayor < 80 cm²) — es un piso.
+
+## Prompt para generador de imágenes
+
+Cierra toda auditoría con un prompt listo para pegar en un editor de imágenes (ChatGPT Image, Nano Banana, etc.). El usuario sube la foto del empaque original y pega el prompt para obtener la versión mejorada.
+
+Reglas del prompt:
+- **En inglés**, porque los generadores lo siguen con más precisión. Los textos del empaque van entre comillas y en el idioma original del pack.
+- **Modo edición, no creación:** empieza con "Edit the attached packaging image." Pide conservar todo lo que no se cambia: forma del envase, material, logo de la marca, paleta principal, ángulo de cámara, luz y fondo.
+- **Solo los cambios de la auditoría**, numerados, uno por línea, en orden de prioridad (críticos primero). Cada cambio dice *qué elemento*, *dónde va*, *tamaño relativo* y *tratamiento* (fondo sólido, peso, mayúsculas/minúsculas).
+- **Copy exacto** entre comillas para cada texto que aparece o cambia. No inventes claims nuevos que no estén en la auditoría; si propones un nombre o claim alternativo, márcalo como propuesta.
+- **Orden de lectura explícito** de arriba abajo al final de la lista.
+- **Restricciones** al cierre: no deformar ni redibujar el logo, no añadir texto extra, no cursivas, no texto sobre fotografías ni transparencias, no tipografía condensada, texto nítido y legible, render fotorrealista de producto.
+
+Formato de entrega:
+
+````
+### Prompt para generar la versión mejorada
+Sube la foto original del empaque y pega esto:
+
+```
+Edit the attached packaging image. Keep the same [envase], [material], brand logo, main color palette, camera angle, lighting and background. Apply only these changes:
+
+1. ...
+2. ...
+
+Final reading order, top to bottom: ...
+
+Constraints: do not redraw or distort the logo; no extra text; no italics; no text over photos or transparent areas; no condensed type; crisp, legible text; photorealistic product render.
+```
+````
+
+Después del bloque, añade una línea: los generadores pueden alterar logos y textos pequeños, así que el resultado es un **boceto de dirección**, no arte final; revisa ortografía y marca antes de usarlo.
 
 ## Formato de entrega
 
