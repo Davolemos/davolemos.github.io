@@ -1,6 +1,6 @@
 import { getStore } from "@netlify/blobs"
 import type { Config } from "@netlify/functions"
-import { timingSafeEqual } from "node:crypto"
+import { json, passwordOk, slowDown } from "../lib/admin.mts"
 
 // Estado de la agenda del estudio.
 // GET  /api/estado → { abierta, mes, regreso? } (público, lo lee la home)
@@ -14,16 +14,6 @@ type Estado = { abierta: boolean; mes: string; regreso?: string; actualizado?: s
 
 const store = () => getStore({ name: "estudio", consistency: "strong" })
 
-const json = (body: unknown, status = 200) =>
-  Response.json(body, { status, headers: { "cache-control": "no-store" } })
-
-const passwordOk = (given: string) => {
-  const expected = Netlify.env.get("ADMIN_PASSWORD") ?? ""
-  if (!expected) return false
-  const a = Buffer.from(given), b = Buffer.from(expected)
-  return a.length === b.length && timingSafeEqual(a, b)
-}
-
 export default async (req: Request) => {
   if (req.method === "GET") {
     const estado = (await store().get(KEY, { type: "json" })) as Estado | null
@@ -35,8 +25,8 @@ export default async (req: Request) => {
   let body: { password?: unknown; abierta?: unknown; mes?: unknown; regreso?: unknown }
   try { body = await req.json() } catch { return json({ error: "Datos inválidos" }, 400) }
 
-  if (typeof body.password !== "string" || !passwordOk(body.password)) {
-    await new Promise((r) => setTimeout(r, 800)) // frena intentos repetidos
+  if (!passwordOk(body.password)) {
+    await slowDown()
     return json({ error: "Contraseña incorrecta" }, 401)
   }
   if (typeof body.abierta !== "boolean" || typeof body.mes !== "string" || !MESES.includes(body.mes)) {

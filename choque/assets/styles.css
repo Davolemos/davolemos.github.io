@@ -440,3 +440,66 @@ footer.site .privacy-body a { display: inline; min-height: 0; color: var(--bg); 
 @media (hover: hover) and (pointer: fine) { .svc h3 a:hover { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 2px; } }
 .svc-more { margin-top: clamp(24px, 4vw, 40px); }
 .svc-more .label { margin-bottom: 12px; }
+
+/* ---------- Brief ("Cuéntanos tu proyecto") ---------- */
+.btn .ico { width: 20px; height: 20px; }
+@media (hover: hover) and (pointer: fine) { .btn:hover .ico { transform: none; } }
+html:has(dialog.brief[open]) { overflow: hidden; }
+.brief {
+  width: min(100% - 32px, 600px); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 24px;
+  background: var(--bg); color: var(--ink); overflow: auto; overscroll-behavior: contain;
+  box-shadow: 0 24px 80px rgb(17 17 16 / 0.25);
+}
+.brief::backdrop { background: rgb(17 17 16 / 0.55); }
+.brief[open] { animation: brief-in 260ms var(--ease-out); }
+.brief[open]::backdrop { animation: brief-fade 260ms var(--ease-out); }
+@keyframes brief-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
+@keyframes brief-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .brief[open], .brief[open]::backdrop { animation: none; } }
+.brief form, .brief-done { display: grid; gap: 18px; padding: clamp(22px, 4vw, 36px); }
+.brief-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.brief h2 { font-size: clamp(28px, 4vw, 38px); line-height: 1.02; letter-spacing: -0.04em; }
+.brief-sub { color: var(--ink-2); margin-top: -8px; }
+.brief-close {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: -6px -6px 0 0;
+  border: 0; border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 150ms ease;
+}
+.brief-close:active { transform: scale(0.96); }
+.brief-close svg { width: 18px; height: 18px; }
+@media (hover: hover) and (pointer: fine) { .brief-close:hover { background: #DDDCD5; } }
+.brief fieldset { border: 0; margin: 0; padding: 0; }
+.brief legend, .brief .field > span { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.brief-chips div { display: flex; flex-wrap: wrap; gap: 8px; }
+.brief-chips label { position: relative; }
+.brief-chips input { position: absolute; opacity: 0; pointer-events: none; }
+.brief-chips span {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line);
+  transition: background-color 150ms ease, color 150ms ease, transform 160ms var(--ease-out);
+}
+.brief-chips span:active { transform: scale(0.96); }
+.brief-chips input:checked + span { background: var(--ink); color: var(--bg); box-shadow: none; }
+.brief-chips input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .brief-chips input:not(:checked) + span:hover { background: var(--surface); } }
+.brief-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .brief-row { grid-template-columns: 1fr; } }
+.brief input:not([type="checkbox"]), .brief select, .brief textarea {
+  width: 100%; min-height: 50px; padding: 0 14px; border: 0; border-radius: 14px;
+  background: #fff; color: var(--ink); font: 400 16px/1.4 var(--sans); box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 150ms ease;
+}
+.brief textarea { padding: 12px 14px; resize: vertical; min-height: 110px; }
+.brief input:focus-visible, .brief select:focus-visible, .brief textarea:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--ink); }
+.brief [aria-invalid="true"] { box-shadow: inset 0 0 0 2px #B4291C !important; }
+.brief-hint { margin-top: -10px; font-size: 13.5px; color: var(--ink-2); }
+.brief-hp { position: absolute; left: -9999px; }
+.brief [type="submit"] { width: 100%; }
+.brief-msg { min-height: 1.4em; margin-top: -8px; font-size: 15px; text-align: center; color: var(--ink-2); }
+.brief-msg.err { color: #B4291C; }
+.brief-done { justify-items: start; }
+.brief [hidden] { display: none; }
+.brief-done:focus { outline: none; }
+.brief-check { width: 44px; height: 44px; padding: 10px; border-radius: 50%; background: var(--ink); color: var(--bg); }
+.brief-done p { color: var(--ink-2); }
+.brief-done .actions { margin-top: 4px; }
