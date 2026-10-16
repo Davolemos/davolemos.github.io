@@ -518,3 +518,7 @@ html:has(dialog.brief[open]) { overflow: hidden; }
 .vtoggle:active { transform: scale(0.94); }
 .vtoggle svg { width: 16px; height: 16px; }
 @media (hover: hover) and (pointer: fine) { .vtoggle:hover { background: rgb(17 17 16 / 0.75); } }
+
+/* Botón de Google "Añadir a fuentes preferidas" */
+.pref-src { display: flex; align-items: center; }
+.pref-src:not(:empty) { min-height: 44px; }

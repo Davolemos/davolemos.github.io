@@ -384,6 +384,22 @@ const setContactLinks = () => {
 setContactLinks();
 document.addEventListener('langchange', setContactLinks);
 
+// Google "Add as a preferred source" button in the footer. Google's script is only
+// loaded when the visitor gets near the footer, so most visits never contact Google.
+const prefSrc = document.querySelector('[google-add-preferred-source-btn]');
+if (prefSrc) {
+  const loadPrefSrc = new IntersectionObserver((entries) => {
+    if (!entries.some((e) => e.isIntersecting)) return;
+    loadPrefSrc.disconnect();
+    prefSrc.dataset.lang = lang;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://news.google.com/swg/js/v1/publisher.js';
+    document.head.append(s);
+  }, { rootMargin: '600px 0px' });
+  loadPrefSrc.observe(prefSrc);
+}
+
 // Privacy policy bubble in the footer
 const privacyBtn = document.querySelector('.privacy-btn');
 const privacy = document.getElementById('privacy');
