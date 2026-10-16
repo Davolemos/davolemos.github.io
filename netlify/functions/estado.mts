@@ -44,4 +44,9 @@ export default async (req: Request) => {
   return json(estado)
 }
 
-export const config: Config = { path: "/api/estado", method: ["GET", "POST"] }
+// Límite por visitante: frena ataques de fuerza bruta a la contraseña y abuso de invocaciones
+export const config: Config = {
+  path: "/api/estado",
+  method: ["GET", "POST"],
+  rateLimit: { windowLimit: 30, windowSize: 60, aggregateBy: ["ip", "domain"] },
+}

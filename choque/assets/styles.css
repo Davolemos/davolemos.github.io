@@ -65,7 +65,7 @@ section { scroll-margin-top: 90px; }
   padding: 6px 6px 6px 16px;
   border-radius: 999px;
   color: var(--ink);
-  background: rgb(234 233 227 / 0.78);
+  background: rgb(234 233 227 / 0.88);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: 0 0 0 1px rgb(17 17 16 / 0.06), 0 8px 24px -12px rgb(17 17 16 / 0.18);
@@ -73,7 +73,7 @@ section { scroll-margin-top: 90px; }
 .logo { display: inline-flex; align-items: center; min-height: 44px; }
 .logo img { height: 28px; width: auto; }
 .nav nav { display: flex; align-items: center; gap: 4px; }
-.lang { display: inline-flex; align-items: center; margin-right: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-2); }
+.lang { display: inline-flex; align-items: center; margin-right: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: #4F4E4A; }
 .lang span { opacity: 0.5; }
 .lang button {
   min-width: 40px; min-height: 40px; padding: 0 6px; border: 0; border-radius: 999px;
@@ -301,7 +301,7 @@ section { scroll-margin-top: 90px; }
 /* ---------- Manifesto (Nosotros) ---------- */
 .manifesto { padding-bottom: clamp(64px, 10vw, 128px); }
 .manifesto p:not(.label) { font-size: clamp(28px, 4.6vw, 60px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 500; max-width: 22ch; }
-.manifesto .mute { color: #A5A49D; }
+.manifesto .mute { color: #85847E; }
 
 /* ---------- Contact card ---------- */
 .contact { padding-bottom: var(--gutter); }
@@ -503,3 +503,18 @@ html:has(dialog.brief[open]) { overflow: hidden; }
 .brief-check { width: 44px; height: 44px; padding: 10px; border-radius: 50%; background: var(--ink); color: var(--bg); }
 .brief-done p { color: var(--ink-2); }
 .brief-done .actions { margin-top: 4px; }
+.brief-legal { margin-top: -10px; font-size: 13px; line-height: 1.45; color: var(--ink-2); text-align: center; }
+
+/* Pausa / reproducir en las animaciones */
+.has-vtoggle { position: relative; }
+.vtoggle {
+  position: absolute; z-index: 2; top: 12px; right: 12px;
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+  background: rgb(17 17 16 / 0.55); color: #fff; cursor: pointer;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: transform 160ms var(--ease-out), background-color 150ms ease;
+}
+.vtoggle::before { content: ""; position: absolute; inset: -2px; }
+.vtoggle:active { transform: scale(0.94); }
+.vtoggle svg { width: 16px; height: 16px; }
+@media (hover: hover) and (pointer: fine) { .vtoggle:hover { background: rgb(17 17 16 / 0.75); } }
