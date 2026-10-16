@@ -8,11 +8,13 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const STRINGS = {
   es: {
     menu: 'Menú', close: 'Cerrar', pause: 'Pausar', play: 'Reproducir', viewProject: 'Ver proyecto', copied: 'Correo copiado',
+    pauseAnim: 'Pausar animación', playAnim: 'Reproducir animación',
     needName: 'Escribe tu nombre.', needContact: 'Déjanos un email o un WhatsApp para responderte.', badEmail: 'Revisa el email, parece incompleto.',
     sending: 'Enviando…', sendError: 'No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.',
   },
   en: {
     menu: 'Menu', close: 'Close', pause: 'Pause', play: 'Play', viewProject: 'View project', copied: 'Email copied',
+    pauseAnim: 'Pause animation', playAnim: 'Play animation',
     needName: 'Write your name.', needContact: 'Leave an email or a WhatsApp number so we can reply.', badEmail: 'Check the email, it looks incomplete.',
     sending: 'Sending…', sendError: "Couldn't send it. Try again or message us on WhatsApp.",
   },
@@ -114,6 +116,7 @@ if (briefBtns.length) {
     <label class="field"><span data-en="About your brand">Cuéntanos de tu marca</span><textarea name="mensaje" rows="4" placeholder="Qué hacen, qué necesitan, alguna referencia que te guste…" data-en-ph="What you do, what you need, a reference you like…"></textarea></label>
     <button class="btn btn-dark" type="submit" data-en="Send brief">Enviar brief</button>
     <p class="brief-msg" role="status" aria-live="polite"></p>
+    <p class="brief-legal" data-en="We only use this information to reply to you about your project. No advertising, no mailing lists. Details in our privacy policy.">Solo usaremos estos datos para responderte sobre tu proyecto. Nada de publicidad ni listas de correo. Más detalles en nuestra política de privacidad.</p>
   </form>
   <div class="brief-done" hidden tabindex="-1">
     <svg class="brief-check" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg>
@@ -402,8 +405,30 @@ if (privacyBtn && privacy) {
   });
 }
 
-// Animated covers: stay still for visitors who prefer reduced motion
-if (reduce) document.querySelectorAll('video[autoplay]').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
+// Animated covers: stay still for visitors who prefer reduced motion, and every one
+// gets a pause / play button (moving content must be stoppable, WCAG 2.2.2)
+const PAUSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>';
+const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l10.5-6.5z"/></svg>';
+document.querySelectorAll('video[autoplay]').forEach((v) => {
+  if (reduce) { v.removeAttribute('autoplay'); v.pause(); }
+  const link = v.closest('a');
+  const host = link ? link.parentElement : v.parentElement;
+  host.classList.add('has-vtoggle');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'vtoggle';
+  const sync = () => {
+    const paused = v.paused;
+    btn.innerHTML = paused ? PLAY_ICON : PAUSE_ICON;
+    btn.setAttribute('aria-label', paused ? t('playAnim') : t('pauseAnim'));
+  };
+  btn.addEventListener('click', () => { if (v.paused) v.play().catch(() => {}); else v.pause(); });
+  v.addEventListener('play', sync);
+  v.addEventListener('pause', sync);
+  document.addEventListener('langchange', sync);
+  host.append(btn);
+  sync();
+});
 
 // Basic image protection: no right-click "Save image" and no drag-to-desktop on photos and videos
 const isMedia = (el) => el instanceof Element && el.closest('img, video, .media');

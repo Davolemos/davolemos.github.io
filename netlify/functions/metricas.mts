@@ -73,4 +73,9 @@ export default async (req: Request) => {
   return new URL(req.url).pathname === "/api/evento" ? registrar(req) : resumir(req)
 }
 
-export const config: Config = { path: ["/api/evento", "/api/metricas"], method: ["POST"] }
+// Límite por visitante: frena a quien quiera inflar los números o gastar invocaciones
+export const config: Config = {
+  path: ["/api/evento", "/api/metricas"],
+  method: ["POST"],
+  rateLimit: { windowLimit: 60, windowSize: 60, aggregateBy: ["ip", "domain"] },
+}
