@@ -212,27 +212,6 @@
     </div>
   </section>
 
-  <!-- ===== Reel de proyectos: cambia de foto cada segundo; el clic lleva al proyecto visible ===== -->
-  <section class="reel wrap" aria-label="Proyectos destacados" data-en-aria="Featured projects">
-    <a class="reel-frame media reveal" id="reel" href="proyectos/chavela.html">
-      <img class="on" src="img/proyectos/chavela/fachada.webp" style="object-position: 50% 15%" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1648" height="1649">
-      <img src="img/proyectos/mansa-galleta/hero.webp" alt="" data-name="Mansa Galleta" data-href="proyectos/mansa-galleta.html" width="2402" height="1275">
-      <img src="img/proyectos/fondas-de-colon/patron.webp" alt="" data-name="Fondas de Colón" data-href="proyectos/fondas-de-colon.html" width="1602" height="1601">
-      <img src="img/proyectos/ricketts-lab/sonrisa.webp" style="object-position: 50% 20%" alt="" data-name="Ricketts Lab" data-href="proyectos/ricketts-lab.html" width="1400" height="1399">
-      <img src="img/proyectos/sultavolo/patron.webp" alt="" data-name="Sultavolo" data-href="proyectos/sultavolo.html" width="1600" height="900">
-      <span class="reel-cap">
-        <span class="reel-name" id="reel-name">Chavela</span>
-        <span class="reel-count"><span id="reel-cur">01</span> / <span id="reel-tot">05</span></span>
-      </span>
-      <span class="case-link" data-en="View project <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver proyecto <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
-    </a>
-    <button class="reel-toggle" id="reel-toggle" type="button" aria-pressed="false">
-      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
-      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>
-      <span id="reel-toggle-label">Pausar</span>
-    </button>
-  </section>
-
   <!-- ===== Proyectos ===== -->
   <section class="work" id="proyectos" aria-labelledby="work-title">
     <div class="wrap head">
@@ -247,7 +226,30 @@
       </div>
     </div>
 
-    <ul class="track" id="track">
+    <div class="work-grid">
+    <!-- ===== Reel de proyectos: cambia de foto cada segundo; el clic lleva al proyecto visible ===== -->
+    <div class="reel wrap" role="group" aria-label="Proyectos destacados" data-en-aria="Featured projects">
+      <a class="reel-frame media reveal" id="reel" href="proyectos/chavela.html">
+        <img class="on" src="img/proyectos/chavela/fachada.webp" style="object-position: 50% 15%" alt="" data-name="Chavela" data-href="proyectos/chavela.html" width="1648" height="1649">
+        <img src="img/proyectos/mansa-galleta/hero.webp" alt="" data-name="Mansa Galleta" data-href="proyectos/mansa-galleta.html" width="2402" height="1275">
+        <img src="img/proyectos/fondas-de-colon/patron.webp" alt="" data-name="Fondas de Colón" data-href="proyectos/fondas-de-colon.html" width="1602" height="1601">
+        <img src="img/proyectos/ricketts-lab/sonrisa.webp" style="object-position: 50% 20%" alt="" data-name="Ricketts Lab" data-href="proyectos/ricketts-lab.html" width="1400" height="1399">
+        <img src="img/proyectos/sultavolo/patron.webp" alt="" data-name="Sultavolo" data-href="proyectos/sultavolo.html" width="1600" height="900">
+        <span class="reel-cap">
+          <span class="reel-name" id="reel-name">Chavela</span>
+          <span class="reel-count"><span id="reel-cur">01</span> / <span id="reel-tot">05</span></span>
+        </span>
+        <span class="case-link" data-en="View project <svg aria-hidden=&quot;true&quot;><use href=&quot;#arrow-r&quot;/></svg>">Ver proyecto <svg aria-hidden="true"><use href="#arrow-r"/></svg></span>
+      </a>
+      <button class="reel-toggle" id="reel-toggle" type="button" aria-pressed="false">
+        <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>
+        <span id="reel-toggle-label">Pausar</span>
+      </button>
+      <p class="name reel-below" aria-hidden="true">Reel</p>
+      <p class="reel-below-t" aria-hidden="true" data-en="A glimpse of every project. Click to step in.">Un vistazo a cada proyecto. Haz clic para entrar.</p>
+    </div>
+      <ul class="track" id="track" role="list">
       <li class="card" id="chavela">
         <a href="proyectos/chavela.html">
           <div class="media reveal">
@@ -304,6 +306,7 @@
         </a>
       </li>
     </ul>
+    </div>
   </section>
 
   <div class="marquee" aria-hidden="true">
