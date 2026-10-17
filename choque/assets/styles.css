@@ -522,3 +522,32 @@ html:has(dialog.brief[open]) { overflow: hidden; }
 /* Botón de Google "Añadir a fuentes preferidas" */
 .pref-src { display: flex; align-items: center; }
 .pref-src:not(:empty) { min-height: 44px; }
+
+/* ---------- Proyectos: el reel vive dentro de la sección ----------
+   Móvil y tablet: el reel va arriba (antes del título) y los proyectos en carrusel.
+   Escritorio: cuadrícula de 2 por fila con imágenes grandes; el reel es la primera. */
+.work { display: flex; flex-direction: column; padding-top: 0; }
+.work-grid { display: contents; }
+.work .reel { order: -1; margin-bottom: clamp(32px, 6vw, 64px); }
+.reel-below, .reel-below-t { display: none; }
+@media (min-width: 900px) {
+  .work { display: block; padding-top: clamp(32px, 5vw, 56px); }
+  .work .controls { display: none; }
+  .work-grid {
+    display: grid; grid-template-columns: 1fr 1fr; align-items: start;
+    gap: clamp(40px, 4vw, 64px) clamp(16px, 2vw, 28px);
+    max-width: 1800px; margin: 0 auto; padding-inline: var(--gutter);
+  }
+  .work > .head { max-width: 1800px; }
+  .work-grid .track { display: contents; }
+  .work .reel { order: 0; margin: 0; padding: 0; max-width: none; }
+  .work .reel-frame { aspect-ratio: 4 / 5; }
+  .work .reel-toggle { top: 12px; right: 12px; }
+  .work .reel-cap { right: 170px; }
+  .work .reel-name { font-size: clamp(40px, 5vw, 72px); }
+  .reel-below { display: block; margin-top: 16px; font-size: 14px; font-weight: 500; color: var(--ink-2); }
+  .reel-below-t { display: block; margin-top: 4px; font-size: clamp(19px, 1.8vw, 22px); font-weight: 500; line-height: 1.25; letter-spacing: -0.02em; }
+  .work .card { scroll-snap-align: none; }
+  .work .card .media { border-radius: 24px; }
+  .work .reel-frame { border-radius: 24px; }
+}
