@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Domestika Notes",
+  "version": "1.0.0",
+  "description": "Recoge los subtítulos de las lecciones que ves y los exporta en Markdown para estudiar y destilar en skills.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://*.domestika.org/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.domestika.org/*"],
+      "js": ["content.js"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Domestika Notes",
+    "default_popup": "popup.html"
+  }
+}
