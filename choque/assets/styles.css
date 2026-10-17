@@ -12,7 +12,7 @@
 }
 
 :root {
-  --bg: #F5F4F0;
+  --bg: #FFFFFF;
   --surface: #EAE9E3;
   --ink: #111110;
   --ink-2: #5E5D58;
@@ -65,7 +65,7 @@ section { scroll-margin-top: 90px; }
   padding: 6px 6px 6px 16px;
   border-radius: 999px;
   color: var(--ink);
-  background: rgb(234 233 227 / 0.88);
+  background: rgb(255 255 255 / 0.88);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: 0 0 0 1px rgb(17 17 16 / 0.06), 0 8px 24px -12px rgb(17 17 16 / 0.18);
