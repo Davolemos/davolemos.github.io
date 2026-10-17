@@ -592,10 +592,13 @@ html:has(dialog.brief[open]) { overflow: hidden; }
 /* Solo para lectores de pantalla */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* Proyectos justo debajo del inicio, sin título visible */
-.hero { padding-bottom: clamp(28px, 4vw, 48px); }
-.work > .head { justify-content: flex-end; margin-bottom: 16px; }
+/* Computadora: sin título "Proyectos" ni botones en el inicio; los proyectos arrancan justo debajo.
+   Celular y tablet conservan el título, las flechas y los botones. */
 @media (min-width: 900px) {
+  .hero { padding-bottom: clamp(28px, 4vw, 48px); }
+  .hero .actions { display: none; }
   .work { padding-top: 0; }
   .work > .head { margin: 0; }
+  .work > .head .label { display: none; }
+  .work > .head .h2 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
