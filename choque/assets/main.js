@@ -313,7 +313,7 @@ if (menuBtn && menu) {
   addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && menu.classList.contains('open')) { setOpen(false); menuBtn.focus(); }
   });
-  matchMedia('(min-width: 721px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
+  matchMedia('(min-width: 1180px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 }
 
 // Email buttons open the mail app. If no app opens (the page keeps focus),
@@ -458,8 +458,8 @@ document.querySelectorAll('video').forEach((v) => {
 
 // Agenda status pill: the HTML holds a default; when the site runs on Netlify the
 // current status set from the admin panel (/api/estado) replaces it.
-const statusPill = document.querySelector('.status[data-status]');
-if (statusPill) {
+const statusPills = document.querySelectorAll('.status[data-status]');
+if (statusPills.length) {
   const MONTHS = {
     enero: 'January', febrero: 'February', marzo: 'March', abril: 'April', mayo: 'May', junio: 'June',
     julio: 'July', agosto: 'August', septiembre: 'September', octubre: 'October', noviembre: 'November', diciembre: 'December',
@@ -470,11 +470,13 @@ if (statusPill) {
       if (!s || typeof s.abierta !== 'boolean' || !MONTHS[s.mes]) return;
       const mesEs = s.mes[0].toUpperCase() + s.mes.slice(1);
       const back = !s.abierta && MONTHS[s.regreso];
-      const label = statusPill.querySelector('[data-en]');
-      label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}${back ? ` · Regresamos en ${s.regreso}` : ''}`;
-      label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}${back ? ` · Back in ${MONTHS[s.regreso]}` : ''}`;
-      label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
-      statusPill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
+      statusPills.forEach((pill) => {
+        const label = pill.querySelector('[data-en]');
+        label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}${back ? ` · Regresamos en ${s.regreso}` : ''}`;
+        label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}${back ? ` · Back in ${MONTHS[s.regreso]}` : ''}`;
+        label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
+        pill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
+      });
     })
     .catch(() => {});
 }
