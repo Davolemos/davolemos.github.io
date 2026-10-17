@@ -597,5 +597,5 @@ html:has(dialog.brief[open]) { overflow: hidden; }
 .work > .head { justify-content: flex-end; margin-bottom: 16px; }
 @media (min-width: 900px) {
   .work { padding-top: 0; }
-  .work > .head { display: none; }
+  .work > .head { margin: 0; }
 }
