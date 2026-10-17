@@ -475,6 +475,12 @@ if (statusPills.length) {
         label.dataset.es = `${s.abierta ? 'Agenda abierta' : 'Agenda cerrada'} · ${mesEs}${back ? ` · Regresamos en ${s.regreso}` : ''}`;
         label.dataset.en = `${s.abierta ? 'Booking open' : 'Booking closed'} · ${MONTHS[s.mes]}${back ? ` · Back in ${MONTHS[s.regreso]}` : ''}`;
         label.innerHTML = lang === 'en' ? label.dataset.en : label.dataset.es;
+        const short = pill.querySelector('.st-short');
+        if (short) {
+          short.dataset.es = `${s.abierta ? 'Abierta' : 'Cerrada'} · ${mesEs.slice(0, 3)}`;
+          short.dataset.en = `${s.abierta ? 'Open' : 'Closed'} · ${MONTHS[s.mes].slice(0, 3)}`;
+          short.innerHTML = lang === 'en' ? short.dataset.en : short.dataset.es;
+        }
         pill.dataset.status = s.abierta ? 'abierta' : 'cerrada';
       });
     })
