@@ -126,6 +126,103 @@
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
 
+  // --- Capturas de escena ---------------------------------------------
+  // Cada pocos segundos se mira el fotograma actual del video. Si la escena
+  // cambió lo suficiente (y pasó un mínimo de tiempo), se guarda una imagen.
+  // Si el navegador no deja leer el video, el atajo manual usa una captura
+  // de la pestaña desde background.js.
+
+  const FRAME_CHECK_MS = 3000;
+  const MIN_GAP_SEC = 15;
+  const SCENE_THRESHOLD = 14; // diferencia media en grises (0-255)
+  const MAX_WIDTH = 1280;
+
+  let lastFrame = null;       // { lessonKey, t, sig }
+  let videoReadable = true;
+
+  function grab(video) {
+    if (!video.videoWidth) return null;
+    const scale = Math.min(1, MAX_WIDTH / video.videoWidth);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(video.videoWidth * scale);
+    canvas.height = Math.round(video.videoHeight * scale);
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const small = document.createElement("canvas");
+    small.width = 32; small.height = 18;
+    const sctx = small.getContext("2d", { willReadFrequently: true });
+    sctx.drawImage(canvas, 0, 0, 32, 18);
+    const px = sctx.getImageData(0, 0, 32, 18).data; // falla si el video no es legible
+    const sig = [];
+    for (let i = 0; i < px.length; i += 4) {
+      sig.push((px[i] * 299 + px[i + 1] * 587 + px[i + 2] * 114) / 1000);
+    }
+    return { canvas, sig };
+  }
+
+  function difference(a, b) {
+    let sum = 0;
+    for (let i = 0; i < a.length; i++) sum += Math.abs(a[i] - b[i]);
+    return sum / a.length;
+  }
+
+  function videoRect(video) {
+    const r = video.getBoundingClientRect();
+    return { x: r.left, y: r.top, width: r.width, height: r.height };
+  }
+
+  async function checkFrame(manual = false) {
+    const video = currentVideo();
+    if (!video || !activeInfo || document.visibilityState !== "visible") return;
+    if (!manual && (video.paused || video.ended)) return;
+    const t = Math.floor(video.currentTime);
+    const sameLesson = lastFrame?.lessonKey === activeInfo.lessonKey;
+
+    if (!manual) {
+      const { settings = {} } = await chrome.storage.local.get("settings");
+      if (settings.autoFrames === false || !videoReadable) return;
+      if (sameLesson && Math.abs(t - lastFrame.t) < MIN_GAP_SEC) return;
+    }
+
+    let shot = null;
+    if (videoReadable) {
+      try {
+        shot = grab(video);
+      } catch {
+        videoReadable = false;
+      }
+    }
+
+    const msg = { type: "frame", manual, info: activeInfo, t };
+    if (shot) {
+      if (!manual && sameLesson && difference(shot.sig, lastFrame.sig) < SCENE_THRESHOLD) return;
+      msg.image = shot.canvas.toDataURL("image/jpeg", 0.82);
+    } else if (manual && window === window.top) {
+      msg.rect = videoRect(video);
+      msg.dpr = devicePixelRatio;
+    } else {
+      return;
+    }
+
+    try {
+      const res = await chrome.runtime.sendMessage(msg);
+      if (res?.saved) lastFrame = { lessonKey: activeInfo.lessonKey, t, sig: shot?.sig || null };
+    } catch {
+      // La extensión se recargó: esta página ya no puede hablar con ella.
+    }
+  }
+
+  let checking = false;
+  setInterval(async () => {
+    if (checking) return;
+    checking = true;
+    try { await checkFrame(false); } finally { checking = false; }
+  }, FRAME_CHECK_MS);
+
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.type === "capture-now" && document.querySelector("video")) checkFrame(true);
+  });
+
   // --- Guardado ----------------------------------------------------------
 
   async function flush(info = activeInfo) {

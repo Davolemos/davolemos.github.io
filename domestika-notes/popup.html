@@ -18,14 +18,19 @@
   li span:last-child { color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
   .empty, .status { color:var(--muted); }
   .status { min-height:1.4em; margin-top:8px; }
+  label.toggle { display:flex; align-items:center; gap:8px; margin-top:10px; color:var(--muted); }
+  label.toggle input { width:auto; margin:0; }
+  .hint { color:var(--muted); font-size:12px; margin-top:4px; }
 </style>
 </head>
 <body>
   <h1>Domestika Notes</h1>
   <select id="course"></select>
+  <label class="toggle"><input type="checkbox" id="autoFrames"> Capturar escenas automáticamente</label>
+  <div class="hint">Atajo para capturar a mano: Alt+Shift+S</div>
   <ul id="lessons"></ul>
-  <button id="copy" class="primary">Copiar curso en Markdown</button>
-  <button id="download">Descargar .md</button>
+  <button id="zip" class="primary">Descargar ZIP (Markdown + imágenes)</button>
+  <button id="copy">Copiar solo el texto</button>
   <button id="clear" class="danger">Borrar este curso</button>
   <button id="diagnose">Diagnóstico (si no recoge nada)</button>
   <div id="status" class="status"></div>

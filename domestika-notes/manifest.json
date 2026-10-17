@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Domestika Notes",
-  "version": "1.1.0",
-  "description": "Recoge los subtítulos de las lecciones que ves y los exporta en Markdown para estudiar y destilar en skills.",
+  "version": "1.2.0",
+  "description": "Recoge subtítulos y capturas de las escenas clave de las lecciones que ves, y los exporta en Markdown para estudiar y destilar en skills.",
   "permissions": [
     "storage",
+    "unlimitedStorage",
     "scripting",
     "activeTab"
   ],
@@ -26,5 +27,17 @@
   "action": {
     "default_title": "Domestika Notes",
     "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "capture-now": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "Alt+Shift+S"
+      },
+      "description": "Capturar la escena actual del video"
+    }
   }
 }
