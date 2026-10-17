@@ -106,7 +106,109 @@ $("clear").addEventListener("click", async () => {
   delete courses[$("course").value];
   await chrome.storage.local.set({ courses });
   status("Curso borrado.");
-  load();
+  // Describe cómo está montado el reproductor en la pestaña activa (en todos
+// sus frames) para poder ajustar la captura. No incluye datos de la cuenta.
+function inspectPlayer() {
+  const short = (str, n = 80) => (str || "").replace(/\s+/g, " ").trim().slice(0, n);
+  const videos = [...document.querySelectorAll("video")].map((v) => {
+    const r = v.getBoundingClientRect();
+    const overlay = [];
+    for (const el of document.querySelectorAll("body *")) {
+      if (el.children.length || el.contains(v)) continue;
+      const er = el.getBoundingClientRect();
+      const cx = er.left + er.width / 2, cy = er.top + er.height / 2;
+      if (!er.width || cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) continue;
+      const text = short(el.innerText);
+      if (text) overlay.push({ tag: el.tagName.toLowerCase(), cls: short(el.className?.toString(), 60), text });
+      if (overlay.length >= 25) break;
+    }
+    return {
+      paused: v.paused,
+      time: Math.round(v.currentTime),
+      size: `${Math.round(r.width)}x${Math.round(r.height)}`,
+      src: short(v.currentSrc, 60),
+      tracks: [...v.textTracks].map((t) => ({
+        kind: t.kind, label: t.label, lang: t.language, mode: t.mode, cues: t.cues ? t.cues.length : null
+      })),
+      trackEls: [...v.querySelectorAll("track")].map((t) => short(t.src, 60)),
+      overlay
+    };
+  });
+  return {
+    frame: location.href.split("?")[0],
+    top: window === window.top,
+    videos,
+    iframes: [...document.querySelectorAll("iframe")].map((f) => short(f.src, 80)).filter(Boolean)
+  };
+}
+
+$("diagnose").addEventListener("click", async () => {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      func: inspectPlayer
+    });
+    const report = JSON.stringify(results.map((r) => r.result), null, 2);
+    await navigator.clipboard.writeText("Diagnóstico Domestika Notes\n```json\n" + report + "\n```");
+    status("Diagnóstico copiado. Pégaselo a Claude.");
+  } catch (e) {
+    status("No se pudo: " + e.message);
+  }
+});
+
+load();
+});
+
+// Describe cómo está montado el reproductor en la pestaña activa (en todos
+// sus frames) para poder ajustar la captura. No incluye datos de la cuenta.
+function inspectPlayer() {
+  const short = (str, n = 80) => (str || "").replace(/\s+/g, " ").trim().slice(0, n);
+  const videos = [...document.querySelectorAll("video")].map((v) => {
+    const r = v.getBoundingClientRect();
+    const overlay = [];
+    for (const el of document.querySelectorAll("body *")) {
+      if (el.children.length || el.contains(v)) continue;
+      const er = el.getBoundingClientRect();
+      const cx = er.left + er.width / 2, cy = er.top + er.height / 2;
+      if (!er.width || cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) continue;
+      const text = short(el.innerText);
+      if (text) overlay.push({ tag: el.tagName.toLowerCase(), cls: short(el.className?.toString(), 60), text });
+      if (overlay.length >= 25) break;
+    }
+    return {
+      paused: v.paused,
+      time: Math.round(v.currentTime),
+      size: `${Math.round(r.width)}x${Math.round(r.height)}`,
+      src: short(v.currentSrc, 60),
+      tracks: [...v.textTracks].map((t) => ({
+        kind: t.kind, label: t.label, lang: t.language, mode: t.mode, cues: t.cues ? t.cues.length : null
+      })),
+      trackEls: [...v.querySelectorAll("track")].map((t) => short(t.src, 60)),
+      overlay
+    };
+  });
+  return {
+    frame: location.href.split("?")[0],
+    top: window === window.top,
+    videos,
+    iframes: [...document.querySelectorAll("iframe")].map((f) => short(f.src, 80)).filter(Boolean)
+  };
+}
+
+$("diagnose").addEventListener("click", async () => {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      func: inspectPlayer
+    });
+    const report = JSON.stringify(results.map((r) => r.result), null, 2);
+    await navigator.clipboard.writeText("Diagnóstico Domestika Notes\n```json\n" + report + "\n```");
+    status("Diagnóstico copiado. Pégaselo a Claude.");
+  } catch (e) {
+    status("No se pudo: " + e.message);
+  }
 });
 
 load();

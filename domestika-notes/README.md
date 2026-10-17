@@ -27,8 +27,9 @@ reproductor ya muestra y lo guarda en tu navegador.
 
 - Comprueba que la lección tenga subtítulos en el menú del reproductor.
 - Activa los subtítulos a mano una vez y recarga la página.
-- Si sigue vacío, el reproductor puede estar pintándolos de otra forma: avísale a
-  Claude y ajusta los selectores en `content.js` (`CAPTION_SELECTORS`).
+- Si sigue vacío: con la lección sonando y los subtítulos activados, abre el
+  icono, pulsa **Diagnóstico** y pégale a Claude lo que se copia. Describe cómo
+  está montado el reproductor para ajustar la captura.
 
 ## Uso responsable
 

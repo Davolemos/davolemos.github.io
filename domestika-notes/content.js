@@ -27,7 +27,12 @@
       ? humanize(courseMatch[1].replace(/^\d+-/, ""))
       : heading;
 
-    return { url, courseKey, courseTitle, lessonKey, lessonTitle: heading || url };
+    // En Domestika el h1 es el título del curso; la lección sale de la URL.
+    const lessonTitle = unitMatch
+      ? humanize(unitMatch[1].replace(/^\d+-/, ""))
+      : heading || url;
+
+    return { url, courseKey, courseTitle, lessonKey, lessonTitle };
   }
 
   function humanize(slug) {
@@ -50,7 +55,10 @@
     pending.push({ t: video ? Math.floor(video.currentTime) : null, text: clean });
   }
 
-  // Vía 1: pistas de texto nativas del <video>.
+  // Vía 1: pistas de texto nativas del <video>. Se sigue una sola pista por
+  // video (la visible si la hay) para no mezclar idiomas.
+  const chosenTrack = new WeakMap();
+
   function watchTextTracks() {
     for (const video of document.querySelectorAll("video")) {
       const tracks = [...video.textTracks].filter(
@@ -58,34 +66,59 @@
       );
       if (!tracks.length) continue;
 
-      // Si el usuario ya tiene una pista visible, se usa esa; si no, se
-      // activa la primera en modo oculto para que emita cues sin mostrarse.
+      // Si no hay ninguna visible, se activa la primera en modo oculto para
+      // que emita cues sin mostrarse.
       const track = tracks.find((t) => t.mode === "showing") || tracks[0];
       if (track.mode === "disabled") track.mode = "hidden";
+      chosenTrack.set(video, track);
       if (watchedTracks.has(track)) continue;
       watchedTracks.add(track);
 
       track.addEventListener("cuechange", () => {
+        if (chosenTrack.get(video) !== track) return;
         for (const cue of track.activeCues || []) push(cue.text || "");
       });
     }
   }
 
-  // Vía 2: subtítulos pintados en el DOM por el reproductor.
-  const CAPTION_SELECTORS = [
-    ".vjs-text-track-display",
-    ".jw-captions",
-    ".plyr__captions",
-    "[class*='caption']",
-    "[class*='subtitle']"
-  ].join(",");
+  // Vía 2: subtítulos pintados por el reproductor como texto encima del
+  // video. Se aceptan textos cortos que cambian mientras el video suena y
+  // que caen dentro del rectángulo del video, fuera de los controles.
+  const CONTROL_SELECTOR =
+    "button, [role='button'], [role='slider'], [role='menu'], [role='menuitem'], input, select, a, time";
+  const TIME_RE = /^[\d:\s/.-]+$/;
 
-  const observer = new MutationObserver(() => {
+  function overlapsVideo(el, video) {
+    const r = el.getBoundingClientRect();
+    const v = video.getBoundingClientRect();
+    if (!r.width || !r.height) return false;
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    return cx >= v.left && cx <= v.right && cy >= v.top && cy <= v.bottom;
+  }
+
+  function overlayText(el, video) {
+    if (!el || el === document.body || el.closest(CONTROL_SELECTOR)) return null;
+    if (el.contains(video)) return null;
+    const text = el.innerText?.trim();
+    if (!text || text.length > 300 || TIME_RE.test(text)) return null;
+    return overlapsVideo(el, video) ? text : null;
+  }
+
+  const observer = new MutationObserver((mutations) => {
     // Solo mientras hay un video sonando, para no recoger textos estáticos.
-    if (!currentVideo() || currentVideo().paused) return;
-    const el = document.querySelector(CAPTION_SELECTORS);
-    const text = el?.innerText?.trim();
-    if (text) push(text);
+    const video = currentVideo();
+    if (!video || video.paused) return;
+
+    const touched = new Set();
+    for (const m of mutations) {
+      const node = m.type === "characterData" ? m.target.parentElement : m.target;
+      if (node instanceof Element) touched.add(node);
+    }
+    for (const el of touched) {
+      const text = overlayText(el, video);
+      if (text) push(text);
+    }
   });
 
   function startObserver() {
