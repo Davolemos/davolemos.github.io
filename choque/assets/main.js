@@ -20,8 +20,18 @@ const STRINGS = {
   },
 };
 const LANG_KEY = 'choque-lang';
-let lang = (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
+// Pages with a version in each language (home and services) link to each other with hreflang:
+// they always show their own language and the ES · EN switch goes to the other address.
+// The rest of the pages (projects) switch language in place.
+const ALT = {};
+document.querySelectorAll('link[rel="alternate"][hreflang="es"], link[rel="alternate"][hreflang="en"]').forEach((l) => {
+  ALT[l.hreflang] = new URL(l.href).pathname;
+});
+const PAGE_LANG = ALT.es && ALT.en ? document.documentElement.lang : null;
+const saveLang = (value) => { try { localStorage.setItem(LANG_KEY, value); } catch {} };
+let lang = PAGE_LANG || (() => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } })()
   || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+if (PAGE_LANG) saveLang(PAGE_LANG);
 const t = (key) => STRINGS[lang][key];
 const applyLang = (next) => {
   lang = next;
@@ -41,8 +51,11 @@ const applyLang = (next) => {
 };
 // Page id and visit source, shared by the visit counter, WhatsApp messages and the brief form
 const PAGE = (() => {
-  const m = location.pathname.match(/\/(proyectos|servicios)\/([a-z0-9-]+)/);
-  return m ? `${m[1]}~${m[2]}` : 'inicio';
+  const EN_SERVICES = { 'branding-agency-panama': 'branding-panama', 'logo-design-panama': 'diseno-de-logos-panama',
+    'packaging-design-panama': 'diseno-de-empaques-panama', 'graphic-design-panama': 'diseno-grafico-panama', 'web-design-panama': 'diseno-web-panama' };
+  const m = location.pathname.match(/\/(proyectos|servicios|services)\/([a-z0-9-]+)/);
+  if (!m) return 'inicio';
+  return m[1] === 'services' ? `servicios~${EN_SERVICES[m[2]] || m[2]}` : `${m[1]}~${m[2]}`;
 })();
 const SOURCES = [['google', 'google'], ['bing', 'bing'], ['instagram', 'instagram'], ['facebook', 'facebook'], ['fb.', 'facebook'],
   ['behance', 'behance'], ['linkedin', 'linkedin'], ['lnkd.in', 'linkedin'], ['tiktok', 'tiktok'], ['whatsapp', 'whatsapp'], ['wa.me', 'whatsapp']];
@@ -188,9 +201,35 @@ if (briefBtns.length) {
 }
 
 document.querySelectorAll('.lang [data-lang]').forEach((b) => b.addEventListener('click', () => {
-  applyLang(b.dataset.lang);
-  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  const next = b.dataset.lang;
+  saveLang(next);
+  if (PAGE_LANG && next !== PAGE_LANG) { location.href = ALT[next]; return; }
+  applyLang(next);
 }));
+
+// On pages that switch in place, links to the home and services point to the version
+// in the chosen language
+const EN_PATHS = {
+  '/': '/en/', '/index.html': '/en/',
+  '/servicios/branding-panama.html': '/en/services/branding-agency-panama.html',
+  '/servicios/diseno-de-logos-panama.html': '/en/services/logo-design-panama.html',
+  '/servicios/diseno-de-empaques-panama.html': '/en/services/packaging-design-panama.html',
+  '/servicios/diseno-grafico-panama.html': '/en/services/graphic-design-panama.html',
+  '/servicios/diseno-web-panama.html': '/en/services/web-design-panama.html',
+};
+if (!PAGE_LANG) {
+  const links = [...document.querySelectorAll('a[href]')].filter((a) => {
+    const u = new URL(a.href, location.href);
+    return u.origin === location.origin && EN_PATHS[u.pathname];
+  });
+  const localize = () => links.forEach((a) => {
+    if (!a.dataset.hrefEs) a.dataset.hrefEs = a.getAttribute('href');
+    const u = new URL(a.dataset.hrefEs, location.href);
+    a.href = lang === 'en' ? EN_PATHS[u.pathname] + u.hash : a.dataset.hrefEs;
+  });
+  localize();
+  document.addEventListener('langchange', localize);
+}
 applyLang(lang);
 
 document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
