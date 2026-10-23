@@ -1,47 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://wearechoque.lat/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/"/>
   </url>
   <url>
     <loc>https://wearechoque.lat/proyectos/chavela.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://wearechoque.lat/proyectos/sultavolo.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://wearechoque.lat/proyectos/fondas-de-colon.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://wearechoque.lat/proyectos/mansa-galleta.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://wearechoque.lat/proyectos/ricketts-lab.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://wearechoque.lat/servicios/branding-panama.html</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/branding-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/branding-agency-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/branding-panama.html"/>
   </url>
   <url>
     <loc>https://wearechoque.lat/servicios/diseno-de-logos-panama.html</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-de-logos-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/logo-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-de-logos-panama.html"/>
   </url>
   <url>
     <loc>https://wearechoque.lat/servicios/diseno-de-empaques-panama.html</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-de-empaques-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/packaging-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-de-empaques-panama.html"/>
   </url>
   <url>
     <loc>https://wearechoque.lat/servicios/diseno-grafico-panama.html</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-grafico-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/graphic-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-grafico-panama.html"/>
   </url>
   <url>
     <loc>https://wearechoque.lat/servicios/diseno-web-panama.html</loc>
-    <lastmod>2026-10-11</lastmod>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-web-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/web-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-web-panama.html"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/services/branding-agency-panama.html</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/branding-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/branding-agency-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/branding-panama.html"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/services/logo-design-panama.html</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-de-logos-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/logo-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-de-logos-panama.html"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/services/packaging-design-panama.html</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-de-empaques-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/packaging-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-de-empaques-panama.html"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/services/graphic-design-panama.html</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-grafico-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/graphic-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-grafico-panama.html"/>
+  </url>
+  <url>
+    <loc>https://wearechoque.lat/en/services/web-design-panama.html</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://wearechoque.lat/servicios/diseno-web-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wearechoque.lat/en/services/web-design-panama.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://wearechoque.lat/servicios/diseno-web-panama.html"/>
   </url>
 </urlset>
