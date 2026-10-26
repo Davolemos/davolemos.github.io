@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Web a PDF",
+  "version": "1.0.0",
+  "description": "Guarda la web completa, de arriba abajo y con sus imágenes, como PDF.",
+  "permissions": ["activeTab", "scripting", "debugger", "downloads"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "Guardar web en PDF",
+    "default_popup": "popup.html"
+  }
+}
