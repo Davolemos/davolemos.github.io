@@ -97,6 +97,10 @@ function friendlyError(e) {
   if (/cannot (access|be scripted)|chrome:\/\/|webstore/i.test(msg)) {
     return "Chrome no deja guardar esta página (páginas internas o la Web Store).";
   }
+  if (/restricted by policy/i.test(msg)) {
+    return "Una política de Chrome no deja a las extensiones entrar en esta web. " +
+      "Usa Imprimir → Guardar como PDF (Cmd/Ctrl+P).";
+  }
   if (/another debugger|already attached/i.test(msg)) {
     return "Cierra las DevTools de esta pestaña y vuelve a intentarlo.";
   }
