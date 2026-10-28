@@ -54,7 +54,7 @@ const PAGE = (() => {
   const EN_SERVICES = { 'branding-agency-panama': 'branding-panama', 'logo-design-panama': 'diseno-de-logos-panama',
     'packaging-design-panama': 'diseno-de-empaques-panama', 'graphic-design-panama': 'diseno-grafico-panama', 'web-design-panama': 'diseno-web-panama' };
   const m = location.pathname.match(/\/(proyectos|servicios|services)\/([a-z0-9-]+)/);
-  if (!m) return 'inicio';
+  if (!m) return /\/brief\/?/.test(location.pathname) ? 'brief' : 'inicio';
   return m[1] === 'services' ? `servicios~${EN_SERVICES[m[2]] || m[2]}` : `${m[1]}~${m[2]}`;
 })();
 const SOURCES = [['google', 'google'], ['bing', 'bing'], ['instagram', 'instagram'], ['facebook', 'facebook'], ['fb.', 'facebook'],
