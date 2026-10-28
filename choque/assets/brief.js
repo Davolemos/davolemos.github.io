@@ -20,7 +20,6 @@
     tipografico: svg('<text x="24" y="33" text-anchor="middle" font-size="24" font-weight="600" fill="currentColor" stroke="none" font-family="Instrument Sans, sans-serif">Aa</text>'),
     monograma: svg('<circle cx="24" cy="24" r="17"/><text x="24" y="30.5" text-anchor="middle" font-size="17" font-weight="600" fill="currentColor" stroke="none" font-family="Instrument Sans, sans-serif" letter-spacing="-1">AB</text>'),
     logosimbolo: svg(`<path d="${STAR}" fill="currentColor" stroke="none" transform="translate(3 13) scale(.45)"/><path d="M25 20h17M25 28h12"/>`),
-    isotipo: svg(`<path d="${STAR}" fill="currentColor" stroke="none" transform="translate(8 4) scale(.8)"/>`),
     emblema: svg('<circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="13"/><path d="M16 24h16"/>'),
     mascota: svg('<circle cx="24" cy="25" r="15"/><circle cx="18.5" cy="22" r="1.6" fill="currentColor"/><circle cx="29.5" cy="22" r="1.6" fill="currentColor"/><path d="M18.5 29.5c3 3 8 3 11 0M14 13l3 4M34 13l-3 4"/>'),
     abstracto: svg('<circle cx="19" cy="21" r="11"/><path d="M24 40l13-22 9 22z"/>'),
@@ -79,13 +78,12 @@
     ] },
     { sec: ['El logo', 'The logo'], qs: [
       { id: 'b_logo', kind: 'cards', max: 2, unknown: false, q: ['¿Qué tipo de logo te imaginas?', 'What kind of logo do you imagine?'], help: ['Elige hasta dos.', 'Pick up to two.'], opts: [
-        o('tipografico', 'Tipográfico', 'Wordmark', { d: ['Solo el nombre, escrito con una letra propia.', 'Just the name, in its own lettering.'], ex: ['Como Google o Coca-Cola', 'Like Google or Coca-Cola'], icon: 'tipografico' }),
-        o('monograma', 'Monograma', 'Monogram', { d: ['Las iniciales como signo; útil si el nombre es largo.', 'The initials as a sign; useful for long names.'], ex: ['Como LV o HP', 'Like LV or HP'], icon: 'monograma' }),
-        o('logosimbolo', 'Logosímbolo', 'Combination mark', { d: ['Símbolo y nombre juntos; el más versátil.', 'Symbol and name together; the most versatile.'], ex: ['Como Spotify o Airbnb', 'Like Spotify or Airbnb'], icon: 'logosimbolo' }),
-        o('isotipo', 'Isotipo', 'Symbol', { d: ['Solo el símbolo, para marcas ya reconocidas.', 'Just the symbol, for well-known brands.'], ex: ['Como la manzana de Apple', 'Like Apple’s apple'], icon: 'isotipo' }),
-        o('emblema', 'Emblema o sello', 'Emblem or badge', { d: ['El nombre dentro de una forma; tradicional y artesanal.', 'The name inside a shape; traditional and crafted.'], ex: ['Como Starbucks o Harley-Davidson', 'Like Starbucks or Harley-Davidson'], icon: 'emblema' }),
-        o('mascota', 'Mascota', 'Mascot', { d: ['Un personaje cercano, ideal para niños y comunidad.', 'A friendly character, great for kids and community.'], ex: ['Como KFC o Duolingo', 'Like KFC or Duolingo'], icon: 'mascota' }),
-        o('abstracto', 'Símbolo abstracto', 'Abstract mark', { d: ['Una forma geométrica que no representa nada literal.', 'A geometric shape that isn’t literal.'], ex: ['Como Pepsi o Mastercard', 'Like Pepsi or Mastercard'], icon: 'abstracto' }),
+        o('tipografico', 'Tipográfico', 'Wordmark', { d: ['Solo el nombre, escrito con una letra propia.', 'Just the name, in its own lettering.'], ex: ['Como Google o Coca-Cola', 'Like Google or Coca-Cola'], icon: 'tipografico', img: 'logo-tipografico.webp', by: 'Ricketts Lab' }),
+        o('monograma', 'Monograma', 'Monogram', { d: ['Las iniciales como signo; útil si el nombre es largo.', 'The initials as a sign; useful for long names.'], ex: ['Como LV o HP', 'Like LV or HP'], icon: 'monograma', img: 'logo-monograma.webp', by: 'Ricketts Lab' }),
+        o('logosimbolo', 'Logosímbolo', 'Combination mark', { d: ['Símbolo y nombre juntos; el más versátil.', 'Symbol and name together; the most versatile.'], ex: ['Como Spotify o Airbnb', 'Like Spotify or Airbnb'], icon: 'logosimbolo', img: 'logo-logosimbolo.webp', by: 'Fondas de Colón' }),
+        o('emblema', 'Emblema o sello', 'Emblem or badge', { d: ['El nombre dentro de una forma; tradicional y artesanal.', 'The name inside a shape; traditional and crafted.'], ex: ['Como Starbucks o Harley-Davidson', 'Like Starbucks or Harley-Davidson'], icon: 'emblema', img: 'logo-emblema.webp', by: 'Mansa Galleta' }),
+        o('mascota', 'Mascota', 'Mascot', { d: ['Un personaje cercano, ideal para niños y comunidad.', 'A friendly character, great for kids and community.'], ex: ['Como KFC o Duolingo', 'Like KFC or Duolingo'], icon: 'mascota', img: 'logo-mascota.webp', by: 'Chavela' }),
+        o('abstracto', 'Símbolo abstracto', 'Abstract mark', { d: ['Una forma geométrica que no representa nada literal.', 'A geometric shape that isn’t literal.'], ex: ['Como Pepsi o Mastercard', 'Like Pepsi or Mastercard'], icon: 'abstracto', img: 'logo-abstracto.webp', by: 'Sultavolo' }),
         o('nose', 'No sé, recomiéndenme', 'Not sure, recommend one', { d: ['Lo definimos juntos con la estrategia.', 'We’ll define it together with the strategy.'], icon: 'nose', none: true })] },
     ] },
     { sec: ['Alcance', 'Scope'], qs: [
@@ -281,7 +279,16 @@
         return `<label class="bq-chip"><input type="${multi ? 'checkbox' : 'radio'}" name="${q.id}" value="${x.v}" data-q="${q.id}"${x.none ? ' data-none' : ''} ${on ? 'checked' : ''} ${off ? 'disabled' : ''}><span>${esc(tx(x.t))}</span></label>`;
       }).join('')}</div>`;
     }
-    if (q.kind === 'cards') {
+    if (q.kind === 'cards' && q.opts.some((x) => x.img)) {
+      body = `<div class="bq-pcards" role="group" aria-labelledby="${id}-t">${q.opts.map((x) => {
+        const on = Array.isArray(v) && v.includes(x.v);
+        const photo = x.img
+          ? `<img src="../img/brief/${x.img}" alt="" loading="lazy" width="960" height="720"><span class="bq-by">${esc(x.by)}</span>`
+          : `<span class="bq-photo-empty">${ICON[x.icon] || ''}</span>`;
+        return `<label class="bq-pcard"><input type="checkbox" name="${q.id}" value="${x.v}" data-q="${q.id}" data-max="${q.max}"${x.none ? ' data-none' : ''} ${on ? 'checked' : ''} ${off ? 'disabled' : ''}>
+          <span class="bq-pcard-in"><span class="bq-photo">${photo}<span class="bq-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M6.5 12.5l3.5 3.5 7.5-8"/></svg></span></span><span class="bq-pbody"><b>${esc(tx(x.t))}</b><span class="bq-d">${esc(tx(x.d))}</span>${x.ex ? `<span class="bq-ex">${esc(tx(x.ex))}</span>` : ''}</span></span></label>`;
+      }).join('')}</div><p class="bq-limit" aria-live="polite"></p>`;
+    } else if (q.kind === 'cards') {
       body = `<div class="bq-cards" role="group" aria-labelledby="${id}-t">${q.opts.map((x) => {
         const on = Array.isArray(v) && v.includes(x.v);
         return `<label class="bq-card"><input type="checkbox" name="${q.id}" value="${x.v}" data-q="${q.id}" data-max="${q.max}"${x.none ? ' data-none' : ''} ${on ? 'checked' : ''} ${off ? 'disabled' : ''}>

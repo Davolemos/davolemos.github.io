@@ -145,3 +145,34 @@ textarea.bq-input { padding: 14px 16px; resize: vertical; min-height: 104px; }
 .bq-check svg { width: 26px; height: 26px; }
 
 @media (prefers-reduced-motion: reduce) { .bq-progress span, .bq-chip span, .bq-card-in, .bq-dots span[aria-hidden] { transition: none; } }
+
+/* Tarjetas con foto (tipo de logo) */
+.bq-pcards { display: grid; gap: 14px; width: 100%; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+@media (max-width: 600px) { .bq-pcards { grid-template-columns: 1fr 1fr; gap: 10px; } }
+.bq-pcard { position: relative; display: block; }
+.bq-pcard input { position: absolute; opacity: 0; pointer-events: none; }
+.bq-pcard-in {
+  display: flex; flex-direction: column; height: 100%; padding: 8px; border-radius: 26px; cursor: pointer;
+  background: #fff; box-shadow: 0 0 0 1px rgb(17 17 16 / 0.06), 0 10px 30px -14px rgb(17 17 16 / 0.22);
+  transition: box-shadow 200ms ease, transform 200ms var(--ease-out);
+}
+.bq-pcard-in:active { transform: scale(0.98); }
+@media (hover: hover) and (pointer: fine) { .bq-pcard-in:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgb(17 17 16 / 0.08), 0 16px 36px -14px rgb(17 17 16 / 0.28); } }
+.bq-photo { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 20px; background: var(--surface); }
+.bq-photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(17 17 16 / 0.06); pointer-events: none; }
+.bq-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) { .bq-pcard-in:hover .bq-photo img { transform: scale(1.03); } }
+.bq-photo-empty { display: grid; place-items: center; height: 100%; color: var(--ink-2); }
+.bq-photo-empty svg { width: 56px; height: 56px; }
+.bq-by { position: absolute; left: 8px; bottom: 8px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--ink); background: rgb(255 255 255 / 0.86); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.bq-pbody { display: grid; gap: 4px; padding: 16px 12px 12px; }
+.bq-pbody b { display: inline-flex; align-items: center; gap: 8px; font-size: 19px; font-weight: 500; letter-spacing: -0.02em; }
+.bq-pbody .bq-d { color: #6B6A65; }
+.bq-tick { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; box-shadow: 0 0 0 3px #fff; opacity: 0; transform: scale(0.6); transition: opacity 180ms ease, transform 220ms var(--ease-out); }
+.bq-tick svg { width: 17px; height: 17px; }
+.bq-pcard input:checked + .bq-pcard-in { box-shadow: 0 0 0 2px var(--ink), 0 14px 34px -14px rgb(17 17 16 / 0.3); }
+.bq-pcard input:checked + .bq-pcard-in .bq-tick { opacity: 1; transform: none; }
+.bq-pcard input:focus-visible + .bq-pcard-in { outline: 2px solid var(--ink); outline-offset: 4px; }
+.bq-pcard input:disabled + .bq-pcard-in { cursor: default; }
+@media (max-width: 600px) { .bq-pbody { padding: 12px 6px 8px; } .bq-pbody b { font-size: 16px; } .bq-pbody .bq-d { font-size: 13.5px; } }
+@media (prefers-reduced-motion: reduce) { .bq-pcard-in, .bq-photo img, .bq-tick { transition: none; } }
