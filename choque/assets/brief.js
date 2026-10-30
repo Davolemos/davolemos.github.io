@@ -78,13 +78,13 @@
     ] },
     { sec: ['El logo', 'The logo'], qs: [
       { id: 'b_logo', kind: 'cards', max: 2, unknown: false, q: ['¿Qué tipo de logo te imaginas?', 'What kind of logo do you imagine?'], help: ['Elige hasta dos.', 'Pick up to two.'], opts: [
-        o('tipografico', 'Tipográfico', 'Wordmark', { d: ['Solo el nombre, escrito con una letra propia.', 'Just the name, in its own lettering.'], ex: ['Como Google o Coca-Cola', 'Like Google or Coca-Cola'], icon: 'tipografico', img: 'logo-tipografico.webp', by: 'Ricketts Lab' }),
-        o('monograma', 'Monograma', 'Monogram', { d: ['Las iniciales como signo; útil si el nombre es largo.', 'The initials as a sign; useful for long names.'], ex: ['Como LV o HP', 'Like LV or HP'], icon: 'monograma', img: 'logo-monograma.webp', by: 'Ricketts Lab' }),
-        o('logosimbolo', 'Logosímbolo', 'Combination mark', { d: ['Símbolo y nombre juntos; el más versátil.', 'Symbol and name together; the most versatile.'], ex: ['Como Spotify o Airbnb', 'Like Spotify or Airbnb'], icon: 'logosimbolo', img: 'logo-logosimbolo.webp', by: 'Fondas de Colón' }),
-        o('emblema', 'Emblema o sello', 'Emblem or badge', { d: ['El nombre dentro de una forma; tradicional y artesanal.', 'The name inside a shape; traditional and crafted.'], ex: ['Como Starbucks o Harley-Davidson', 'Like Starbucks or Harley-Davidson'], icon: 'emblema', img: 'logo-emblema.webp', by: 'Mansa Galleta' }),
-        o('mascota', 'Mascota', 'Mascot', { d: ['Un personaje cercano, ideal para niños y comunidad.', 'A friendly character, great for kids and community.'], ex: ['Como KFC o Duolingo', 'Like KFC or Duolingo'], icon: 'mascota', img: 'logo-mascota.webp', by: 'Chavela' }),
-        o('abstracto', 'Símbolo abstracto', 'Abstract mark', { d: ['Una forma geométrica que no representa nada literal.', 'A geometric shape that isn’t literal.'], ex: ['Como Pepsi o Mastercard', 'Like Pepsi or Mastercard'], icon: 'abstracto', img: 'logo-abstracto.webp', by: 'Sultavolo' }),
-        o('nose', 'No sé, recomiéndenme', 'Not sure, recommend one', { d: ['Lo definimos juntos con la estrategia.', 'We’ll define it together with the strategy.'], icon: 'nose', none: true })] },
+        o('tipografico', 'Solo el nombre', 'Name only', { d: ['Letras con personalidad propia.', 'Lettering with its own personality.'], img: 'logo-tipografico.webp' }),
+        o('monograma', 'Iniciales', 'Initials', { d: ['Un símbolo creado con letras.', 'A symbol made from letters.'], img: 'logo-monograma.webp' }),
+        o('logosimbolo', 'Nombre + símbolo', 'Name + symbol', { d: ['Icono y nombre combinados.', 'Icon and name combined.'], img: 'logo-logosimbolo.webp' }),
+        o('isotipo', 'Solo símbolo', 'Symbol only', { d: ['Un icono sin el nombre.', 'An icon without the name.'], img: 'logo-isotipo.webp' }),
+        o('emblema', 'Emblema o sello', 'Emblem or badge', { d: ['Todo dentro de una insignia.', 'Everything inside a badge.'], img: 'logo-emblema.webp' }),
+        o('mascota', 'Personaje o mascota', 'Character or mascot', { d: ['Una cara para la marca.', 'A face for the brand.'], img: 'logo-mascota.webp' }),
+        o('nose', 'No lo tengo claro', 'Not sure yet', { d: ['Lo definimos juntos con la estrategia.', 'We’ll define it together with the strategy.'], img: 'logo-nose.webp', none: true })] },
     ] },
     { sec: ['Alcance', 'Scope'], qs: [
       { id: 'b_necesitas', kind: 'multi', unknown: false, q: ['¿Qué necesitas que diseñemos?', 'What do you need us to design?'], help: ['Elige todas las que apliquen.', 'Pick all that apply.'], opts: [
@@ -283,7 +283,7 @@
       body = `<div class="bq-pcards" role="group" aria-labelledby="${id}-t">${q.opts.map((x) => {
         const on = Array.isArray(v) && v.includes(x.v);
         const photo = x.img
-          ? `<img src="../img/brief/${x.img}" alt="" loading="lazy" width="960" height="720"><span class="bq-by">${esc(x.by)}</span>`
+          ? `<img src="../img/brief/${x.img}" alt="" loading="lazy" width="960" height="720">${x.by ? `<span class="bq-by">${esc(x.by)}</span>` : ''}`
           : `<span class="bq-photo-empty">${ICON[x.icon] || ''}</span>`;
         return `<label class="bq-pcard"><input type="checkbox" name="${q.id}" value="${x.v}" data-q="${q.id}" data-max="${q.max}"${x.none ? ' data-none' : ''} ${on ? 'checked' : ''} ${off ? 'disabled' : ''}>
           <span class="bq-pcard-in"><span class="bq-photo">${photo}<span class="bq-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M6.5 12.5l3.5 3.5 7.5-8"/></svg></span></span><span class="bq-pbody"><b>${esc(tx(x.t))}</b><span class="bq-d">${esc(tx(x.d))}</span>${x.ex ? `<span class="bq-ex">${esc(tx(x.ex))}</span>` : ''}</span></span></label>`;
