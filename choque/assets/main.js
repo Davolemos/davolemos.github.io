@@ -211,6 +211,7 @@ document.querySelectorAll('.lang [data-lang]').forEach((b) => b.addEventListener
 // in the chosen language
 const EN_PATHS = {
   '/': '/en/', '/index.html': '/en/',
+  '/brief/': '/brief/en/', '/brief/index.html': '/brief/en/',
   '/servicios/branding-panama.html': '/en/services/branding-agency-panama.html',
   '/servicios/diseno-de-logos-panama.html': '/en/services/logo-design-panama.html',
   '/servicios/diseno-de-empaques-panama.html': '/en/services/packaging-design-panama.html',
