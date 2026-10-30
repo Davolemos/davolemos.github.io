@@ -335,14 +335,18 @@
     let html = `<div class="bq-progress" aria-hidden="true"><span style="width:${pct}%"></span></div>`;
 
     if (st.kind === 'intro') {
-      const card = (v, t, d) => `<label class="bq-type"><input type="radio" name="brief-type" value="${v}" ${S.type === v ? 'checked' : ''}><span class="bq-type-in"><span class="bq-ico">${ICON[v]}</span><b>${esc(tx(t))}</b><span class="bq-d">${esc(tx(d))}</span></span></label>`;
-      html += `<header class="bq-step-head"><p class="label">${esc(tx(['Brief de proyecto', 'Project brief']))}</p>
+      const card = (v, t, d, steps) => `<button type="button" class="bq-pick" data-type="${v}" aria-describedby="pick-${v}-d">
+        <span class="bq-pick-ico">${ICON[v]}</span>
+        <span class="bq-pick-body"><b>${esc(tx(t))}</b><span class="bq-d" id="pick-${v}-d">${esc(tx(d))}</span>
+        <span class="bq-pick-go"><span>${esc(tx(steps))}</span><span class="bq-pick-arrow">${ARROW}</span></span></span></button>`;
+      const resume = S.type && Object.keys(S.a).length;
+      html += `<header class="bq-step-head bq-intro-head"><p class="label">${esc(tx(['Brief de proyecto', 'Project brief']))}</p>
         <h2 class="bq-hero" tabindex="-1">${esc(tx(['Cuéntanos tu proyecto', 'Tell us about your project']))}</h2>
-        <p class="bq-lead">${esc(tx(['Unas preguntas sencillas para entender tu marca. No hace falta tener todo claro: puedes responder “no sé” y lo definimos juntos.', 'A few simple questions to understand your brand. You don’t need to have it all figured out: you can answer “not sure” and we’ll define it together.']))}</p>
-        <ul class="bq-facts"><li>${esc(tx(['10–15 minutos', '10–15 minutes']))}</li><li>${esc(tx(['Se guarda mientras avanzas', 'Saves as you go']))}</li><li>${esc(tx(['Te respondemos en menos de 24 horas', 'We reply within 24 hours']))}</li></ul></header>
-        <div class="bq"><div class="bq-head"><span class="bq-n">00</span><div><h2 id="q-type-t" class="bq-q">${esc(tx(['¿Qué necesitas?', 'What do you need?']))}</h2></div></div>
-        <div class="bq-types" role="radiogroup" aria-labelledby="q-type-t">${card('branding', ['Branding', 'Branding'], ['Nombre, logo e identidad de tu marca.', 'Name, logo and identity for your brand.'])}${card('empaque', ['Empaque', 'Packaging'], ['El envase y la etiqueta de tu producto.', 'Your product’s container and label.'])}${card('ambos', ['Los dos', 'Both'], ['Marca y empaque, para que hablen el mismo idioma.', 'Brand and packaging, speaking the same language.'])}</div></div>
-        <div class="bq-nav"><span></span><button type="button" class="btn btn-dark" data-next ${S.type ? '' : 'disabled'}>${esc(tx(['Empezar', 'Start']))} ${ARROW}</button></div>`;
+        <p class="bq-lead">${esc(tx(['Unas preguntas sencillas para entender tu marca. No hace falta tener todo claro: puedes responder “no sé” y lo definimos juntos.', 'A few simple questions to understand your brand. You don’t need to have it all figured out: you can answer “not sure” and we’ll define it together.']))}</p></header>
+        <h3 class="bq-pick-q">${esc(tx(['¿Qué necesitas?', 'What do you need?']))}</h3>
+        ${resume ? `<p class="bq-resume">${esc(tx(['Tienes un brief a medias.', 'You have a brief in progress.']))} <button type="button" class="bq-link" data-resume>${esc(tx(['Continuar donde quedé', 'Continue where I left off']))}</button></p>` : ''}
+        <div class="bq-picks">${card('branding', ['Branding', 'Branding'], ['Nombre, logo e identidad de tu marca.', 'Name, logo and identity for your brand.'], ['8 pasos', '8 steps'])}${card('empaque', ['Empaque', 'Packaging'], ['El envase y la etiqueta de tu producto.', 'Your product’s container and label.'], ['6 pasos', '6 steps'])}${card('ambos', ['Los dos', 'Both'], ['Marca y empaque, para que hablen el mismo idioma.', 'Brand and packaging, speaking the same language.'], ['14 pasos', '14 steps'])}</div>
+        <ul class="bq-facts"><li>${esc(tx(['10–15 minutos', '10–15 minutes']))}</li><li>${esc(tx(['Se guarda mientras avanzas', 'Saves as you go']))}</li><li>${esc(tx(['Te respondemos en menos de 24 horas', 'We reply within 24 hours']))}</li></ul>`;
     }
     if (st.kind === 'q') {
       const sameBrief = qSteps.filter((s) => s.brief === st.brief);
@@ -371,7 +375,7 @@
 
   // ---------- Interacción ----------
   const qById = (id) => [...BRANDING, ...EMPAQUE].flatMap((s) => s.qs).find((q) => q.id === id);
-  const go = (d) => { S.step = Math.max(0, S.step + d); save(); render(); };
+  const go = (d) => { S.step = Math.max(0, S.step + d); if (S.step > 0) S.lastStep = S.step; save(); render(); };
 
   const rerenderBlock = (id) => {
     const q = qById(id), block = app.querySelector(`[data-block="${id}"]`);
@@ -394,7 +398,6 @@
       if (warn) app.querySelector(`[data-block="${id}"] .bq-limit`).textContent = warn;
       return;
     }
-    if (el.name === 'brief-type') { S.type = el.value; save(); app.querySelector('[data-next]').disabled = false; return; }
     const id = el.dataset.q;
     if (!id) return;
     const q = qById(id);
@@ -432,6 +435,11 @@
   app.addEventListener('click', async (e) => {
     const b = e.target.closest('button');
     if (!b) return;
+    if (b.dataset.type) {
+      if (S.type !== b.dataset.type) { S.type = b.dataset.type; S.step = 0; }
+      return go(1);
+    }
+    if (b.hasAttribute('data-resume')) { const last = steps().length - 1; S.step = Math.min(Math.max(S.lastStep || 1, 1), last); save(); return render(); }
     if (b.hasAttribute('data-next')) return go(1);
     if (b.hasAttribute('data-back')) return go(-1);
     if (b.dataset.nose) {
