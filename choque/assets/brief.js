@@ -339,7 +339,7 @@
       html += `<header class="bq-step-head"><p class="label">${esc(tx(['Brief de proyecto', 'Project brief']))}</p>
         <h2 class="bq-hero" tabindex="-1">${esc(tx(['Cuéntanos tu proyecto', 'Tell us about your project']))}</h2>
         <p class="bq-lead">${esc(tx(['Unas preguntas sencillas para entender tu marca. No hace falta tener todo claro: puedes responder “no sé” y lo definimos juntos.', 'A few simple questions to understand your brand. You don’t need to have it all figured out: you can answer “not sure” and we’ll define it together.']))}</p>
-        <ul class="bq-facts"><li>${esc(tx(['10–15 minutos', '10–15 minutes']))}</li><li>${esc(tx(['Se guarda mientras avanzas', 'Saves as you go']))}</li><li>${esc(tx(['Te respondemos en 48 horas', 'We reply within 48 hours']))}</li></ul></header>
+        <ul class="bq-facts"><li>${esc(tx(['10–15 minutos', '10–15 minutes']))}</li><li>${esc(tx(['Se guarda mientras avanzas', 'Saves as you go']))}</li><li>${esc(tx(['Te respondemos en menos de 24 horas', 'We reply within 24 hours']))}</li></ul></header>
         <div class="bq"><div class="bq-head"><span class="bq-n">00</span><div><h2 id="q-type-t" class="bq-q">${esc(tx(['¿Qué necesitas?', 'What do you need?']))}</h2></div></div>
         <div class="bq-types" role="radiogroup" aria-labelledby="q-type-t">${card('branding', ['Branding', 'Branding'], ['Nombre, logo e identidad de tu marca.', 'Name, logo and identity for your brand.'])}${card('empaque', ['Empaque', 'Packaging'], ['El envase y la etiqueta de tu producto.', 'Your product’s container and label.'])}${card('ambos', ['Los dos', 'Both'], ['Marca y empaque, para que hablen el mismo idioma.', 'Brand and packaging, speaking the same language.'])}</div></div>
         <div class="bq-nav"><span></span><button type="button" class="btn btn-dark" data-next ${S.type ? '' : 'disabled'}>${esc(tx(['Empezar', 'Start']))} ${ARROW}</button></div>`;
@@ -503,7 +503,7 @@
   let sentText = '', sentName = '';
   const renderDone = () => {
     app.innerHTML = `<div class="bq-done"><span class="bq-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-      <h2 tabindex="-1">${esc(tx(['¡Recibimos tu brief!', 'We got your brief!']))}</h2><p class="bq-lead">${esc(tx(['Lo revisamos y te escribimos en menos de 48 horas para agendar la primera reunión.', 'We’ll review it and write to you within 48 hours to schedule the first meeting.']))}</p>
+      <h2 tabindex="-1">${esc(tx(['¡Recibimos tu brief!', 'We got your brief!']))}</h2><p class="bq-lead">${esc(tx(['Lo revisamos y te escribimos en menos de 24 horas para agendar la primera reunión.', 'We’ll review it and write to you within 24 hours to schedule the first meeting.']))}</p>
       <div class="bq-tools"><a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="btn btn-ghost" data-download>${esc(tx(['Descargar mi resumen', 'Download my summary']))}</button><a class="btn btn-ghost" href="../index.html">${esc(tx(['Volver al inicio', 'Back to home']))}</a></div></div>`;
     app.querySelector('h2').focus({ preventScroll: true });
     scrollTo(0, 0);

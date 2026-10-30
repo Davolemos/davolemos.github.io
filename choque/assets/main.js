@@ -104,7 +104,7 @@ if (briefBtns.length) {
       <h2 id="brief-title" data-en="Tell us about your project">Cuéntanos tu proyecto</h2>
       <button class="brief-close" type="button" aria-label="Cerrar" data-en-aria="Close">${X}</button>
     </div>
-    <p class="brief-sub" data-en="Two minutes. We reply within 48 hours.">Dos minutos. Te respondemos en menos de 48 horas.</p>
+    <p class="brief-sub" data-en="Two minutes. We reply within 24 hours.">Dos minutos. Te respondemos en menos de 24 horas.</p>
     <fieldset class="brief-chips">
       <legend data-en="What do you need?">¿Qué necesitas?</legend>
       <div>${chip('Branding', 'Branding')}${chip('Logo', 'Logo')}${chip('Empaque', 'Empaque', 'Packaging')}${chip('Diseño gráfico', 'Diseño gráfico', 'Graphic design')}${chip('Web', 'Web')}${chip('Otro', 'Otro', 'Other')}</div>
@@ -134,7 +134,7 @@ if (briefBtns.length) {
   <div class="brief-done" hidden tabindex="-1">
     <svg class="brief-check" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg>
     <h2 data-en="Got it!">¡Recibido!</h2>
-    <p data-en="Thanks. We'll write to you within 48 hours. If it's urgent, message us on WhatsApp.">Gracias. Te escribimos en menos de 48 horas. Si es urgente, escríbenos por WhatsApp.</p>
+    <p data-en="Thanks. We'll write to you within 24 hours. If it's urgent, message us on WhatsApp.">Gracias. Te escribimos en menos de 24 horas. Si es urgente, escríbenos por WhatsApp.</p>
     <div class="actions">
       <a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a>
       <button class="btn btn-ghost" type="button" data-close data-en="Close">Cerrar</button>
