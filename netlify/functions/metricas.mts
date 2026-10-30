@@ -14,7 +14,7 @@ import { json, passwordOk, slowDown } from "../lib/admin.mts"
 const TIPOS = ["entrada", "vista", "whatsapp", "email", "brief"] as const
 const CONTACTOS = ["whatsapp", "email", "brief"]
 const FUENTES = ["google", "bing", "instagram", "facebook", "behance", "linkedin", "tiktok", "whatsapp", "directo", "otro"]
-const PAGINA = /^(inicio|(proyectos|servicios)~[a-z0-9-]{2,40})$/
+const PAGINA = /^(inicio|brief|(proyectos|servicios)~[a-z0-9-]{2,40})$/
 const MES = /^\d{4}-(0[1-9]|1[0-2])$/
 const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|pingdom|monitor/i
 

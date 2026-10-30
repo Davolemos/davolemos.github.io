@@ -200,6 +200,7 @@
   const SERVICIOS = { 'branding-panama': 'Branding', 'diseno-de-logos-panama': 'Logos', 'diseno-de-empaques-panama': 'Empaques', 'diseno-grafico-panama': 'Diseño gráfico', 'diseno-web-panama': 'Diseño web' };
   const pagina = (id) => {
     if (id === 'inicio') return 'Inicio';
+    if (id === 'brief') return 'Brief';
     const [k, slug] = id.split('~');
     return k === 'proyectos' ? `Proyecto: ${PROYECTOS[slug] || slug}` : `Servicio: ${SERVICIOS[slug] || slug}`;
   };
