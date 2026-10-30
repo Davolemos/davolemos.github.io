@@ -176,7 +176,7 @@
     const add = (set, brief) => set.forEach((s, i) => list.push({ kind: 'q', brief, sec: s.sec, qs: s.qs, part: set.filter((x) => x.sec[0] === s.sec[0]).length > 1 ? set.filter((x, j) => j <= i && x.sec[0] === s.sec[0]).length : 0 }));
     if (S.type === 'branding' || S.type === 'ambos') add(BRANDING, 'branding');
     if (S.type === 'empaque' || S.type === 'ambos') add(EMPAQUE, 'empaque');
-    if (S.type) list.push({ kind: 'contact' }, { kind: 'review' });
+    if (S.type) list.push({ kind: 'contact' });
     return list;
   };
   const BRIEF_NAME = { branding: ['Brief de branding', 'Branding brief'], empaque: ['Brief de empaque', 'Packaging brief'] };
@@ -351,18 +351,9 @@
           <label class="field"><span>Email</span><input class="bq-input" type="email" data-c="email" autocomplete="email" spellcheck="false" value="${esc(c.email)}"></label>
           <label class="field"><span>WhatsApp</span><input class="bq-input" type="tel" data-c="whatsapp" autocomplete="tel" value="${esc(c.whatsapp)}"></label>
           <p class="bq-msg" role="status" aria-live="polite"></p>
+          <p class="bq-legal">${esc(tx(['Solo usaremos estos datos para responderte sobre tu proyecto. Nada de publicidad ni listas de correo.', 'We only use this information to reply about your project. No advertising, no mailing lists.']))}</p>
         </div>
-        ${nav(true, tx(['Ver mi resumen', 'See my summary']), 'data-tocheck')}`;
-    }
-    if (st.kind === 'review') {
-      const { text, gaps } = summary();
-      html += `<header class="bq-step-head"><p class="label">${esc(tx(['Resumen', 'Summary']))}</p><h2 tabindex="-1">${esc(tx(['Revisa tu brief', 'Review your brief']))}</h2>
-        <p class="bq-lead">${esc(gaps.length ? tx([`Quedaron ${gaps.length} puntos sin definir. Está bien: los vemos juntos en la primera reunión.`, `${gaps.length} points are still open. That’s fine: we’ll go over them in the first meeting.`]) : tx(['Está completo. ¡Gracias por el detalle!', 'It’s complete. Thanks for the detail!']))}</p></header>
-        <pre class="bq-summary" tabindex="0" aria-label="${esc(tx(['Resumen del brief', 'Brief summary']))}">${esc(text)}</pre>
-        <div class="bq-tools"><button type="button" class="btn btn-ghost" data-copy>${esc(tx(['Copiar', 'Copy']))}</button><button type="button" class="btn btn-ghost" data-download>${esc(tx(['Descargar .txt', 'Download .txt']))}</button><button type="button" class="btn btn-ghost" data-edit>${esc(tx(['Editar respuestas', 'Edit answers']))}</button></div>
-        <p class="bq-msg" role="status" aria-live="polite"></p>
-        <p class="bq-legal">${esc(tx(['Solo usaremos estos datos para responderte sobre tu proyecto. Nada de publicidad ni listas de correo.', 'We only use this information to reply about your project. No advertising, no mailing lists.']))}</p>
-        ${nav(true, tx(['Enviar a choque', 'Send to choque']), 'data-send')}`;
+        ${nav(true, tx(['Enviar brief', 'Send brief']), 'data-send')}`;
     }
     app.innerHTML = html;
     if (focus) { app.querySelector('h2')?.focus({ preventScroll: true }); scrollTo(0, 0); }
@@ -397,7 +388,11 @@
   });
   app.addEventListener('input', (e) => {
     const el = e.target;
-    if (el.dataset.c) { S.contact[el.dataset.c] = el.value; el.removeAttribute('aria-invalid'); save(); return; }
+    if (el.dataset.c) {
+      S.contact[el.dataset.c] = el.value; el.removeAttribute('aria-invalid'); save();
+      const msg = app.querySelector('.bq-msg.err'); if (msg) { msg.textContent = ''; msg.className = 'bq-msg'; }
+      return;
+    }
     const id = el.dataset.q;
     if (!id) return;
     const q = qById(id);
@@ -434,30 +429,20 @@
       return;
     }
     if (b.dataset.rankok) { S.touched[b.dataset.rankok] = true; save(); b.setAttribute('aria-pressed', 'true'); return; }
-    if (b.hasAttribute('data-tocheck')) {
+    if (b.hasAttribute('data-download')) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([sentText], { type: 'text/plain;charset=utf-8' }));
+      a.download = `brief-choque-${sentName.toLowerCase().replace(/[^a-z0-9]+/gi, '-') || 'proyecto'}.txt`;
+      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      return;
+    }
+    if (b.hasAttribute('data-send')) {
       const c = S.contact, msg = app.querySelector('.bq-msg');
       const bad = (sel, text) => { const f = app.querySelector(sel); f.setAttribute('aria-invalid', 'true'); f.focus(); msg.textContent = text; msg.className = 'bq-msg err'; };
       if (!c.nombre?.trim()) return bad('[data-c="nombre"]', tx(['Escribe tu nombre.', 'Write your name.']));
       if (!c.email?.trim() && !c.whatsapp?.trim()) return bad('[data-c="email"]', tx(['Déjanos un email o un WhatsApp para responderte.', 'Leave an email or a WhatsApp number so we can reply.']));
       if (c.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) return bad('[data-c="email"]', tx(['Revisa el email, parece incompleto.', 'Check the email, it looks incomplete.']));
-      return go(1);
-    }
-    if (b.hasAttribute('data-edit')) { S.step = 1; save(); return render(); }
-    const msg = app.querySelector('.bq-msg');
-    if (b.hasAttribute('data-copy')) {
-      try { await navigator.clipboard.writeText(summary().text); msg.textContent = tx(['Resumen copiado.', 'Summary copied.']); } catch { msg.textContent = tx(['No se pudo copiar. Selecciona el texto y cópialo.', 'Couldn’t copy. Select the text and copy it.']); }
-      return;
-    }
-    if (b.hasAttribute('data-download')) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([summary().text], { type: 'text/plain;charset=utf-8' }));
-      a.download = `brief-choque-${(S.contact.nombre || 'proyecto').trim().toLowerCase().replace(/[^a-z0-9]+/gi, '-')}.txt`;
-      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      return;
-    }
-    if (b.hasAttribute('data-send')) {
       const { text, gaps } = summary();
-      const c = S.contact;
       const brandName = answerText(qById('b_nombre')) || answerText(qById('e_nombre')) || '';
       const body = new URLSearchParams({
         'form-name': 'brief-proyecto', 'bot-field': '',
@@ -471,18 +456,20 @@
         if (!r.ok) throw new Error(r.status);
         if (typeof count === 'function') count('brief');
         try { localStorage.removeItem(KEY); } catch {}
+        sentText = text; sentName = c.nombre.trim();
         S = blank(); // la próxima visita empieza de cero
         renderDone();
       } catch {
-        msg.textContent = tx(['No se pudo enviar. Intenta de nuevo, o copia el resumen y mándalo por WhatsApp.', 'Couldn’t send it. Try again, or copy the summary and send it on WhatsApp.']);
+        msg.textContent = tx(['No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.', 'Couldn’t send it. Try again or message us on WhatsApp.']);
         msg.className = 'bq-msg err'; b.disabled = false;
       }
     }
   });
+  let sentText = '', sentName = '';
   const renderDone = () => {
     app.innerHTML = `<div class="bq-done"><span class="bq-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
       <h2 tabindex="-1">${esc(tx(['¡Recibimos tu brief!', 'We got your brief!']))}</h2><p class="bq-lead">${esc(tx(['Lo revisamos y te escribimos en menos de 48 horas para agendar la primera reunión.', 'We’ll review it and write to you within 48 hours to schedule the first meeting.']))}</p>
-      <div class="bq-tools"><a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-ghost" href="../index.html">${esc(tx(['Volver al inicio', 'Back to home']))}</a></div></div>`;
+      <div class="bq-tools"><a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="btn btn-ghost" data-download>${esc(tx(['Descargar mi resumen', 'Download my summary']))}</button><a class="btn btn-ghost" href="../index.html">${esc(tx(['Volver al inicio', 'Back to home']))}</a></div></div>`;
     app.querySelector('h2').focus({ preventScroll: true });
     scrollTo(0, 0);
   };
