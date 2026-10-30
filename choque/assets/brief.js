@@ -6,6 +6,9 @@
   const app = document.getElementById('brief-app');
   if (!app) return;
   const KEY = 'choque-brief-v1';
+  // Rutas relativas a la página (/brief/ o /brief/en/): se toman de la hoja de estilos ya cargada
+  const ASSET = (document.querySelector('link[href$="assets/brief.css"]')?.getAttribute('href') || '../assets/brief.css').replace('assets/brief.css', '');
+  const HOME = lang === 'en' ? `${ASSET}en/` : `${ASSET}index.html`;
   const tx = (a) => (Array.isArray(a) ? (lang === 'en' ? a[1] : a[0]) : a);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const NOSE = '__nose';
@@ -288,7 +291,7 @@
       body = `<div class="bq-pcards" role="group" aria-labelledby="${id}-t">${q.opts.map((x) => {
         const on = Array.isArray(v) && v.includes(x.v);
         const photo = x.img
-          ? `<img src="../img/brief/${x.img}" alt="" loading="lazy" width="960" height="720">${x.by ? `<span class="bq-by">${esc(x.by)}</span>` : ''}`
+          ? `<img src="${ASSET}img/brief/${x.img}" alt="" loading="lazy" width="960" height="720">${x.by ? `<span class="bq-by">${esc(x.by)}</span>` : ''}`
           : `<span class="bq-photo-empty">${ICON[x.icon] || ''}</span>`;
         return `<label class="bq-pcard"><input type="checkbox" name="${q.id}" value="${x.v}" data-q="${q.id}" data-max="${q.max}"${x.none ? ' data-none' : ''} ${on ? 'checked' : ''} ${off ? 'disabled' : ''}>
           <span class="bq-pcard-in"><span class="bq-photo">${photo}<span class="bq-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M6.5 12.5l3.5 3.5 7.5-8"/></svg></span></span><span class="bq-pbody"><b>${esc(tx(x.t))}</b><span class="bq-d">${esc(tx(x.d))}</span>${x.ex ? `<span class="bq-ex">${esc(tx(x.ex))}</span>` : ''}</span></span></label>`;
@@ -512,7 +515,7 @@
   const renderDone = () => {
     app.innerHTML = `<div class="bq-done"><span class="bq-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
       <h2 tabindex="-1">${esc(tx(['¡Recibimos tu brief!', 'We got your brief!']))}</h2><p class="bq-lead">${esc(tx(['Lo revisamos y te escribimos en menos de 24 horas para agendar la primera reunión.', 'We’ll review it and write to you within 24 hours to schedule the first meeting.']))}</p>
-      <div class="bq-tools"><a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="btn btn-ghost" data-download>${esc(tx(['Descargar mi resumen', 'Download my summary']))}</button><a class="btn btn-ghost" href="../index.html">${esc(tx(['Volver al inicio', 'Back to home']))}</a></div></div>`;
+      <div class="bq-tools"><a class="btn btn-dark" href="https://wa.me/50764228672" target="_blank" rel="noopener">WhatsApp</a><button type="button" class="btn btn-ghost" data-download>${esc(tx(['Descargar mi resumen', 'Download my summary']))}</button><a class="btn btn-ghost" href="${HOME}">${esc(tx(['Volver al inicio', 'Back to home']))}</a></div></div>`;
     app.querySelector('h2').focus({ preventScroll: true });
     scrollTo(0, 0);
   };
