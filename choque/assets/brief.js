@@ -123,10 +123,12 @@
         o('tubo', 'Tubo', 'Tube', { d: ['Se aprieta para servir.', 'Squeeze to dispense.'], ex: ['Cremas, pastas, cosmética', 'Creams, pastes, cosmetics'], icon: 'tubo' }),
         o('etiqueta', 'Solo etiqueta', 'Label only', { d: ['Para un envase que ya tienes.', 'For a container you already have.'], icon: 'etiqueta' }),
         o('nose', 'No sé todavía', 'Not sure yet', { d: ['Lo vemos juntos según el producto.', 'We’ll decide together based on the product.'], icon: 'nose', none: true })] },
+      { id: 'e_fotos', kind: 'upload', max: 3, unknown: false, q: ['¿Tienes una imagen de tu idea?', 'Do you have a picture of your idea?'], help: ['Si no sabes cómo se llama el envase, súbenos una foto, una captura o un dibujo. Hasta 3 imágenes.', 'If you don’t know what the container is called, upload a photo, a screenshot or a sketch. Up to 3 images.'] },
       { id: 'e_material', kind: 'multi', unknown: false, q: ['Materiales que te gustan', 'Materials you like'], opts: [
         o('kraft', 'Cartón kraft', 'Kraft board'), o('cartulina', 'Cartulina blanca', 'White board'), o('vidrio', 'Vidrio', 'Glass'), o('metal', 'Metal', 'Metal'),
         o('reciclable', 'Plástico reciclable', 'Recyclable plastic'), o('compostable', 'Compostable', 'Compostable'), o('igual', 'Me da igual', 'No preference', { none: true })] },
-      { id: 'e_proveedor', kind: 'text', q: ['¿Ya tienes un envase o proveedor?', 'Do you already have a container or supplier?'], help: ['Si es así, medidas o nombre del proveedor.', 'If so, sizes or the supplier’s name.'], unknown: ['Todavía no', 'Not yet'] },
+      { id: 'e_proveedor', kind: 'single', unknown: false, q: ['¿Ya tienes un envase o proveedor?', 'Do you already have a container or supplier?'], opts: [
+        o('si', 'Sí', 'Yes'), o('no', 'Todavía no', 'Not yet')] },
     ] },
     { sec: ['Cómo se ve', 'How it looks'], qs: [
       { id: 'e_estilo', kind: 'cards', max: 2, q: ['¿Qué estilo de gráfica te gusta para el empaque?', 'What graphic style do you like for the packaging?'], help: ['Elige hasta dos.', 'Pick up to two.'], opts: [
@@ -144,9 +146,9 @@
         o('texto', 'Mismo diseño, cambia el texto', 'Same design, only the text changes'), o('nose', 'No sé, propónganme', 'Not sure, suggest something')] },
     ] },
     { sec: ['El frente del empaque', 'The front of the pack'], qs: [
-      { id: 'e_orden', kind: 'rank', q: ['¿Qué debe verse primero?', 'What should be seen first?'], help: ['Ordena de más a menos importante con las flechas.', 'Order from most to least important with the arrows.'], items: [
-        o('marca', 'La marca', 'The brand'), o('producto', 'El nombre del producto', 'The product name'), o('sabor', 'El sabor o la variedad', 'The flavor or variety'),
-        o('beneficio', 'El beneficio principal', 'The main benefit'), o('imagen', 'Una imagen del producto', 'A product image'), o('precio', 'El precio o la oferta', 'The price or offer')] },
+      { id: 'e_orden', kind: 'order', max: 3, q: ['Cuando alguien ve tu empaque en la tienda, ¿qué debe ver primero?', 'When someone sees your pack in the store, what should they see first?'], help: ['Toca primero lo más importante, después lo segundo y lo tercero. Tócalo otra vez para quitarlo.', 'Tap the most important thing first, then the second and third. Tap again to remove it.'], opts: [
+        o('marca', 'El nombre de la marca', 'The brand name'), o('producto', 'Cómo se llama el producto', 'What the product is called'), o('sabor', 'El sabor o el tipo', 'The flavor or type'),
+        o('beneficio', 'Para qué sirve o por qué es bueno', 'What it’s for or why it’s good'), o('imagen', 'Una foto o dibujo del producto', 'A photo or drawing of the product'), o('precio', 'El precio o una promoción', 'The price or a deal')] },
       { id: 'e_obligatoria', kind: 'multi', unknown: false, q: ['¿Qué información obligatoria lleva?', 'What mandatory information does it carry?'], opts: [
         o('registro', 'Registro sanitario', 'Health registration'), o('nutricional', 'Tabla nutricional', 'Nutrition facts'), o('ingredientes', 'Ingredientes', 'Ingredients'),
         o('barras', 'Código de barras', 'Barcode'), o('advertencia', 'Sellos de advertencia', 'Warning labels'), o('vencimiento', 'Fecha de vencimiento', 'Expiry date'),
@@ -167,6 +169,8 @@
 
   // ---------- Estado ----------
   const blank = () => ({ type: null, step: 0, a: {}, contact: {}, touched: {} });
+  const FILES = {}; // imágenes subidas: solo en memoria (no caben en el guardado del navegador)
+  const MAX_MB = 4;
   let S = blank();
   try { S = { ...blank(), ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
@@ -182,13 +186,13 @@
   const BRIEF_NAME = { branding: ['Brief de branding', 'Branding brief'], empaque: ['Brief de empaque', 'Packaging brief'] };
 
   // ---------- Lectura de respuestas ----------
-  const opt = (q, v) => (q.opts || q.items).find((x) => x.v === v);
+  const opt = (q, v) => q.opts.find((x) => x.v === v);
   const isEmpty = (q) => {
     const v = S.a[q.id];
     if (v === NOSE) return true;
     if (q.kind === 'scale') return !v || !Object.keys(v).length;
     if (q.kind === 'words') return !v || !v.some((w) => w && w.trim());
-    if (q.kind === 'rank') return !S.touched[q.id];
+    if (q.kind === 'upload') return !(FILES[q.id] || []).length;
     if (Array.isArray(v)) return !v.length || v.every((x) => NOSE_OPTS.has(x));
     if (q.kind === 'single') return !v || NOSE_OPTS.has(v);
     return !v || !String(v).trim();
@@ -207,7 +211,8 @@
       }).join('\n');
     }
     if (q.kind === 'words') return v && v.some((w) => w && w.trim()) ? v.filter((w) => w && w.trim()).map((w) => w.trim()).join(', ') : null;
-    if (q.kind === 'rank') return S.touched[q.id] ? (v || q.items.map((x) => x.v)).map((k, i) => `${i + 1}. ${tx(opt(q, k).t)}`).join('\n') : null;
+    if (q.kind === 'upload') { const f = FILES[q.id] || []; return f.length ? tx([`${f.length} imagen(es) adjunta(s): `, `${f.length} image(s) attached: `]) + f.map((x) => x.name).join(', ') : null; }
+    if (q.kind === 'order') return Array.isArray(v) && v.length ? v.map((k, i) => `${i + 1}. ${tx(opt(q, k).t)}`).join('\n') : null;
     if (Array.isArray(v)) return v.length ? v.map((k) => tx(opt(q, k).t)).join(', ') : null;
     if (q.kind === 'single') return v ? tx(opt(q, v).t) : null;
     return v && String(v).trim() ? String(v).trim() : null;
@@ -299,17 +304,22 @@
       body = `<div class="bq-scales">${q.pairs.map((p, i) => `<fieldset class="bq-scale"${off ? ' disabled' : ''}><legend class="sr-only">${esc(tx(p[0]))} – ${esc(tx(p[1]))}</legend>
         <span class="bq-end">${esc(tx(p[0]))}</span><span class="bq-dots">${[1, 2, 3, 4, 5].map((n) => `<label><input type="radio" name="${q.id}-${i}" value="${n}" data-q="${q.id}" data-i="${i}" ${(v && v[i] === n) ? 'checked' : ''}><span aria-hidden="true"></span><span class="sr-only">${n}</span></label>`).join('')}</span><span class="bq-end">${esc(tx(p[1]))}</span></fieldset>`).join('')}</div>`;
     }
-    if (q.kind === 'rank') body = `<ol class="bq-rank" data-q="${q.id}">${rankItems(q)}</ol><p class="sr-only" aria-live="polite" id="${id}-live"></p>
-      <button type="button" class="bq-ok" data-rankok="${q.id}" aria-pressed="${!!S.touched[q.id]}">${esc(tx(['Este orden está bien', 'This order is right']))}</button>`;
+    if (q.kind === 'order') {
+      const order = Array.isArray(v) ? v : [];
+      body = `<div class="bq-order" role="group" aria-labelledby="${id}-t">${q.opts.map((x) => {
+        const n = order.indexOf(x.v) + 1;
+        return `<button type="button" class="bq-otile" data-order="${q.id}" data-k="${x.v}" aria-pressed="${n > 0}" ${off ? 'disabled' : ''}>
+          <span class="bq-onum" aria-hidden="true">${n || ''}</span><span>${esc(tx(x.t))}</span>${n ? `<span class="sr-only">, ${tx(['puesto', 'place'])} ${n}</span>` : ''}</button>`;
+      }).join('')}</div><p class="bq-limit" aria-live="polite"></p>`;
+    }
+    if (q.kind === 'upload') {
+      const files = FILES[q.id] || [];
+      body = `<div class="bq-upload">${files.map((f, i) => `<figure class="bq-thumb"><img src="${f.url}" alt="${esc(f.name)}"><button type="button" class="bq-thumb-x" data-unfile="${q.id}" data-i="${i}" aria-label="${esc(tx(['Quitar', 'Remove']))} ${esc(f.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M7 7l10 10M17 7L7 17"/></svg></button></figure>`).join('')}
+        ${files.length < q.max ? `<label class="bq-drop"><input type="file" accept="image/*" multiple data-file="${q.id}" ${off ? 'disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M12 16V5M7.5 9.5L12 5l4.5 4.5M5 15v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3"/></svg><b>${esc(tx(['Subir imagen', 'Upload image']))}</b><span>${esc(tx([`JPG o PNG, hasta ${MAX_MB} MB`, `JPG or PNG, up to ${MAX_MB} MB`]))}</span></label>` : ''}
+      </div><p class="bq-limit" aria-live="polite"></p>`;
+    }
     return `<div class="bq${off ? ' is-off' : ''}" data-block="${q.id}">${head}<div class="bq-body">${body}${unknownChip(q)}</div></div>`;
   };
-  const rankItems = (q) => {
-    const order = S.a[q.id] || q.items.map((x) => x.v);
-    return order.map((k, i) => `<li><span class="bq-pos">${i + 1}</span><span class="bq-rt">${esc(tx(opt(q, k).t))}</span>
-      <button type="button" class="bq-mv" data-move="${q.id}" data-k="${k}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="${esc(tx(['Subir', 'Move up']))}: ${esc(tx(opt(q, k).t))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M6 15l6-6 6 6"/></svg></button>
-      <button type="button" class="bq-mv" data-move="${q.id}" data-k="${k}" data-d="1" ${i === order.length - 1 ? 'disabled' : ''} aria-label="${esc(tx(['Bajar', 'Move down']))}: ${esc(tx(opt(q, k).t))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg></button></li>`).join('');
-  };
-
   const ARROW = '<svg aria-hidden="true"><use href="#arrow-r"/></svg>';
   const nav = (back, nextLabel, nextAttr = 'data-next') => `<div class="bq-nav">${back ? `<button type="button" class="btn btn-ghost" data-back>${esc(tx(['Atrás', 'Back']))}</button>` : '<span></span>'}
     <button type="button" class="btn btn-dark" ${nextAttr}>${esc(nextLabel)} ${ARROW}</button></div>`;
@@ -363,8 +373,27 @@
   const qById = (id) => [...BRANDING, ...EMPAQUE].flatMap((s) => s.qs).find((q) => q.id === id);
   const go = (d) => { S.step = Math.max(0, S.step + d); save(); render(); };
 
+  const rerenderBlock = (id) => {
+    const q = qById(id), block = app.querySelector(`[data-block="${id}"]`);
+    const n = Number(block.querySelector('.bq-n').textContent);
+    block.outerHTML = field(q, n);
+    app.querySelector(`[data-block="${id}"] .bq-drop input, [data-block="${id}"] .bq-thumb-x`)?.focus();
+  };
   app.addEventListener('change', (e) => {
     const el = e.target;
+    if (el.dataset.file) {
+      const id = el.dataset.file, q = qById(id), list = (FILES[id] ||= []);
+      let warn = '';
+      for (const f of el.files) {
+        if (!f.type.startsWith('image/')) { warn = tx(['Solo imágenes (JPG o PNG).', 'Images only (JPG or PNG).']); continue; }
+        if (f.size > MAX_MB * 1024 * 1024) { warn = tx([`"${f.name}" pesa más de ${MAX_MB} MB.`, `"${f.name}" is larger than ${MAX_MB} MB.`]); continue; }
+        if (list.length >= q.max) { warn = tx([`Máximo ${q.max} imágenes.`, `Up to ${q.max} images.`]); break; }
+        list.push({ file: f, name: f.name, url: URL.createObjectURL(f) });
+      }
+      rerenderBlock(id);
+      if (warn) app.querySelector(`[data-block="${id}"] .bq-limit`).textContent = warn;
+      return;
+    }
     if (el.name === 'brief-type') { S.type = el.value; save(); app.querySelector('[data-next]').disabled = false; return; }
     const id = el.dataset.q;
     if (!id) return;
@@ -414,27 +443,29 @@
       block.querySelectorAll('input, textarea, fieldset').forEach((x) => { x.disabled = on; if (on && x.type !== 'radio' && x.type !== 'checkbox') x.value = ''; if (on && (x.type === 'radio' || x.type === 'checkbox')) x.checked = false; });
       return;
     }
-    if (b.dataset.move) {
-      const q = qById(b.dataset.move);
-      const order = [...(S.a[q.id] || q.items.map((x) => x.v))];
-      const i = order.indexOf(b.dataset.k), j = i + Number(b.dataset.d);
-      [order[i], order[j]] = [order[j], order[i]];
-      S.a[q.id] = order; S.touched[q.id] = true; save();
-      const list = app.querySelector(`.bq-rank[data-q="${q.id}"]`);
-      list.innerHTML = rankItems(q);
-      app.querySelector(`[data-rankok="${q.id}"]`).setAttribute('aria-pressed', 'true');
-      document.getElementById(`q-${q.id}-live`).textContent = `${tx(opt(q, b.dataset.k).t)}: ${tx(['posición', 'position'])} ${j + 1}`;
-      const again = list.querySelector(`[data-k="${b.dataset.k}"][data-d="${b.dataset.d}"]:not([disabled])`) || list.querySelector(`[data-k="${b.dataset.k}"]:not([disabled])`);
-      again?.focus();
+    if (b.dataset.order) {
+      const q = qById(b.dataset.order), k = b.dataset.k;
+      const order = Array.isArray(S.a[q.id]) ? [...S.a[q.id]] : [];
+      const limit = app.querySelector(`[data-block="${q.id}"] .bq-limit`);
+      if (order.includes(k)) order.splice(order.indexOf(k), 1);
+      else if (order.length >= q.max) { limit.textContent = tx([`Ya elegiste ${q.max}. Toca una para quitarla.`, `You already picked ${q.max}. Tap one to remove it.`]); return; }
+      else order.push(k);
+      limit.textContent = '';
+      S.a[q.id] = order; save();
+      app.querySelectorAll(`[data-order="${q.id}"]`).forEach((t) => {
+        const n = order.indexOf(t.dataset.k) + 1;
+        t.setAttribute('aria-pressed', String(n > 0));
+        t.querySelector('.bq-onum').textContent = n || '';
+        t.querySelector('.sr-only')?.remove();
+        if (n) t.insertAdjacentHTML('beforeend', `<span class="sr-only">, ${tx(['puesto', 'place'])} ${n}</span>`);
+      });
       return;
     }
-    if (b.dataset.rankok) { S.touched[b.dataset.rankok] = true; save(); b.setAttribute('aria-pressed', 'true'); return; }
-    if (b.hasAttribute('data-download')) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([sentText], { type: 'text/plain;charset=utf-8' }));
-      a.download = `brief-choque-${sentName.toLowerCase().replace(/[^a-z0-9]+/gi, '-') || 'proyecto'}.txt`;
-      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      return;
+    if (b.dataset.unfile) {
+      const list = FILES[b.dataset.unfile] || [];
+      const [gone] = list.splice(Number(b.dataset.i), 1);
+      if (gone) URL.revokeObjectURL(gone.url);
+      return rerenderBlock(b.dataset.unfile);
     }
     if (b.hasAttribute('data-send')) {
       const c = S.contact, msg = app.querySelector('.bq-msg');
@@ -452,12 +483,16 @@
       });
       b.disabled = true; msg.textContent = tx(['Enviando…', 'Sending…']); msg.className = 'bq-msg';
       try {
-        const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() });
+        const data = new FormData();
+        body.forEach((val, key) => data.append(key, val));
+        (FILES.e_fotos || []).forEach((f, i) => data.append(`imagen${i + 1}`, f.file, f.name));
+        const r = await fetch('/', { method: 'POST', body: data });
         if (!r.ok) throw new Error(r.status);
         if (typeof count === 'function') count('brief');
         try { localStorage.removeItem(KEY); } catch {}
         sentText = text; sentName = c.nombre.trim();
         S = blank(); // la próxima visita empieza de cero
+        Object.keys(FILES).forEach((k) => { FILES[k].forEach((f) => URL.revokeObjectURL(f.url)); delete FILES[k]; });
         renderDone();
       } catch {
         msg.textContent = tx(['No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.', 'Couldn’t send it. Try again or message us on WhatsApp.']);
