@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspección Edificios - Administración Horizontal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .camera-preview {
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .progress-line {
+            height: 2px;
+            flex-grow: 1;
+            background-color: #e5e7eb;
+        }
+        .progress-line.active {
+            background-color: #3b82f6;
+        }
+        .report-photo {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .hidden {
+            display: none;
+        }
+        #fileInput {
+            display: none;
+        }
+        .camera-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 10;
+        }
+        .camera-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            cursor: pointer;
+        }
+        .camera-btn i {
+            font-size: 1.5rem;
+        }
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative overflow-hidden" id="app">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 shadow-md">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-bold">Inspección Edificios</h1>
+                <div class="flex space-x-2">
+                    <button class="p-2 rounded-full hover:bg-blue-500" id="settingsBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-blue-500" id="userBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="p-4 pb-20">
+            <!-- Login View -->
+            <div id="loginView" class="space-y-6">
+                <div class="text-center py-8">
+                    <img src="https://via.placeholder.com/150" alt="Logo" class="mx-auto mb-4 rounded-full">
+                    <h2 class="text-2xl font-bold text-gray-800">Bienvenido</h2>
+                    <p class="text-gray-600">Inicie sesión para comenzar su recorrido de inspección</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="tu@email.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                    <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                        Iniciar sesión
+                    </button>
+                </div>
+                
+                <div class="text-center text-sm text-gray-500">
+                    ¿No tienes cuenta? <a href="#" class="text-blue-600 hover:underline" id="registerLink">Regístrate</a>
+                </div>
+            </div>
+
+            <!-- Register View -->
+            <div id="registerView" class="hidden space-y-6">
+                <div class="text-center py-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Crear cuenta</h2>
+                    <p class="text-gray-600">Registre su información para comenzar</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="regName" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                        <input type="text" id="regName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Juan Pérez">
+                    </div>
+                    <div>
+                        <label for="regEmail" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                        <input type="email" id="regEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="tu@email.com">
+                    </div>
+                    <div>
+                        <label for="regPassword" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" id="regPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label for="regConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirmar contraseña</label>
+                        <input type="password" id="regConfirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label for="regBuilding" class="block text-sm font-medium text-gray-700 mb-1">Edificio a administrar</label>
+                        <input type="text" id="regBuilding" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Nombre del edificio">
+                    </div>
+                    <button id="registerBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                        Registrar cuenta
+                    </button>
+                </div>
+                
+                <div class="text-center text-sm text-gray-500">
+                    ¿Ya tienes cuenta? <a href="#" class="text-blue-600 hover:underline" id="loginLink">Inicia sesión</a>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="hidden">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Bienvenido, <span id="userName">Usuario</span></h2>
+                    <p class="text-gray-600">Administración del edificio <span id="buildingName" class="font-medium">Edificio Ejemplo</span></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-clipboard-check text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Recorridos hoy</p>
+                                <p class="font-bold text-lg">1</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-green-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Incidentes</p>
+                                <p class="font-bold text-lg">3</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <button id="startInspectionBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-play"></i>
+                        <span>Iniciar nuevo recorrido</span>
+                    </button>
+                    
+                    <button id="historyBtn" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-history"></i>
+                        <span>Historial de recorridos</span>
+                    </button>
+                    
+                    <button id="settingsBtn2" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inspection Setup View -->
+            <div id="inspectionSetupView" class="hidden">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Configurar recorrido</h2>
+                    <p class="text-gray-600">Seleccione las áreas a inspeccionar</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Áreas disponibles</label>
+                    <div class="space-y-2" id="areasList">
+                        <!-- Areas will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notas adicionales</label>
+                    <textarea id="inspectionNotes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" rows="2" placeholder="Agregue notas generales para este recorrido..."></textarea>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button id="cancelInspectionBtn" class="flex-1 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-200">
+                        Cancelar
+                    </button>
+                    <button id="confirmInspectionBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                        Comenzar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inspection Progress View -->
+            <div id="inspectionProgressView" class="hidden">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-lg font-bold text-gray-800">Recorrido en progreso</h2>
+                        <span class="text-sm text-gray-500" id="inspectionTimer">00:00</span>
+                    </div>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="progress-step bg-blue-600 text-white">1</div>
+                        <div class="progress-line active"></div>
+                        <div class="progress-step bg-gray-200 text-gray-600">2</div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step bg-gray-200 text-gray-600">3</div>
+                    </div>
+                </div>
+                
+                <div class="mb-6" id="currentAreaSection">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
+                        <h3 class="font-medium text-blue-800" id="currentAreaName">Lobby principal</h3>
+                        <p class="text-sm text-blue-600">Tome fotos y agregue observaciones</p>
+                    </div>
+                    
+                    <div class="camera-preview mb-4" id="cameraPreview">
+                        <video id="videoElement" autoplay playsinline></video>
+                        <canvas id="canvas"></canvas>
+                        <div class="camera-controls">
+                            <button class="camera-btn" id="takePhotoBtn">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <button class="camera-btn" id="toggleCameraBtn">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button class="camera-btn" id="uploadPhotoBtn">
+                                <i class="fas fa-images"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 mb-4" id="photosPreview">
+                        <!-- Photos will be added here -->
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observaciones</label>
+                        <textarea id="areaNotes" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Describa cualquier problema encontrado en esta área..."></textarea>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button id="skipAreaBtn" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-200">
+                            Omitir área
+                        </button>
+                        <button id="completeAreaBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                            Completar área
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inspection Summary View -->
+            <div id="inspectionSummaryView" class="hidden">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Resumen del recorrido</h2>
+                    <p class="text-gray-600">Revise la información antes de generar el informe</p>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
+                        <h3 class="font-medium text-blue-800">Detalles generales</h3>
+                        <div class="mt-2 space-y-1">
+                            <p class="text-sm"><span class="font-medium">Fecha:</span> <span id="summaryDate">15/06/2023</span></p>
+                            <p class="text-sm"><span class="font-medium">Hora de inicio:</span> <span id="summaryStartTime">09:30 AM</span></p>
+                            <p class="text-sm"><span class="font-medium">Duración:</span> <span id="summaryDuration">25 minutos</span></p>
+                            <p class="text-sm"><span class="font-medium">Áreas inspeccionadas:</span> <span id="summaryAreasCount">5 de 8</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4" id="summaryAreasList">
+                        <!-- Areas summary will be added here -->
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Recomendaciones generales</label>
+                    <textarea id="generalRecommendations" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Agregue recomendaciones generales para este recorrido..."></textarea>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button id="backToInspectionBtn" class="flex-1 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-200">
+                        Volver
+                    </button>
+                    <button id="generateReportBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                        Generar informe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Generation View -->
+            <div id="reportGenerationView" class="hidden">
+                <div class="flex flex-col items-center justify-center h-64">
+                    <div class="animate-pulse mb-4">
+                        <i class="fas fa-file-pdf text-5xl text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Generando informe</h2>
+                    <p class="text-gray-600 mb-6">Por favor espere mientras se crea el documento PDF</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 45%" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Complete View -->
+            <div id="reportCompleteView" class="hidden">
+                <div class="flex flex-col items-center justify-center text-center py-8">
+                    <div class="bg-green-100 p-5 rounded-full mb-4">
+                        <i class="fas fa-check-circle text-5xl text-green-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Informe generado con éxito</h2>
+                    <p class="text-gray-600 mb-6">El informe PDF ha sido creado y enviado a los destinatarios configurados.</p>
+                    
+                    <div class="w-full space-y-3">
+                        <button id="viewReportBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fas fa-eye"></i>
+                            <span>Ver informe</span>
+                        </button>
+                        <button id="newInspectionBtn" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Nuevo recorrido</span>
+                        </button>
+                        <button id="returnDashboardBtn" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fas fa-home"></i>
+                            <span>Volver al inicio</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report View -->
+            <div id="reportView" class="hidden">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-gray-800">Informe de inspección</h2>
+                        <button id="closeReportBtn" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500" id="reportDate">15/06/2023 - 09:30 AM</p>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+                    <h3 class="font-medium text-gray-800 border-b pb-2 mb-3">Detalles del recorrido</h3>
+                    <div class="space-y-2 text-sm">
+                        <p><span class="font-medium">Inspector:</span> <span id="reportInspector">Juan Pérez</span></p>
+                        <p><span class="font-medium">Edificio:</span> <span id="reportBuilding">Torres del Parque</span></p>
+                        <p><span class="font-medium">Duración:</span> <span id="reportDuration">25 minutos</span></p>
+                        <p><span class="font-medium">Áreas inspeccionadas:</span> <span id="reportAreasCount">5</span></p>
+                    </div>
+                </div>
+                
+                <div class="space-y-6" id="reportAreasList">
+                    <!-- Report areas will be added here -->
+                </div>
+                
+                <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-4 mt-6">
+                    <h3 class="font-medium text-yellow-800 border-b pb-2 mb-3">Recomendaciones</h3>
+                    <p class="text-sm" id="reportRecommendations">Se recomienda reparar el foco fundido en el lobby principal y limpiar los vidrios de los ascensores que presentan manchas.</p>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium">Firma del inspector</p>
+                            <p class="text-xs text-gray-500" id="reportSignatureDate">15/06/2023 10:05 AM</p>
+                        </div>
+                        <div class="border border-gray-300 rounded px-8 py-2 text-center">
+                            <p class="text-sm font-medium" id="reportSignatureName">Juan Pérez</p>
+                            <p class="text-xs text-gray-500">Administrador</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex space-x-3">
+                    <button id="shareReportBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-share"></i>
+                        <span>Compartir</span>
+                    </button>
+                    <button id="downloadReportBtn" class="flex-1 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fas fa-download"></i>
+                        <span>Descargar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="historyView" class="hidden">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Historial de recorridos</h2>
+                    <p class="text-gray-600">Revise inspecciones anteriores</p>
+                </div>
+                
+                <div class="space-y-3" id="inspectionsHistory">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="hidden">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Configuración</h2>
+                    <p class="text-gray-600">Personalice la aplicación a sus necesidades</p>
+                </div>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-medium text-gray-800 mb-3">Configuración del edificio</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del edificio</label>
+                                <input type="text" id="buildingNameInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" value="Torres del Parque">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Áreas de inspección</label>
+                                <div class="space-y-2" id="buildingAreasList">
+                                    <!-- Areas will be added here -->
+                                </div>
+                                <div class="mt-2 flex">
+                                    <input type="text" id="newAreaInput" class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Nueva área">
+                                    <button id="addAreaBtn" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-800 mb-3">Configuración de informes</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Destinatarios de correo</label>
+                                <textarea id="emailRecipients" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="admin@edificio.com,consejo@edificio.com"></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Separe las direcciones con comas</p>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="autoSendReports" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="autoSendReports" class="ml-2 block text-sm text-gray-700">Enviar informes automáticamente</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-800 mb-3">Configuración de usuario</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                                <input type="text" id="userFullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" value="Juan Pérez">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                                <input type="email" id="userEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" value="juan@edificio.com">
+                            </div>
+                            <button id="changePasswordBtn" class="w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-200">
+                                Cambiar contraseña
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button id="saveSettingsBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+                            Guardar cambios
+                        </button>
+                        <button id="logoutBtn" class="w-full bg-white border border-red-300 text-red-600 py-3 rounded-lg font-medium hover:bg-red-50 transition duration-200 mt-3">
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bg-white border-t border-gray-200 fixed bottom-0 w-full max-w-md py-2 px-4 flex justify-around" id="bottomNav">
+            <button class="p-2 text-gray-500 hover:text-blue-600 flex flex-col items-center" id="navDashboard">
+                <i class="fas fa-home"></i>
+                <span class="text-xs mt-1">Inicio</span>
+            </button>
+            <button class="p-2 text-gray-500 hover:text-blue-600 flex flex-col items-center" id="navInspection">
+                <i class="fas fa-clipboard-check"></i>
+                <span class="text-xs mt-1">Recorrido</span>
+            </button>
+            <button class="p-2 text-gray-500 hover:text-blue-600 flex flex-col items-center" id="navHistory">
+                <i class="fas fa-history"></i>
+                <span class="text-xs mt-1">Historial</span>
+            </button>
+            <button class="p-2 text-gray-500 hover:text-blue-600 flex flex-col items-center" id="navSettings">
+                <i class="fas fa-cog"></i>
+                <span class="text-xs mt-1">Config</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // App State
+        const state = {
+            currentView: 'login',
+            user: null,
+            building: {
+                name: 'Torres del Parque',
+                areas: [
+                    { id: 1, name: 'Lobby principal', selected: true },
+                    { id: 2, name: 'Ascensores', selected: true },
+                    { id: 3, name: 'Escaleras', selected: true },
+                    { id: 4, name: 'Parqueadero', selected: false },
+                    { id: 5, name: 'Zona de piscina', selected: false },
+                    { id: 6, name: 'Gimnasio', selected: false },
+                    { id: 7, name: 'Salón social', selected: true },
+                    { id: 8, name: 'Jardines', selected: true }
+                ],
+                emailRecipients: 'admin@edificio.com,consejo@edificio.com',
+                autoSendReports: true
+            },
+            currentInspection: {
+                id: null,
+                date: null,
+                startTime: null,
+                duration: null,
+                selectedAreas: [],
+                currentAreaIndex: 0,
+                notes: '',
+                photos: [],
+                recommendations: ''
+            },
+            inspectionHistory: [
+                {
+                    id: 1,
+                    date: '14/06/2023',
+                    startTime: '08:45 AM',
+                    duration: '35 min',
+                    areasCount: 6,
+                    issuesCount: 2,
+                    reportGenerated: true
+                },
+                {
+                    id: 2,
+                    date: '12/06/2023',
+                    startTime: '10:15 AM',
+                    duration: '28 min',
+                    areasCount: 5,
+                    issuesCount: 4,
+                    reportGenerated: true
+                },
+                {
+                    id: 3,
+                    date: '10/06/2023',
+                    startTime: '09:00 AM',
+                    duration: '42 min',
+                    areasCount: 8,
+                    issuesCount: 3,
+                    reportGenerated: true
+                }
+            ],
+            timerInterval: null,
+            secondsElapsed: 0,
+            cameraStream: null,
+            facingMode: 'environment'
+        };
+
+        // DOM Elements
+        const views = {
+            login: document.getElementById('loginView'),
+            register: document.getElementById('registerView'),
+            dashboard: document.getElementById('dashboardView'),
+            inspectionSetup: document.getElementById('inspectionSetupView'),
+            inspectionProgress: document.getElementById('inspectionProgressView'),
+            inspectionSummary: document.getElementById('inspectionSummaryView'),
+            reportGeneration: document.getElementById('reportGenerationView'),
+            reportComplete: document.getElementById('reportCompleteView'),
+            report: document.getElementById('reportView'),
+            history: document.getElementById('historyView'),
+            settings: document.getElementById('settingsView')
+        };
+
+        // Camera elements
+        const videoElement = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvas');
+        const takePhotoBtn = document.getElementById('takePhotoBtn');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+        const fileInput = document.getElementById('fileInput');
+
+        // Initialize the app
+        function initApp() {
+            const loggedInUser = localStorage.getItem('buildingInspectorUser');
+            if (loggedInUser) {
+                state.user = JSON.parse(loggedInUser);
+                showView('dashboard');
+            } else {
+                showView('login');
+            }
+            
+            setupEventListeners();
+            renderAreasList();
+            renderHistoryList();
+            renderSettings();
+            
+            // Setup camera event listeners
+            setupCameraControls();
+        }
+
+        // Setup camera controls
+        function setupCameraControls() {
+            takePhotoBtn.addEventListener('click', takePhotoWithCamera);
+            toggleCameraBtn.addEventListener('click', toggleCamera);
+            uploadPhotoBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        addPhotoFromGallery(event.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Start camera
+        async function startCamera(facingMode = 'environment') {
+            try {
+                if (state.cameraStream) {
+                    state.cameraStream.getTracks().forEach(track => track.stop());
+                }
+                
+                state.cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                
+                videoElement.srcObject = state.cameraStream;
+                state.facingMode = facingMode;
+            } catch (err) {
+                console.error("Error al acceder a la cámara:", err);
+                alert("No se pudo acceder a la cámara. Asegúrese de haber otorgado los permisos necesarios.");
+            }
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (state.cameraStream) {
+                state.cameraStream.getTracks().forEach(track => track.stop());
+                state.cameraStream = null;
+            }
+        }
+
+        // Take photo with camera
+        function takePhotoWithCamera() {
+            if (!state.cameraStream) return;
+            
+            const context = canvas.getContext('2d');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            addPhotoToInspection(imageDataUrl);
+        }
+
+        // Toggle between front and back camera
+        function toggleCamera() {
+            const newFacingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+            startCamera(newFacingMode);
+        }
+
+        // Add photo from gallery
+        function addPhotoFromGallery(imageDataUrl) {
+            addPhotoToInspection(imageDataUrl);
+        }
+
+        // Add photo to current inspection
+        function addPhotoToInspection(imageDataUrl) {
+            const areaId = state.currentInspection.selectedAreas[state.currentInspection.currentAreaIndex].id;
+            const photoNumber = state.currentInspection.photos.filter(p => p.areaId === areaId).length + 1;
+            
+            const newPhoto = {
+                id: Date.now(),
+                areaId: areaId,
+                url: imageDataUrl,
+                notes: '',
+                timestamp: new Date().toLocaleTimeString()
+            };
+            
+            state.currentInspection.photos.push(newPhoto);
+            addPhotoToPreview(newPhoto.url, newPhoto.notes);
+        }
+
+        // Show a specific view and hide others
+        function showView(viewName) {
+            state.currentView = viewName;
+            
+            Object.values(views).forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            if (views[viewName]) {
+                views[viewName].classList.remove('hidden');
+            }
+            
+            updateNavHighlight();
+            
+            // Special cases
+            if (viewName === 'dashboard' && state.user) {
+                document.getElementById('userName').textContent = state.user.name;
+                document.getElementById('buildingName').textContent = state.building.name;
+            }
+            
+            if (viewName === 'inspectionProgress') {
+                startTimer();
+                updateInspectionProgress();
+                startCamera();
+            } else {
+                stopCamera();
+            }
+            
+            if (viewName === 'reportGeneration') {
+                simulateReportGeneration();
+            }
+        }
+
+        // Update bottom navigation highlights based on current view
+        function updateNavHighlight() {
+            const navButtons = {
+                dashboard: document.getElementById('navDashboard'),
+                inspection: document.getElementById('navInspection'),
+                history: document.getElementById('navHistory'),
+                settings: document.getElementById('navSettings')
+            };
+            
+            Object.values(navButtons).forEach(button => {
+                button.querySelector('i').classList.remove('text-blue-600');
+                button.querySelector('span').classList.remove('text-blue-600');
+                button.querySelector('i').classList.add('text-gray-500');
+                button.querySelector('span').classList.add('text-gray-500');
+            });
+            
+            if (state.currentView === 'dashboard') {
+                navButtons.dashboard.querySelector('i').classList.remove('text-gray-500');
+                navButtons.dashboard.querySelector('span').classList.remove('text-gray-500');
+                navButtons.dashboard.querySelector('i').classList.add('text-blue-600');
+                navButtons.dashboard.querySelector('span').classList.add('text-blue-600');
+            } else if (state.currentView === 'inspectionSetup' || state.currentView === 'inspectionProgress' || state.currentView === 'inspectionSummary') {
+                navButtons.inspection.querySelector('i').classList.remove('text-gray-500');
+                navButtons.inspection.querySelector('span').classList.remove('text-gray-500');
+                navButtons.inspection.querySelector('i').classList.add('text-blue-600');
+                navButtons.inspection.querySelector('span').classList.add('text-blue-600');
+            } else if (state.currentView === 'history') {
+                navButtons.history.querySelector('i').classList.remove('text-gray-500');
+                navButtons.history.querySelector('span').classList.remove('text-gray-500');
+                navButtons.history.querySelector('i').classList.add('text-blue-600');
+                navButtons.history.querySelector('span').classList.add('text-blue-600');
+            } else if (state.currentView === 'settings') {
+                navButtons.settings.querySelector('i').classList.remove('text-gray-500');
+                navButtons.settings.querySelector('span').classList.remove('text-gray-500');
+                navButtons.settings.querySelector('i').classList.add('text-blue-600');
+                navButtons.settings.querySelector('span').classList.add('text-blue-600');
+            }
+        }
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Login/Register links
+            document.getElementById('registerLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showView('register');
+            });
+            
+            document.getElementById('loginLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showView('login');
+            });
+            
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                if (email && password) {
+                    state.user = {
+                        name: 'Juan Pérez',
+                        email: email,
+                        building: 'Torres del Parque'
+                    };
+                    
+                    localStorage.setItem('buildingInspectorUser', JSON.stringify(state.user));
+                    showView('dashboard');
+                } else {
+                    alert('Por favor ingrese correo y contraseña');
+                }
+            });
+            
+            // Register button
+            document.getElementById('registerBtn').addEventListener('click', () => {
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+                const building = document.getElementById('regBuilding').value;
+                
+                if (name && email && password && confirmPassword && building) {
+                    if (password !== confirmPassword) {
+                        alert('Las contraseñas no coinciden');
+                        return;
+                    }
+                    
+                    state.user = {
+                        name: name,
+                        email: email,
+                        building: building
+                    };
+                    
+                    state.building.name = building;
+                    
+                    localStorage.setItem('buildingInspectorUser', JSON.stringify(state.user));
+                    showView('dashboard');
+                } else {
+                    alert('Por favor complete todos los campos');
+                }
+            });
+            
+            // Dashboard buttons
+            document.getElementById('startInspectionBtn').addEventListener('click', () => {
+                state.currentInspection = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    startTime: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    duration: null,
+                    selectedAreas: [],
+                    currentAreaIndex: 0,
+                    notes: '',
+                    photos: [],
+                    recommendations: ''
+                };
+                
+                showView('inspectionSetup');
+            });
+            
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                showView('history');
+            });
+            
+            document.getElementById('settingsBtn').addEventListener('click', () => {
+                showView('settings');
+            });
+            
+            document.getElementById('settingsBtn2').addEventListener('click', () => {
+                showView('settings');
+            });
+            
+            // Inspection setup
+            document.getElementById('cancelInspectionBtn').addEventListener('click', () => {
+                if (confirm('¿Está seguro que desea cancelar este recorrido? Los datos no guardados se perderán.')) {
+                    showView('dashboard');
+                }
+            });
+            
+            document.getElementById('confirmInspectionBtn').addEventListener('click', () => {
+                const notes = document.getElementById('inspectionNotes').value;
+                state.currentInspection.notes = notes;
+                state.currentInspection.selectedAreas = state.building.areas.filter(area => area.selected);
+                
+                if (state.currentInspection.selectedAreas.length === 0) {
+                    alert('Por favor seleccione al menos un área para inspeccionar');
+                    return;
+                }
+                
+                showView('inspectionProgress');
+            });
+            
+            // Inspection progress
+            document.getElementById('skipAreaBtn').addEventListener('click', () => {
+                nextArea();
+            });
+            
+            document.getElementById('completeAreaBtn').addEventListener('click', () => {
+                const notes = document.getElementById('areaNotes').value;
+                
+                if (state.currentInspection.photos.length > 0 || notes) {
+                    const currentArea = state.currentInspection.selectedAreas[state.currentInspection.currentAreaIndex];
+                    currentArea.notes = notes;
+                    nextArea();
+                } else {
+                    alert('Por favor tome al menos una foto o agregue observaciones para esta área');
+                }
+            });
+            
+            // Inspection summary
+            document.getElementById('backToInspectionBtn').addEventListener('click', () => {
+                showView('inspectionProgress');
+            });
+            
+            document.getElementById('generateReportBtn').addEventListener('click', () => {
+                const recommendations = document.getElementById('generalRecommendations').value;
+                state.currentInspection.recommendations = recommendations;
+                
+                const endTime = new Date();
+                const startTime = new Date(state.currentInspection.startTime);
+                const durationMinutes = Math.floor((endTime - startTime) / 60000);
+                state.currentInspection.duration = `${durationMinutes} minutos`;
+                
+                state.inspectionHistory.unshift({
+                    id: state.currentInspection.id,
+                    date: state.currentInspection.date,
+                    startTime: state.currentInspection.startTime,
+                    duration: state.currentInspection.duration,
+                    areasCount: state.currentInspection.selectedAreas.length,
+                    issuesCount: state.currentInspection.photos.length,
+                    reportGenerated: true
+                });
+                
+                showView('reportGeneration');
+            });
+            
+            // Report complete
+            document.getElementById('viewReportBtn').addEventListener('click', () => {
+                showView('report');
+                renderReport();
+            });
+            
+            document.getElementById('newInspectionBtn').addEventListener('click', () => {
+                showView('inspectionSetup');
+            });
+            
+            document.getElementById('returnDashboardBtn').addEventListener('click', () => {
+                showView('dashboard');
+            });
+            
+            // Report view
+            document.getElementById('closeReportBtn').addEventListener('click', () => {
+                showView('reportComplete');
+            });
+            
+            document.getElementById('shareReportBtn').addEventListener('click', () => {
+                alert('En una aplicación real, esto compartiría el informe por correo u otras vías');
+            });
+            
+            document.getElementById('downloadReportBtn').addEventListener('click', () => {
+                alert('En una aplicación real, esto descargaría el PDF del informe');
+            });
+            
+            // Navigation
+            document.getElementById('navDashboard').addEventListener('click', () => {
+                showView('dashboard');
+            });
+            
+            document.getElementById('navInspection').addEventListener('click', () => {
+                if (state.currentInspection.id) {
+                    showView('inspectionProgress');
+                } else {
+                    showView('inspectionSetup');
+                }
+            });
+            
+            document.getElementById('navHistory').addEventListener('click', () => {
+                showView('history');
+            });
+            
+            document.getElementById('navSettings').addEventListener('click', () => {
+                showView('settings');
+            });
+            
+            // Settings view
+            document.getElementById('addAreaBtn').addEventListener('click', () => {
+                const newAreaName = document.getElementById('newAreaInput').value.trim();
+                if (newAreaName) {
+                    const newArea = {
+                        id: Date.now(),
+                        name: newAreaName,
+                        selected: true
+                    };
+                    
+                    state.building.areas.push(newArea);
+                    renderAreasList();
+                    document.getElementById('newAreaInput').value = '';
+                }
+            });
+            
+            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+                state.building.name = document.getElementById('buildingNameInput').value;
+                state.building.emailRecipients = document.getElementById('emailRecipients').value;
+                state.building.autoSendReports = document.getElementById('autoSendReports').checked;
+                
+                if (state.user) {
+                    state.user.name = document.getElementById('userFullName').value;
+                    state.user.email = document.getElementById('userEmail').value;
+                    localStorage.setItem('buildingInspectorUser', JSON.stringify(state.user));
+                }
+                
+                alert('Configuración guardada con éxito');
+                showView('dashboard');
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('buildingInspectorUser');
+                state.user = null;
+                showView('login');
+            });
+            
+            document.getElementById('changePasswordBtn').addEventListener('click', () => {
+                alert('En una aplicación real, esto permitiría cambiar la contraseña');
+            });
+        }
+
+        // Render areas list in inspection setup
+        function renderAreasList() {
+            const areasList = document.getElementById('areasList');
+            areasList.innerHTML = '';
+            
+            state.building.areas.forEach(area => {
+                const areaElement = document.createElement('div');
+                areaElement.className = 'flex items-center';
+                areaElement.innerHTML = `
+                    <input type="checkbox" id="area-${area.id}" ${area.selected ? 'checked' : ''} 
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="area-${area.id}" class="ml-2 block text-sm text-gray-700">${area.name}</label>
+                `;
+                
+                const checkbox = areaElement.querySelector('input');
+                checkbox.addEventListener('change', () => {
+                    area.selected = checkbox.checked;
+                });
+                
+                areasList.appendChild(areaElement);
+            });
+            
+            const buildingAreasList = document.getElementById('buildingAreasList');
+            buildingAreasList.innerHTML = '';
+            
+            state.building.areas.forEach(area => {
+                const areaElement = document.createElement('div');
+                areaElement.className = 'flex items-center justify-between bg-gray-50 p-2 rounded';
+                areaElement.innerHTML = `
+                    <span class="text-sm">${area.name}</span>
+                    <button class="text-red-500 hover:text-red-700" data-id="${area.id}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                const deleteBtn = areaElement.querySelector('button');
+                deleteBtn.addEventListener('click', () => {
+                    if (confirm(`¿Eliminar el área "${area.name}"?`)) {
+                        state.building.areas = state.building.areas.filter(a => a.id !== area.id);
+                        renderAreasList();
+                    }
+                });
+                
+                buildingAreasList.appendChild(areaElement);
+            });
+        }
+
+        // Render history list
+        function renderHistoryList() {
+            const historyList = document.getElementById('inspectionsHistory');
+            historyList.innerHTML = '';
+            
+            state.inspectionHistory.forEach(inspection => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer';
+                historyItem.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-medium">Recorrido #${inspection.id}</h3>
+                            <p class="text-sm text-gray-500">${inspection.date} - ${inspection.startTime}</p>
+                        </div>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                            ${inspection.areasCount} áreas
+                        </span>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center">
+                        <span class="text-sm ${inspection.issuesCount > 0 ? 'text-red-600' : 'text-green-600'}">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                            ${inspection.issuesCount} ${inspection.issuesCount === 1 ? 'incidente' : 'incidentes'}
+                        </span>
+                        <button class="text-blue-600 text-sm font-medium hover:underline">
+                            Ver informe
+                        </button>
+                    </div>
+                `;
+                
+                const viewBtn = historyItem.querySelector('button');
+                viewBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    state.currentInspection = {
+                        id: inspection.id,
+                        date: inspection.date,
+                        startTime: inspection.startTime,
+                        duration: inspection.duration,
+                        selectedAreas: state.building.areas.slice(0, inspection.areasCount),
+                        notes: 'Notas de ejemplo para este recorrido histórico.',
+                        photos: Array(inspection.issuesCount).fill().map((_, i) => ({
+                            areaId: state.building.areas[i % inspection.areasCount].id,
+                            url: `https://via.placeholder.com/300?text=Foto+${i+1}`,
+                            notes: `Problema observado ${i+1}`
+                        })),
+                        recommendations: 'Recomendaciones históricas para este recorrido.'
+                    };
+                    
+                    showView('report');
+                    renderReport();
+                });
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Render settings
+        function renderSettings() {
+            if (!state.user) return;
+            
+            document.getElementById('buildingNameInput').value = state.building.name;
+            document.getElementById('emailRecipients').value = state.building.emailRecipients;
+            document.getElementById('autoSendReports').checked = state.building.autoSendReports;
+            document.getElementById('userFullName').value = state.user.name;
+            document.getElementById('userEmail').value = state.user.email;
+        }
+
+        // Update inspection progress UI
+        function updateInspectionProgress() {
+            if (state.currentInspection.currentAreaIndex < state.currentInspection.selectedAreas.length) {
+                const currentArea = state.currentInspection.selectedAreas[state.currentInspection.currentAreaIndex];
+                
+                document.getElementById('currentAreaName').textContent = currentArea.name;
+                
+                const progressSteps = document.querySelectorAll('.progress-step');
+                const progressLines = document.querySelectorAll('.progress-line');
+                
+                progressSteps.forEach((step, index) => {
+                    if (index < state.currentInspection.currentAreaIndex) {
+                        step.classList.remove('bg-gray-200', 'text-gray-600');
+                        step.classList.add('bg-green-500', 'text-white');
+                    } else if (index === state.currentInspection.currentAreaIndex) {
+                        step.classList.remove('bg-gray-200', 'text-gray-600', 'bg-green-500', 'text-white');
+                        step.classList.add('bg-blue-600', 'text-white');
+                    } else {
+                        step.classList.remove('bg-blue-600', 'text-white', 'bg-green-500', 'text-white');
+                        step.classList.add('bg-gray-200', 'text-gray-600');
+                    }
+                });
+                
+                progressLines.forEach((line, index) => {
+                    if (index < state.currentInspection.currentAreaIndex) {
+                        line.classList.add('active');
+                    } else {
+                        line.classList.remove('active');
+                    }
+                });
+                
+                document.getElementById('photosPreview').innerHTML = '';
+                document.getElementById('areaNotes').value = currentArea.notes || '';
+                
+                const areaPhotos = state.currentInspection.photos.filter(photo => photo.areaId === currentArea.id);
+                areaPhotos.forEach(photo => {
+                    addPhotoToPreview(photo.url, photo.notes);
+                });
+            } else {
+                showInspectionSummary();
+            }
+        }
+
+        // Show inspection summary
+        function showInspectionSummary() {
+            document.getElementById('summaryDate').textContent = state.currentInspection.date;
+            document.getElementById('summaryStartTime').textContent = state.currentInspection.startTime;
+            document.getElementById('summaryDuration').textContent = formatTime(state.secondsElapsed);
+            document.getElementById('summaryAreasCount').textContent = 
+                `${state.currentInspection.selectedAreas.length} de ${state.building.areas.length}`;
+            
+            const summaryAreasList = document.getElementById('summaryAreasList');
+            summaryAreasList.innerHTML = '';
+            
+            state.currentInspection.selectedAreas.forEach(area => {
+                const areaElement = document.createElement('div');
+                areaElement.className = 'bg-white border border-gray-200 rounded-lg p-4';
+                
+                const areaPhotos = state.currentInspection.photos.filter(photo => photo.areaId === area.id);
+                
+                areaElement.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-medium">${area.name}</h3>
+                        <span class="text-sm ${areaPhotos.length > 0 ? 'text-red-600' : 'text-green-600'}">
+                            ${areaPhotos.length} ${areaPhotos.length === 1 ? 'incidente' : 'incidentes'}
+                        </span>
+                    </div>
+                    ${area.notes ? `<p class="text-sm text-gray-700 mb-3">${area.notes}</p>` : ''}
+                    <div class="grid grid-cols-2 gap-2" id="summary-photos-${area.id}">
+                        <!-- Photos will be added here -->
+                    </div>
+                `;
+                
+                const photosContainer = areaElement.querySelector(`#summary-photos-${area.id}`);
+                areaPhotos.forEach(photo => {
+                    const photoElement = document.createElement('div');
+                    photoElement.className = 'relative';
+                    photoElement.innerHTML = `
+                        <img src="${photo.url}" alt="Foto de inspección" class="w-full h-24 object-cover rounded">
+                        ${photo.notes ? `<p class="text-xs text-gray-600 mt-1 truncate">${photo.notes}</p>` : ''}
+                    `;
+                    photosContainer.appendChild(photoElement);
+                });
+                
+                summaryAreasList.appendChild(areaElement);
+            });
+            
+            showView('inspectionSummary');
+        }
+
+        // Add photo to preview
+        function addPhotoToPreview(url, notes) {
+            const photosPreview = document.getElementById('photosPreview');
+            
+            const photoElement = document.createElement('div');
+            photoElement.className = 'relative';
+            photoElement.innerHTML = `
+                <img src="${url}" alt="Foto de inspección" class="photo-thumbnail">
+                ${notes ? `<p class="text-xs text-gray-600 mt-1 truncate">${notes}</p>` : ''}
+                <button class="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                    <i class="fas fa-pencil-alt text-xs"></i>
+                </button>
+            `;
+            
+            const editBtn = photoElement.querySelector('button');
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const newNotes = prompt('Editar notas para esta foto:', notes);
+                if (newNotes !== null) {
+                    const photoIndex = state.currentInspection.photos.findIndex(p => p.url === url);
+                    if (photoIndex !== -1) {
+                        state.currentInspection.photos[photoIndex].notes = newNotes;
+                        
+                        if (notes) {
+                            photoElement.querySelector('p').textContent = newNotes;
+                        } else {
+                            const notesElement = document.createElement('p');
+                            notesElement.className = 'text-xs text-gray-600 mt-1 truncate';
+                            notesElement.textContent = newNotes;
+                            photoElement.appendChild(notesElement);
+                        }
+                    }
+                }
+            });
+            
+            photosPreview.appendChild(photoElement);
+        }
+
+        // Move to next area
+        function nextArea() {
+            state.currentInspection.currentAreaIndex++;
+            updateInspectionProgress();
+        }
+
+        // Start timer for inspection
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            state.secondsElapsed = 0;
+            
+            state.timerInterval = setInterval(() => {
+                state.secondsElapsed++;
+                document.getElementById('inspectionTimer').textContent = formatTime(state.secondsElapsed);
+            }, 1000);
+        }
+
+        // Format time (seconds to MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Simulate report generation
+        function simulateReportGeneration() {
+            let progress = 0;
+            const progressBar = document.getElementById('progressBar');
+            
+            const interval = setInterval(() => {
+                progress += 5 + Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    setTimeout(() => {
+                        showView('reportComplete');
+                    }, 500);
+                }
+                
+                progressBar.style.width = `${progress}%`;
+            }, 300);
+        }
+
+        // Render report
+        function renderReport() {
+            if (!state.currentInspection) return;
+            
+            document.getElementById('reportDate').textContent = 
+                `${state.currentInspection.date} - ${state.currentInspection.startTime}`;
+            document.getElementById('reportInspector').textContent = state.user?.name || 'Inspector';
+            document.getElementById('reportBuilding').textContent = state.building.name;
+            document.getElementById('reportDuration').textContent = state.currentInspection.duration || 'N/A';
+            document.getElementById('reportAreasCount').textContent = state.currentInspection.selectedAreas.length;
+            document.getElementById('reportRecommendations').textContent = state.currentInspection.recommendations || 'No hay recomendaciones.';
+            document.getElementById('reportSignatureName').textContent = state.user?.name || 'Inspector';
+            document.getElementById('reportSignatureDate').textContent = 
+                `${state.currentInspection.date} ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            
+            const reportAreasList = document.getElementById('reportAreasList');
+            reportAreasList.innerHTML = '';
+            
+            state.currentInspection.selectedAreas.forEach(area => {
+                const areaElement = document.createElement('div');
+                areaElement.className = 'bg-white border border-gray-200 rounded-lg p-4 mb-4';
+                
+                const areaPhotos = state.currentInspection.photos.filter(photo => photo.areaId === area.id);
+                
+                areaElement.innerHTML = `
+                    <h3 class="font-medium text-gray-800 border-b pb-2 mb-3">${area.name}</h3>
+                    ${area.notes ? `<p class="text-sm text-gray-700 mb-3">${area.notes}</p>` : ''}
+                    <div class="space-y-4" id="report-photos-${area.id}">
+                        <!-- Photos will be added here -->
+                    </div>
+                `;
+                
+                const photosContainer = areaElement.querySelector(`#report-photos-${area.id}`);
+                areaPhotos.forEach(photo => {
+                    const photoElement = document.createElement('div');
+                    photoElement.innerHTML = `
+                        <img src="${photo.url}" alt="Foto de inspección" class="report-photo">
+                        ${photo.notes ? `<p class="text-sm text-gray-700">${photo.notes}</p>` : ''}
+                        <p class="text-xs text-gray-500">${photo.timestamp}</p>
+                    `;
+                    photosContainer.appendChild(photoElement);
+                });
+                
+                if (areaPhotos.length === 0) {
+                    photosContainer.innerHTML = '<p class="text-sm text-gray-500">No se registraron incidentes en esta área.</p>';
+                }
+                
+                reportAreasList.appendChild(areaElement);
+            });
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Davolemos/davo" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
