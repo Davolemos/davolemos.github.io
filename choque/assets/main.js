@@ -46,7 +46,7 @@ const applyLang = (next) => {
       el.setAttribute(attr, lang === 'en' ? el.dataset[en] : el.dataset[es]);
     });
   }
-  document.querySelectorAll('.lang [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+  document.querySelectorAll('.lang button[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   document.dispatchEvent(new CustomEvent('langchange'));
 };
 // Page id and visit source, shared by the visit counter, WhatsApp messages and the brief form
@@ -203,6 +203,7 @@ if (briefBtns.length) {
 document.querySelectorAll('.lang [data-lang]').forEach((b) => b.addEventListener('click', () => {
   const next = b.dataset.lang;
   saveLang(next);
+  if (b.tagName === 'A') return; // a real link to the other language: the browser follows it
   if (PAGE_LANG && next !== PAGE_LANG) { location.href = ALT[next]; return; }
   applyLang(next);
 }));
